@@ -1,7 +1,5 @@
 import { Router } from "express";
 import passport from "passport";
-import jwt from "jsonwebtoken";
-import { SECRET } from "../utils.js";
 
 export const router4 = Router();
 
@@ -25,7 +23,6 @@ router4.get("/error", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   return res.status(500).json({
     error: `Unexpected error.`,
-    detail: `Failed to register.`,
   });
 });
 
@@ -91,6 +88,22 @@ router4.get("/logout", async (req, res) => {
     return res.status(500).json({
       error: `Unexpected error.`,
       detalle: `${error.message}`,
+    });
+  }
+});
+
+router4.get("/current", (req, res) => {
+  if (req.session.user) {
+    res.setHeader("Content-Type", "application/json");
+    return res.status(200).json({
+      message: "User's Profile",
+      user: req.session.user,
+    });
+  } else {
+    res.setHeader("Content-Type", "application/json");
+    return res.status(401).json({
+      error: "Unauthorized",
+      message: "No user is currently logged in.",
     });
   }
 });
