@@ -49,27 +49,19 @@ router4.post(
 
 router4.post(
   "/login",
-  passport.authenticate("login", {
-    failureRedirect: "/login?error=Failed to login, please try again.",
-  }),
+  passport.authenticate("login", { failureRedirect: "/api/sessions/error" }),
   async (req, res) => {
     try {
-      let { web } = req.body;
-
       let user = { ...req.user };
       delete user.password;
       req.session.user = user;
 
-      if (web) {
-        return res.redirect(
-          `/products?message=Welcome, ${user.name}! rol:${user.rol}`
-        );
-      } else {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(200)
-          .json({ payload: "Login successful!", username: user.name });
-      }
+      res.setHeader("Content-Type", "application/json");
+      return res.status(200).json({
+        payload: "Login successful!",
+        username: user.name,
+        rol: user.rol,
+      });
     } catch (error) {
       console.log(error);
       res.setHeader("Content-Type", "application/json");

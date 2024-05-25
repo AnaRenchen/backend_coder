@@ -78,8 +78,8 @@ export const initPassport = () => {
     "github",
     new github.Strategy(
       {
-        clientID: "en otro archivo",
-        clientSecret: "en otro archivo",
+        clientID: "otro archivo",
+        clientSecret: "otro archivo",
         callbackURL: "http://localhost:3000/api/sessions/callbackGithub",
       },
       async (tokenAcceso, tokenRefresh, profile, done) => {
