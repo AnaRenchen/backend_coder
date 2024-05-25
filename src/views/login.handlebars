@@ -10,7 +10,7 @@
 </header>
 
 <main>
-<form action="/api/sessions/login" method="post">
+<form onsubmit="login(event)" id="formLogin" action="/api/sessions/login" method="post">
   <div class="imgcontainer">
     <img
       src="https://i.postimg.cc/VkzpZyKM/storyline-laptop-with-cat.png"
@@ -22,8 +22,7 @@
   <div class="container_form">
 
      {{#if error}}
-        <div class= "error_message"
-        >{{error}}</div>
+         <div class="error_message">{{error}}</div>
     {{/if}}
 
     <label for="email"><b>Email</b></label>
@@ -31,7 +30,6 @@
 
     <label for="password"><b>Password</b></label>
     <input  class="form_input"  type="password" placeholder="Enter Password" name="password" />
-    <input type="text" name="web" value="web" hidden>
 
    <div class="button-container">
   <button class="button_form" type="submit" >Login</button>
@@ -47,7 +45,9 @@
 
 <footer></footer>
 
+<script src="/assets/js/login.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
