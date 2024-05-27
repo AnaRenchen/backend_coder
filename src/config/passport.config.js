@@ -19,8 +19,8 @@ export const initPassport = () => {
       },
       async (req, username, password, done) => {
         try {
-          let { name } = req.body;
-          if (!name) {
+          let { name, last_name, age } = req.body;
+          if (!name || !last_name || !age) {
             return done(null, false);
           }
 
@@ -34,8 +34,10 @@ export const initPassport = () => {
           let newCart = await cartsMongo.createCart();
           let newUser = await usersManager.create({
             name,
+            last_name,
             email: username,
             password,
+            age,
             rol: "user",
             cart: newCart._id,
           });
@@ -85,16 +87,19 @@ export const initPassport = () => {
       async (tokenAcceso, tokenRefresh, profile, done) => {
         try {
           let email = profile._json.email;
-          let name = profile._json.name;
-          if (!name || !email) {
+          let fullName = profile._json.name;
+          if (!fullName || !email) {
             return done(null, false);
           }
 
           let newCart = await cartsMongo.createCart();
           let user = await usersManager.getByPopulate({ email });
           if (!user) {
+            let name = fullName.split(" ")[0];
+            let last_name = fullName.split(" ")[1];
             user = await usersManager.create({
               name,
+              last_name,
               email,
               profile,
               cart: newCart._id,

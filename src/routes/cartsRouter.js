@@ -8,7 +8,7 @@ export const router2 = Router();
 const cartsMongo = new CartsManagerMongo();
 const managerMongo = new ProductManagerMongo();
 
-router2.post("/", async (req, res) => {
+router2.post("/", authPost, async (req, res) => {
   try {
     let newCart = await cartsMongo.createCart();
     res.setHeader("Content-Type", "application/json");
