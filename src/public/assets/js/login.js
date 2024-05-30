@@ -7,6 +7,18 @@ const login = async (e) => {
   ).values();
   console.log(email, password);
 
+  if (!email || !password) {
+    Swal.fire({
+      icon: "error",
+      background: "white",
+      text: "Please fill in all fields.",
+      confirmButtonText: "OK",
+      confirmButtonColor: "black",
+      toast: true,
+    });
+    return;
+  }
+
   let body = {
     email,
     password,
@@ -25,6 +37,7 @@ const login = async (e) => {
   if (response.ok) {
     window.location.href = `/products?message=Welcome, ${data.username}, rol: ${data.rol}!`;
   } else {
-    window.location.href = "/login?error=Failed to login, please try again.";
+    window.location.href =
+      "/login?error=Invalid email or password, please try again.";
   }
 };
