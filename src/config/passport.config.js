@@ -21,12 +21,16 @@ export const initPassport = () => {
         try {
           let { name, last_name, age } = req.body;
           if (!name || !last_name || !age) {
-            return done(null, false);
+            return done(null, false, {
+              message: "You must complete all fields.",
+            });
           }
 
           let exist = await usersManager.getByPopulate({ email: username });
           if (exist) {
-            return done(null, false);
+            return done(null, false, {
+              message: `${username} is already registered `,
+            });
           }
 
           password = generateHash(password);
@@ -61,11 +65,11 @@ export const initPassport = () => {
           let user = await usersManager.getByPopulate({ email: username });
 
           if (!user) {
-            return done(null, false);
+            return done(null, false, { message: "User not found" });
           }
 
           if (!validatePassword(password, user.password)) {
-            return done(null, false);
+            return done(null, false, { message: "Invalid password" });
           }
 
           return done(null, user);
@@ -89,7 +93,7 @@ export const initPassport = () => {
           let email = profile._json.email;
           let fullName = profile._json.name;
           if (!fullName || !email) {
-            return done(null, false);
+            return done(null, false, { message: "Name or email are missing" });
           }
 
           let newCart = await cartsMongo.createCart();
