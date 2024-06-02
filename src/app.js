@@ -13,22 +13,22 @@ import { messagesModel } from "./dao/models/messagesModel.js";
 import sessions from "express-session";
 import passport from "passport";
 import { initPassport } from "./config/passport.config.js";
+import { config } from "./config/config.js";
 
-const PORT = 3000;
+const PORT = config.port;
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   sessions({
-    secret: "AnaRenchen123",
+    secret: config.secret,
     resave: true,
     saveUninitialized: true,
     store: MongoStore.create({
       ttl: 3600,
-      mongoUrl:
-        "mongodb+srv://anamagbh:BackendCoder@cluster0.b6qhfhh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-      dbName: "ecommerce",
+      mongoUrl: config.mongoUrl,
+      dbName: config.dbname,
     }),
   })
 );
