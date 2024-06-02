@@ -1,6 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import { passportCall } from "../middleware/passportCall.js";
+import { authUser } from "../middleware/authUser.js";
 
 export const router4 = Router();
 
@@ -10,7 +11,7 @@ router4.get("/callbackGithub", passportCall("github"), (req, res) => {
   req.session.user = req.user;
 
   return res.redirect(
-    `/products?message=Welcome, ${req.user.name}, rol: ${req.user.rol}!`
+    `/products?message=Welcome, ${req.user.name}, rol: ${req.user.role}!`
   );
 });
 
@@ -36,7 +37,7 @@ router4.post("/login", passportCall("login"), async (req, res) => {
     return res.status(200).json({
       payload: "Login successful!",
       username: user.name,
-      rol: user.rol,
+      role: user.role,
     });
   } catch (error) {
     console.log(error);
@@ -70,18 +71,6 @@ router4.get("/logout", async (req, res) => {
   }
 });
 
-router4.get("/current", (req, res) => {
-  if (req.session.user) {
-    res.setHeader("Content-Type", "application/json");
-    return res.status(200).json({
-      message: "User's Profile",
-      user: req.session.user,
-    });
-  } else {
-    res.setHeader("Content-Type", "application/json");
-    return res.status(401).json({
-      error: "Unauthorized",
-      message: "No user is currently logged in.",
-    });
-  }
+router4.get("/current", authUser(["user", "admin"]), (req, res) => {
+  res.json({ user: req.session.user });
 });

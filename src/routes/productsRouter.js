@@ -2,7 +2,7 @@ import { Router } from "express";
 import ProductManagerMongo from "../dao/productmanagerMongo.js";
 import { io } from "../app.js";
 import { isValidObjectId } from "mongoose";
-import { authPost } from "../middleware/authPost.js";
+import { authUser } from "../middleware/authUser.js";
 
 export const router = Router();
 
@@ -104,7 +104,7 @@ router.get("/:pid", async (req, res) => {
   }
 });
 
-router.post("/", authPost, async (req, res) => {
+router.post("/", authUser(["admin"]), async (req, res) => {
   try {
     let {
       title,
@@ -172,7 +172,7 @@ router.post("/", authPost, async (req, res) => {
   }
 });
 
-router.put("/:pid", async (req, res) => {
+router.put("/:pid", authUser(["admin"]), async (req, res) => {
   try {
     let id = req.params.pid;
 
@@ -247,7 +247,7 @@ router.put("/:pid", async (req, res) => {
   }
 });
 
-router.delete("/:pid", async (req, res) => {
+router.delete("/:pid", authUser(["admin"]), async (req, res) => {
   try {
     let id = req.params.pid;
 

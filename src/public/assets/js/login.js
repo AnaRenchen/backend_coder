@@ -35,7 +35,7 @@ const login = async (e) => {
   let data = await response.json();
   console.log(data);
   if (response.ok) {
-    window.location.href = `/products?message=Welcome, ${data.username}, rol: ${data.rol}!`;
+    window.location.href = `/products?message=Welcome, ${data.username}, role: ${data.role}!`;
   } else {
     window.location.href =
       "/login?error=Invalid email or password, please try again.";
