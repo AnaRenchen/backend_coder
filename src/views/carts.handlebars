@@ -13,31 +13,59 @@
     </div>
   </div>
   {{>menu}}
-  </header>
+</header>
 
- <h2 class="cart_main">Cart</h2>
- <input type="text" value="{{cart._id}}" hidden id="cartId" />
+<h2 class="cart_main">Cart</h2>
+<input type="text" value="{{cart._id}}" hidden id="cartId" />
 
 <main class="main_cart">
-{{#each cart.products}}
-<div class="product_detail">
-  <div class="cart">
-    <img src="{{product.thumbnail}}" class="image_cart" alt="{{product.title}}" />
-    <div class="cart-body">
-      <h3 class="cart_title">{{product.title}}</h3>
-      <p>Price: ${{product.price}}</p>
-      <p>Quantity: {{quantity}}</p>
-    </div>
-    <button class="trash_item" onclick="removeFromCart('{{product._id}}')">
-      <i class="fas fa-trash custom-icon"></i>
-    </button>
-  </div>
+  <div class="table_container">
+  <table class="table_cart">
+    <thead>
+      <tr>
+        <th class="row_cart">Product</th>
+        <th class="row_cart">Unitary Price</th>
+        <th class="row_cart">Quantity</th>
+        <th class="row_cart">Image</th>
+      </tr>
+    </thead>
+    <tbody id="cartProducts">
+      {{#each cart.products}}
+      <tr>
+        <td class="row_cart_p"> <p> {{product.title}}</p></td>
+        <td class="row_cart_P"><p class="product-price">${{product.price}}</p></td>
+        <td class="row_cart_p">
+          <div class="controls">
+            <button type="button" class="btn_cantidad" onclick="removeFromCart('{{product._id}}')">-</button>
+            <p class="cantidad_producto">{{quantity}}</p>
+            <button type="button" class="btn_cantidad" onclick="add('{{product._id}}')">+</button>
+          </div>
+        </td>
+        <td class="row_cart_p"><img src="{{product.thumbnail}}" class="image_cart" alt="{{product.title}}" width="70"  /></td>
+      </tr>
+         {{/each}}
+     
+    </tbody>
+  </table>
 </div>
-{{/each}}
+
+<div class="finalizar_compra">
+ <h4 class="total_price" id="total_price">Total price:</h4>
+ <a href=""><button class="checkout_button">Check out</button></a>
+ </div>
+
+
+ <div class="continue_shopping">
+  <p class="continue_msg"> Or...</p>
+  <a href="/products"><button class="shopping_button">Continue Shopping</button></a>
+  </div>
+  
+
+
 </main>
 
-<footer></footer>
 
+<footer></footer>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/assets/js/logout.js"></script>
 <script src="/assets/js/cart.js"></script>

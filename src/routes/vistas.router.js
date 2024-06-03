@@ -232,7 +232,10 @@ router3.get("/carts/:cid", auth, async (req, res) => {
       res.status(404).send("Cart not found");
       return;
     }
-    res.status(200).render("carts", { cart, login: req.session.user });
+    res.status(200).render("carts", {
+      cart,
+      login: req.session.user,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal server error");
