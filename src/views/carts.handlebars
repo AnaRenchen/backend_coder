@@ -1,19 +1,12 @@
 <header>
   <div class="up_page">
-    <a href="/home">
-      <img class="logo" src="https://i.postimg.cc/JzVpc1S5/logo-header.png" alt="logo" width="80" />
-    </a>
-    <div class="cart_menu_container">
-      <a href="/carts/{{cartId}}">
-        <img class="cart_icon" src="https://i.postimg.cc/rF4ScZMk/icons8-cart-48.png" alt="" />
-      </a>
+    {{>header}}
       <div class="menu2">
         {{>menu2}}
       </div>
     </div>
   </div>
   {{>menu}}
-</header>
 
 <h2 class="cart_main">Cart</h2>
 <input type="text" value="{{cart._id}}" hidden id="cartId" />

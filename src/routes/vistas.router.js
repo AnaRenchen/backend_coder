@@ -226,7 +226,11 @@ router3.get("/chat", async (req, res) => {
 router3.get("/carts/:cid", auth, async (req, res) => {
   try {
     const cid = req.params.cid;
-    const cart = await cartsMongo.getCartbyId({ _id: cid }, true);
+    let cart = null;
+
+    if (req.session.user) {
+      cart = await cartsMongo.getCartbyId({ _id: cid }, true);
+    }
 
     if (!cart) {
       res.status(404).send("Cart not found");
