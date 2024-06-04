@@ -49,10 +49,6 @@ export default class CartsManagerMongo {
         { new: true }
       );
 
-      if (!updatedCart) {
-        throw new Error(`Cart with id ${cid} not found.`);
-      }
-
       return updatedCart;
     } catch (error) {
       console.error("Error updating cart with products:", error.message);
