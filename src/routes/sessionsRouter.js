@@ -72,5 +72,8 @@ router4.get("/logout", async (req, res) => {
 });
 
 router4.get("/current", authUser(["user", "admin"]), (req, res) => {
-  res.json({ user: req.session.user });
+  const user = req.session.user;
+
+  res.setHeader("Content-Type", "application/json");
+  res.status(200).json({ login: user });
 });
