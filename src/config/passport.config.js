@@ -2,13 +2,13 @@ import passport from "passport";
 import local from "passport-local";
 import { usersManagerMongo as UsersManager } from "../dao/usersmanager.js";
 import { generateHash } from "../utils.js";
-import CartsManagerMongo from "../dao/cartsmanagerMongo.js";
+import { CartsManagerMongo as CartsDao } from "../dao/CartsManagerMongo.js";
 import { validatePassword } from "../utils.js";
 import github from "passport-github2";
 import { config } from "./config.js";
 
 const usersManager = new UsersManager();
-const cartsMongo = new CartsManagerMongo();
+const cartsDao = new CartsDao();
 
 export const initPassport = () => {
   passport.use(
@@ -36,7 +36,7 @@ export const initPassport = () => {
 
           password = generateHash(password);
 
-          let newCart = await cartsMongo.createCart();
+          let newCart = await cartsDao.createCart();
           let newUser = await usersManager.create({
             name,
             last_name,
@@ -97,7 +97,7 @@ export const initPassport = () => {
             return done(null, false, { message: "Name or email are missing" });
           }
 
-          let newCart = await cartsMongo.createCart();
+          let newCart = await cartsDao.createCart();
           let user = await usersManager.getByPopulate({ email });
           if (!user) {
             let name = fullName.split(" ")[0];

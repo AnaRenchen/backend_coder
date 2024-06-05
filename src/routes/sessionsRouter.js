@@ -11,7 +11,7 @@ router4.get("/callbackGithub", passportCall("github"), (req, res) => {
   req.session.user = req.user;
 
   return res.redirect(
-    `/products?message=Welcome, ${req.user.name}, rol: ${req.user.role}!`
+    `/products?message=Welcome, ${req.user.name}, role: ${req.user.role}!`
   );
 });
 

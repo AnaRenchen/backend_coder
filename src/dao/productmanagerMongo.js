@@ -1,6 +1,6 @@
 import { productsModel } from "./models/productsModel.js";
 
-export default class ProductManagerMongo {
+export class ProductManagerMongo {
   async getProductsPaginate(page = 1, limit = 10, filter = {}, sort = {}) {
     const options = {
       page: page,

@@ -1,12 +1,12 @@
 import { Router } from "express";
-import ProductManagerMongo from "../dao/productmanagerMongo.js";
-import CartsManagerMongo from "../dao/cartsmanagerMongo.js";
+import { ProductManagerMongo as ProductsDao } from "../dao/productmanagerMongo.js";
+import { CartsManagerMongo as CartsDao } from "../dao/CartsManagerMongo.js";
 import { auth } from "../middleware/auth.js";
 
 export const router3 = Router();
 
-const managerMongo = new ProductManagerMongo();
-const cartsMongo = new CartsManagerMongo();
+const productsDao = new ProductsDao();
+const cartsDao = new CartsDao();
 
 router3.get("/home", async (req, res) => {
   try {
@@ -17,7 +17,7 @@ router3.get("/home", async (req, res) => {
       };
     }
 
-    let { docs: products } = await managerMongo.getProductsPaginate();
+    let { docs: products } = await productsDao.getProductsPaginate();
 
     res.setHeader("Content-Type", "text/html");
     res.status(200).render("home", {
@@ -71,7 +71,7 @@ router3.get("/realtimeproducts", auth, async (req, res) => {
       sortOptions.price = -1;
     }
 
-    let result = await managerMongo.getProductsPaginate(
+    let result = await productsDao.getProductsPaginate(
       page,
       limit,
       filter,
@@ -159,7 +159,7 @@ router3.get("/products", async (req, res) => {
       sortOptions.price = -1;
     }
 
-    let result = await managerMongo.getProductsPaginate(
+    let result = await productsDao.getProductsPaginate(
       page,
       limit,
       filter,
@@ -229,7 +229,7 @@ router3.get("/carts/:cid", auth, async (req, res) => {
     let cart = null;
 
     if (req.session.user) {
-      cart = await cartsMongo.getCartbyId({ _id: cid }, true);
+      cart = await cartsDao.getCartbyId({ _id: cid }, true);
     }
 
     if (!cart) {
