@@ -2,7 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import { usersManagerMongo as UsersManager } from "../dao/usersmanager.js";
 import { generateHash } from "../utils.js";
-import { CartsManagerMongo as CartsDao } from "../dao/CartsManagerMongo.js";
+import { CartsManagerMongo as CartsDao } from "../dao/cartsmanagerMongo.js";
 import { validatePassword } from "../utils.js";
 import github from "passport-github2";
 import { config } from "./config.js";
@@ -85,8 +85,8 @@ export const initPassport = () => {
     "github",
     new github.Strategy(
       {
-        clientID: config.clientId,
-        clientSecret: config.clientSecret,
+        clientID: config.CLIENT_ID,
+        clientSecret: config.CLIENT_SECRET,
         callbackURL: "http://localhost:3000/api/sessions/callbackGithub",
       },
       async (tokenAcceso, tokenRefresh, profile, done) => {

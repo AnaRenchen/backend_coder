@@ -753,13 +753,13 @@ footer{
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .cart_menu_container {
   display: flex;
   align-items: center;
-  margin-right: 20px;
+  margin-right: 40px;
  
 }
 
@@ -772,7 +772,7 @@ footer{
 
 .cart_icon {
   width: 35px;
-  margin-right: 10px;
+  margin-right: 8px;
 }
 
 .counter_cart {

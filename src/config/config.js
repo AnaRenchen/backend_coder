@@ -6,12 +6,12 @@ dotenv.config({
 });
 
 export const config = {
-  port: process.env.PORT,
-  mongoUrl: process.env.MONGO_URL,
-  dbname: process.env.DB_NAME,
-  adminName: process.env.ADMIN_NAME,
-  adminPassword: process.env.ADMIN_PASSWORD,
-  secret: process.env.SECRET,
-  clientId: process.env.CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET,
+  PORT: process.env.PORT,
+  MONGO_URL: process.env.MONGO_URL,
+  DB_NAME: process.env.DB_NAME,
+  ADMIN_NAME: process.env.ADMIN_NAME,
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+  SECRET: process.env.SECRET,
+  CLIENT_ID: process.env.CLIENT_ID,
+  CLIENT_SECRET: process.env.CLIENT_SECRET,
 };

@@ -15,20 +15,20 @@ import passport from "passport";
 import { initPassport } from "./config/passport.config.js";
 import { config } from "./config/config.js";
 
-const PORT = config.port;
+const PORT = config.PORT;
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   sessions({
-    secret: config.secret,
+    secret: config.SECRET,
     resave: true,
     saveUninitialized: true,
     store: MongoStore.create({
       ttl: 3600,
-      mongoUrl: config.mongoUrl,
-      dbName: config.dbname,
+      mongoUrl: config.MONGO_URL,
+      dbName: config.DB_NAME,
     }),
   })
 );
