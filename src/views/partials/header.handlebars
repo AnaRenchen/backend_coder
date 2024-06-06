@@ -1,9 +1,32 @@
-     <a href="/home">
-      <img class="logo" src="https://i.postimg.cc/JzVpc1S5/logo-header.png" alt="logo" width="80" />
-    </a>
-     {{#if login}}
+<a href="/home">
+  <img
+    class="logo"
+    src="https://i.postimg.cc/JzVpc1S5/logo-header.png"
+    alt="logo"
+    width="80"
+  />
+</a>
+{{#if login}}
+  <div class="cart_and_nav">
     <div class="cart_menu_container">
-      <a href="/carts/{{cart._id}}">
-        <img class="cart_icon" src="https://i.postimg.cc/rF4ScZMk/icons8-cart-48.png" alt="" />
+      <a href="/carts/{{cart._id}}" class="cart_link">
+        <img
+          class="cart_icon"
+          src="https://i.postimg.cc/rF4ScZMk/icons8-cart-48.png"
+          alt="cart icon"
+        />
+        <span class="counter_cart">0</span>
       </a>
-        {{/if}}
+    </div>
+    <nav class="navbar2">
+      <a href="/profile">Profile</a>
+      <a onclick="logout()" style="cursor: pointer;">Logout</a>
+    </nav>
+  </div>
+{{else}}
+  <nav class="navbar2">
+    <a href="/register">Register</a>
+    <a href="/login">Login</a>
+    <a href="/api/sessions/github">Login with Github</a>
+  </nav>
+{{/if}}

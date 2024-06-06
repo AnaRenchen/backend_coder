@@ -236,7 +236,6 @@ export class CartsController {
           .status(500)
           .json({ error: "Failed to remove product from cart." });
       }
-
       return res.status(200).json({
         message: `Product with id ${pid} was removed from the cart.`,
         cart: updatedCart,

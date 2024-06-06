@@ -4,7 +4,7 @@ const removeFromCart = async (pid) => {
   console.log(`Product id: ${pid}, Cart id: ${cid}`);
 
   let response = await fetch(`/api/carts/${cid}/product/${pid}`, {
-    method: "delete",
+    method: "DELETE",
   });
   if (response.status === 200) {
     let data = await response.json();
@@ -28,7 +28,7 @@ const add = async (pid) => {
   console.log(`Product id: ${pid}, Cart id: ${cid}`);
 
   let response = await fetch(`/api/carts/${cid}/product/${pid}`, {
-    method: "post",
+    method: "POST",
   });
   if (response.status === 200) {
     let data = await response.json();
@@ -37,7 +37,6 @@ const add = async (pid) => {
       text: "Product added to cart!",
       background: "#87a7ae",
       confirmButtonColor: "black",
-      toast: true,
       timer: 1000,
       toast: true,
     }).then(() => {
