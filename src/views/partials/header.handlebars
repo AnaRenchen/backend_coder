@@ -6,6 +6,7 @@
     width="80"
   />
 </a>
+<input type="text" value="{{cart._id}}" hidden id="cartId" />
 {{#if login}}
   <div class="cart_and_nav">
     <div class="cart_menu_container">
@@ -30,3 +31,4 @@
     <a href="/api/sessions/github">Login with Github</a>
   </nav>
 {{/if}}
+<script src="/assets/js/cart.js"></script>

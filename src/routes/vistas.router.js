@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ProductManagerMongo as ProductsDao } from "../dao/productmanagerMongo.js";
-import { CartsManagerMongo as CartsDao } from "../dao/CartsManagerMongo.js";
+import { CartsManagerMongo as CartsDao } from "../dao/cartsmanagerMongo.js";
 import { auth } from "../middleware/auth.js";
 
 export const router3 = Router();
