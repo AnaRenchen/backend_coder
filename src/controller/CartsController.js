@@ -1,4 +1,5 @@
 import { CartsManagerMongo as CartsDao } from "../dao/cartsmanagerMongo.js";
+import { cartsServices } from "../services/CartsServices.js";
 import { ProductManagerMongo as ProductsDao } from "../dao/productmanagerMongo.js";
 import { isValidObjectId } from "mongoose";
 
@@ -16,7 +17,7 @@ export class CartsController {
           .json({ error: "Please choose a valid Mongo id." });
       }
 
-      let products = await cartsDao.getCartbyId(id, false);
+      let products = await cartsServices.getCartbyId(id, false);
 
       if (products) {
         res.setHeader("Content-Type", "application/json");
@@ -36,7 +37,7 @@ export class CartsController {
 
   static creatCart = async (req, res) => {
     try {
-      let newCart = await cartsDao.createCart();
+      let newCart = await cartsServices.createCart();
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ message: "Cart created.", newCart });
     } catch (error) {
@@ -56,7 +57,7 @@ export class CartsController {
           .json({ error: "Please choose a valid Mongo id." });
       }
 
-      const cart = await cartsDao.getCartbyId(cid, false);
+      const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
         res.setHeader("Content-Type", "application/json");
         return res.status(404).json({ error: "Cart not found." });
@@ -71,7 +72,7 @@ export class CartsController {
           .json({ error: `Product with id ${pid} was not found.` });
       }
 
-      const updatedCart = await cartsDao.addProductCart(cart, pid);
+      const updatedCart = await cartsServices.addProductCart(cart, pid);
 
       if (updatedCart) {
         res.setHeader("Content-Type", "application/json");
@@ -128,14 +129,17 @@ export class CartsController {
         }
       }
 
-      const cart = await cartsDao.getCartbyId(cid, false);
+      const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
         return res
           .status(404)
           .json({ error: `Cart with id ${cid} not found.` });
       }
 
-      const updatedCart = await cartsDao.updateCartWithProducts(cid, products);
+      const updatedCart = await cartsServices.updateCartWithProducts(
+        cid,
+        products
+      );
 
       if (!updatedCart) {
         return res
@@ -170,7 +174,7 @@ export class CartsController {
         });
       }
 
-      const cart = await cartsDao.getCartbyId(cid, false);
+      const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
         res.setHeader("Content-Type", "application/json");
         return res.status(404).json({ error: "Cart not found." });
@@ -187,7 +191,7 @@ export class CartsController {
           .json({ error: `Product with id ${pid} was not found in the cart.` });
       }
 
-      const updatedQuantity = await cartsDao.updateProductQuantity(
+      const updatedQuantity = await cartsServices.updateProductQuantity(
         cid,
         pid,
         quantity
@@ -213,7 +217,7 @@ export class CartsController {
           .json({ error: "Please choose valid Mongo IDs." });
       }
 
-      const cart = await cartsDao.getCartbyId(cid, false);
+      const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
         return res
           .status(404)
@@ -221,21 +225,33 @@ export class CartsController {
       }
 
       const product = await productsDao.getProductbyId(pid);
-
       if (!product) {
-        res.setHeader("Content-Type", "application/json");
         return res
           .status(404)
           .json({ error: `Product with id ${pid} was not found.` });
       }
 
-      const updatedCart = await cartsDao.deleteProductCart(cart, pid);
+      const productIndex = cart.products.findIndex(
+        (p) => p.product._id.toString() === pid
+      );
+
+      if (productIndex === -1) {
+        return res
+          .status(404)
+          .json({ error: `Product with id ${pid} not found in cart.` });
+      }
+
+      const updatedCart = await cartsServices.deleteProductCart(
+        cart,
+        productIndex
+      );
 
       if (!updatedCart) {
         return res
           .status(500)
           .json({ error: "Failed to remove product from cart." });
       }
+
       return res.status(200).json({
         message: `Product with id ${pid} was removed from the cart.`,
         cart: updatedCart,
@@ -256,7 +272,7 @@ export class CartsController {
           .json({ error: "Please choose a valid Mongo ID for the cart." });
       }
 
-      const deletedCart = await cartsDao.deleteCart(cid);
+      const deletedCart = await cartsServices.deleteCart(cid);
 
       if (!deletedCart) {
         return res.status(404).json({

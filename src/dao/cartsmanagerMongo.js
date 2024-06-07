@@ -51,18 +51,13 @@ export class CartsManagerMongo {
     return updatedCart;
   }
 
-  async deleteProductCart(cart, pid) {
-    const productIndex = cart.products.findIndex(
-      (p) => p.product._id.toString() === pid
-    );
-    if (productIndex === -1) {
-      throw new Error(`Product with id ${pid} was not found in the cart.`);
-    }
+  async deleteProductCart(cart, productIndex) {
     if (cart.products[productIndex].quantity > 1) {
       cart.products[productIndex].quantity -= 1;
     } else {
       cart.products.splice(productIndex, 1);
     }
+
     await cart.save();
     return cart;
   }
