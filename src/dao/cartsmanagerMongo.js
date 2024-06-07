@@ -1,7 +1,5 @@
 import { cartsModel } from "./models/cartsModel.js";
-import { ProductManagerMongo as ProductsDao } from "./productmanagerMongo.js";
-
-const productsDao = new ProductsDao();
+import { productsServices } from "../services/ProductsServices.js";
 
 export class CartsManagerMongo {
   async getCarts() {
@@ -26,7 +24,7 @@ export class CartsManagerMongo {
     if (existingProduct) {
       existingProduct.quantity += 1;
     } else {
-      const product = await productsDao.getProductbyId(pid);
+      const product = await productsServices.getProductbyId(pid);
 
       cart.products.push({ product: product._id, quantity: 1 });
     }

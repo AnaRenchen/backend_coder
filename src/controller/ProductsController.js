@@ -1,8 +1,6 @@
-import { ProductManagerMongo as ProductsDao } from "../dao/productmanagerMongo.js";
+import { productsServices } from "../services/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { io } from "../app.js";
-
-const productsDao = new ProductsDao();
 
 export class ProductsController {
   static getProducts = async (req, res) => {
@@ -36,7 +34,7 @@ export class ProductsController {
         sortOptions.price = -1;
       }
 
-      let result = await productsDao.getProductsPaginate(
+      let result = await productsServices.getProductsPaginate(
         page,
         limit,
         filter,
@@ -85,7 +83,7 @@ export class ProductsController {
           .json({ error: "Please choose a valid Mongo id." });
       }
 
-      let product = await productsDao.getProductBy({ _id: id });
+      let product = await productsServices.getProductbyId({ _id: id });
 
       if (product) {
         res.setHeader("Content-Type", "application/json");
@@ -118,7 +116,7 @@ export class ProductsController {
 
       let exists;
       try {
-        exists = await productsDao.getProductBy({ code });
+        exists = await productsServices.getProductBy({ code });
       } catch (error) {
         res.setHeader("Content-Type", "application/json");
         return res.status(500).json({ error: "Internal server error." });
@@ -147,7 +145,7 @@ export class ProductsController {
         });
       }
 
-      let newProduct = await productsDao.addProduct({
+      let newProduct = await productsServices.addProduct({
         title,
         description,
         category,
@@ -158,7 +156,7 @@ export class ProductsController {
         stock,
       });
 
-      let { docs: productsList } = await productsDao.getProductsPaginate();
+      let { docs: productsList } = await productsServices.getProductsPaginate();
       io.emit("newproduct", productsList);
       console.log("added");
 
@@ -187,7 +185,7 @@ export class ProductsController {
       if (updateProperties.code) {
         let exists;
         try {
-          exists = await productsDao.getProductBy({
+          exists = await productsServices.getProductBy({
             _id: { $ne: id },
             code: updateProperties.code,
           });
@@ -228,7 +226,7 @@ export class ProductsController {
         });
       }
 
-      let updatedProduct = await productsDao.updateProduct(
+      let updatedProduct = await productsServices.updateProduct(
         id,
         updateProperties
       );
@@ -263,7 +261,7 @@ export class ProductsController {
           .json({ error: "Please choose a valid Mongo id." });
       }
 
-      let product = await productsDao.getProductbyId(id);
+      let product = await productsServices.getProductbyId(id);
       if (!product) {
         res.setHeader("Content-Type", "application/json");
         return res
@@ -271,9 +269,9 @@ export class ProductsController {
           .json({ error: `Product with id ${id} was not found.` });
       }
 
-      let result = await productsDao.deleteProduct(id);
+      let result = await productsServices.deleteProduct(id);
       if (result.deletedCount > 0) {
-        let { docs: products } = await productsDao.getProductsPaginate();
+        let { docs: products } = await productsServices.getProductsPaginate();
         io.emit("deletedproduct", products);
         console.log("Product deleted");
         return res

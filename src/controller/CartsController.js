@@ -1,8 +1,6 @@
 import { cartsServices } from "../services/CartsServices.js";
-import { ProductManagerMongo as ProductsDao } from "../dao/productmanagerMongo.js";
+import { productsServices } from "../services/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
-
-const productsDao = new ProductsDao();
 
 export class CartsController {
   static getCarts = async (req, res) => {
@@ -61,7 +59,7 @@ export class CartsController {
         return res.status(404).json({ error: "Cart not found." });
       }
 
-      const findproduct = await productsDao.getProductbyId(pid);
+      const findproduct = await productsServices.getProductbyId(pid);
 
       if (!findproduct) {
         res.setHeader("Content-Type", "application/json");
@@ -222,7 +220,7 @@ export class CartsController {
           .json({ error: `Cart with id ${cid} was not found.` });
       }
 
-      const product = await productsDao.getProductbyId(pid);
+      const product = await productsServices.getProductbyId(pid);
       if (!product) {
         return res
           .status(404)
