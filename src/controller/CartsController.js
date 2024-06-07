@@ -1,9 +1,7 @@
-import { CartsManagerMongo as CartsDao } from "../dao/cartsmanagerMongo.js";
 import { cartsServices } from "../services/CartsServices.js";
 import { ProductManagerMongo as ProductsDao } from "../dao/productmanagerMongo.js";
 import { isValidObjectId } from "mongoose";
 
-const cartsDao = new CartsDao();
 const productsDao = new ProductsDao();
 
 export class CartsController {
