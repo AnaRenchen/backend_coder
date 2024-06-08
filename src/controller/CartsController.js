@@ -59,25 +59,38 @@ export class CartsController {
         return res.status(404).json({ error: "Cart not found." });
       }
 
-      const findproduct = await productsServices.getProductbyId(pid);
-
-      if (!findproduct) {
+      const findProduct = await productsServices.getProductbyId(pid);
+      if (!findProduct) {
         res.setHeader("Content-Type", "application/json");
         return res
           .status(404)
           .json({ error: `Product with id ${pid} was not found.` });
       }
 
-      const updatedCart = await cartsServices.addProductCart(cart, pid);
+      const existingProduct = cart.products.find(
+        (p) => p.product._id.toString() === pid
+      );
+
+      if (existingProduct) {
+        existingProduct.quantity += 1;
+      } else {
+        cart.products.push({ product: findProduct._id, quantity: 1 });
+      }
+
+      await cartsServices.addProductCart(cid, cart.products);
+
+      const updatedCart = await cartsServices.getCartbyId(cid, false);
 
       if (updatedCart) {
         res.setHeader("Content-Type", "application/json");
-        return res.status(200).json({ message: "Product added.", updatedCart });
+        return res
+          .status(200)
+          .json({ message: "Product added.", cart: updatedCart });
       } else {
         res.setHeader("Content-Type", "application/json");
         return res
           .status(400)
-          .json({ error: `There was an error updating cart.` });
+          .json({ error: `There was an error updating the cart.` });
       }
     } catch (error) {
       console.log(error);

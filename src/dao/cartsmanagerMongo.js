@@ -16,19 +16,12 @@ export class CartsManagerMongo {
     return useLean ? query.lean() : query;
   }
 
-  async addProductCart(cart, pid) {
-    const existingProduct = cart.products.find(
-      (p) => p.product._id.toString() === pid
+  async addProductCart(cid, products) {
+    const cartProducts = await cartsModel.updateOne(
+      { _id: cid },
+      { $set: { products: products } }
     );
-
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      const product = await productsServices.getProductbyId(pid);
-
-      cart.products.push({ product: product._id, quantity: 1 });
-    }
-    return await cart.save();
+    return cartProducts;
   }
 
   async updateCartWithProducts(cid, products) {
