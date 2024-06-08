@@ -29,8 +29,8 @@ class CartsServices {
     return await this.dao.updateProductQuantity(cid, pid, quantity);
   };
 
-  deleteProductCart = async (cart, productIndex) => {
-    return await this.dao.deleteProductCart(cart, productIndex);
+  deleteProductCart = async (cid, pid) => {
+    return await this.dao.deleteProductCart(cid, pid);
   };
 
   deleteCart = async (cid) => {

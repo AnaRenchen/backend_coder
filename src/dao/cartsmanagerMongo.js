@@ -42,15 +42,13 @@ export class CartsManagerMongo {
     return updatedCart;
   }
 
-  async deleteProductCart(cart, productIndex) {
-    if (cart.products[productIndex].quantity > 1) {
-      cart.products[productIndex].quantity -= 1;
-    } else {
-      cart.products.splice(productIndex, 1);
-    }
-
-    await cart.save();
-    return cart;
+  async deleteProductCart(cid, pid) {
+    const cartProducts = await cartsModel.findOneAndUpdate(
+      { _id: cid },
+      { $pull: { products: { product: pid } } },
+      { new: true }
+    );
+    return cartProducts;
   }
 
   async deleteCart(cid) {

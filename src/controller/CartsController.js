@@ -233,13 +233,6 @@ export class CartsController {
           .json({ error: `Cart with id ${cid} was not found.` });
       }
 
-      const product = await productsServices.getProductbyId(pid);
-      if (!product) {
-        return res
-          .status(404)
-          .json({ error: `Product with id ${pid} was not found.` });
-      }
-
       const productIndex = cart.products.findIndex(
         (p) => p.product._id.toString() === pid
       );
@@ -250,16 +243,15 @@ export class CartsController {
           .json({ error: `Product with id ${pid} not found in cart.` });
       }
 
-      const updatedCart = await cartsServices.deleteProductCart(
-        cart,
-        productIndex
-      );
-
-      if (!updatedCart) {
-        return res
-          .status(500)
-          .json({ error: "Failed to remove product from cart." });
+      if (cart.products[productIndex].quantity > 1) {
+        cart.products[productIndex].quantity -= 1;
+      } else {
+        cart.products.splice(productIndex, 1);
       }
+
+      await cartsServices.addProductCart(cid, cart.products);
+
+      const updatedCart = await cartsServices.getCartbyId(cid, false);
 
       return res.status(200).json({
         message: `Product with id ${pid} was removed from the cart.`,
