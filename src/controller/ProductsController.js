@@ -65,7 +65,6 @@ export class ProductsController {
         nextLink: nextLink,
       });
     } catch (error) {
-      console.log(error);
       res.setHeader("Content-Type", "application/json");
       return res
         .status(500)
@@ -95,7 +94,6 @@ export class ProductsController {
           .json({ error: `There are no products with id: ${id}` });
       }
     } catch (error) {
-      console.log(error);
       res.setHeader("Content-Type", "application/json");
       return res.status(500).json({ error: "Internal server error." });
     }
@@ -163,7 +161,6 @@ export class ProductsController {
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ message: "Product added.", newProduct });
     } catch (error) {
-      console.log(error);
       res.setHeader("Content-Type", "application/json");
       return res.status(500).json({ error: "Internal server error." });
     }
@@ -244,7 +241,6 @@ export class ProductsController {
         updatedProduct,
       });
     } catch (error) {
-      console.log(error);
       res.setHeader("Content-Type", "application/json");
       return res.status(500).json({ error: "Internal server error." });
     }
@@ -283,7 +279,6 @@ export class ProductsController {
           .json({ error: `Product with id ${id} could not be deleted.` });
       }
     } catch (error) {
-      console.error("Error in deleting product:", error);
       return res.status(500).json({ error: "Internal server error." });
     }
   };

@@ -25,7 +25,6 @@ export class CartsController {
           .json({ error: `There are no carts with id: ${id}` });
       }
     } catch (error) {
-      console.log(error);
       res.setHeader("Content-Type", "application/json");
       return res.status(500).json({ error: "Internal server error." });
     }
@@ -37,7 +36,6 @@ export class CartsController {
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ message: "Cart created.", newCart });
     } catch (error) {
-      console.log(error);
       res.setHeader("Content-Type", "application/json");
       return res.status(500).json({ error: "Internal server error." });
     }
@@ -93,7 +91,6 @@ export class CartsController {
           .json({ error: `There was an error updating the cart.` });
       }
     } catch (error) {
-      console.log(error);
       res.setHeader("Content-Type", "application/json");
       return res.status(500).json({ error: "Internal server error." });
     }
@@ -161,7 +158,6 @@ export class CartsController {
         cart: updatedCart,
       });
     } catch (error) {
-      console.error("Error updating cart with products:", error);
       return res.status(500).json({ error: "Internal server error." });
     }
   };
@@ -211,7 +207,6 @@ export class CartsController {
         cart: updatedQuantity,
       });
     } catch (error) {
-      console.error("Error updating product quantity:", error);
       return res.status(500).json({ error: "Internal server error." });
     }
   };
@@ -258,7 +253,6 @@ export class CartsController {
         cart: updatedCart,
       });
     } catch (error) {
-      console.error("Error deleting product from cart:", error);
       return res.status(500).json({ error: "Internal server error." });
     }
   };
@@ -286,7 +280,6 @@ export class CartsController {
         cart: deletedCart,
       });
     } catch (error) {
-      console.error("Error deleting all products from cart:", error);
       return res.status(500).json({ error: "Internal server error." });
     }
   };

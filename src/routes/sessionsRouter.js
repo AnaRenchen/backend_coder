@@ -40,7 +40,6 @@ router4.post("/login", passportCall("login"), async (req, res) => {
       role: user.role,
     });
   } catch (error) {
-    console.log(error);
     res.setHeader("Content-Type", "application/json");
     return res.status(500).json({
       error: `Unexpected error.`,
