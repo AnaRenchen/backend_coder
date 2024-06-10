@@ -1,5 +1,4 @@
 import { cartsModel } from "./models/cartsModel.js";
-import { productsServices } from "../services/ProductsServices.js";
 
 export class CartsManagerMongo {
   async getCarts() {
