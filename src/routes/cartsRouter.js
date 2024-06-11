@@ -9,7 +9,7 @@ router2.get("/:cid", CartsController.getCarts);
 
 router2.post(
   "/:cid/product/:pid",
-  authUser(["user", "admin"]),
+  authUser(["user"]),
   CartsController.addProduct
 );
 

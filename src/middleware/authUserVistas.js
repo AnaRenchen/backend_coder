@@ -1,4 +1,4 @@
-export const authUser = (privileges = []) => {
+export const authUserVistas = (privileges = []) => {
   return (req, res, next) => {
     privileges = privileges.map((p) => p.toLowerCase());
 
@@ -7,15 +7,13 @@ export const authUser = (privileges = []) => {
     }
 
     if (!req.session.user?.role) {
-      return res
-        .status(401)
-        .json({ error: `Please login, or problem with the role` });
+      return res.redirect(`/login`);
     }
 
     if (!privileges.includes(req.session.user.role.toLowerCase())) {
-      return res
-        .status(403)
-        .json({ error: `Unauthorised.Insufficient privileges to access.` });
+      return res.redirect(
+        `/error?message=Unauthorised. Insufficient privileges to access.`
+      );
     }
 
     return next();

@@ -276,4 +276,30 @@ export class VistasController {
       res.status(500).send("Internal server error");
     }
   };
+
+  static getError = async (req, res) => {
+    try {
+      const errorMessage = req.query.message || "Error";
+      let cart = null;
+      if (req.session.user) {
+        cart = {
+          _id: req.session.user.cart._id,
+        };
+      }
+
+      let { docs: products } = await productsServices.getProductsPaginate();
+
+      res.setHeader("Content-Type", "text/html");
+      res.status(200).render("error", {
+        products,
+        titulo: "Horisada",
+        login: req.session.user,
+        cart,
+        errorMessage,
+      });
+    } catch (error) {
+      res.setHeader("Content-Type", "text/html");
+      return res.status(500).json({ error: "Internal server error." });
+    }
+  };
 }

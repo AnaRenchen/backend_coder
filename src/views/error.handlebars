@@ -1,0 +1,121 @@
+<header>
+  <div class="up_page">
+    {{>header}}
+    </div>
+  </div>
+  {{>menu}}
+
+
+  <h1 class="titulo">Horisada´s Paintings</h1>
+  <h4 class="greeting">いらっしゃいませ</h4>
+</header>
+
+<main>
+
+
+  <div class="slideshow-container">
+
+    <div class="mySlides fade">
+      <div class="numbertext">1 / 4</div>
+      <img src="https://i.postimg.cc/SxYXM1z2/peonias.jpg" style="width:100%" />
+      <div class="text">botan</div>
+    </div>
+
+    <div class="mySlides fade">
+      <div class="numbertext">2 / 4</div>
+      <img
+        src="https://i.postimg.cc/YqfjS0Qk/mascara-pelos.jpg"
+        style="width:100%"
+      />
+      <div class="text">kiyohime</div>
+    </div>
+
+    <div class="mySlides fade">
+      <div class="numbertext">3 / 4</div>
+      <img src="https://i.postimg.cc/W3Fhp7wf/dragon.jpg" style="width:100%" />
+      <div class="text">unryu</div>
+    </div>
+
+    <div class="mySlides fade">
+      <div class="numbertext">4 / 4</div>
+      <img src="https://i.postimg.cc/90mgn7jT/jiraya.jpg" style="width:100%" />
+      <div class="text">jiraya</div>
+    </div>
+
+    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+  </div>
+  <br />
+
+  <div style="text-align:center">
+    <span class="dot" onclick="currentSlide(1)"></span>
+    <span class="dot" onclick="currentSlide(2)"></span>
+    <span class="dot" onclick="currentSlide(3)"></span>
+    <span class="dot" onclick="currentSlide(4)"></span>
+  </div>
+
+  <h2 class="subtitle_hotproducts">Hot Products</h2>
+
+  <div class="container_cards">
+    <div class="card">
+      <img
+        src="https://i.postimg.cc/4dDnYh84/crisantemos.jpg"
+        class="card-img-top"
+        alt="{{title}}"
+      />
+      <div class="card-body">
+        <p> kiku</p>
+        <p>Us$ 200</p>
+      </div>
+    </div>
+    <div class="card">
+      <img
+        src="https://i.postimg.cc/90mgn7jT/jiraya.jpg"
+        class="card-img-top"
+        alt="{{title}}"
+      />
+      <div class="card-body">
+        <p> jiraya</p>
+        <p>Us$ 300</p>
+      </div>
+    </div>
+    <div class="card">
+      <img
+        src="https://i.postimg.cc/YqfjS0Qk/mascara-pelos.jpg"
+        class="card-img-top"
+        alt="{{title}}"
+      />
+      <div class="card-body">
+        <p> kyohime</p>
+        <p>Us$ 380</p>
+      </div>
+
+    </div>
+    <a href="/products" class="btn_products">See all products</a>
+  </div>
+
+</main>
+
+<footer></footer>
+
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/logout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const params = new URLSearchParams(window.location.search);
+  const message = params.get('message');
+  
+  if (message) {
+    Swal.fire({
+        imageUrl: "https://i.postimg.cc/HxxyqCyh/icons8-goblin-96.png",
+        background: "white",
+        text: message,
+        confirmButtonText: '¡OK!',
+        confirmButtonColor: "black",
+    });
+  }
+});
+</script>
