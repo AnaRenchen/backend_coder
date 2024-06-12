@@ -37,7 +37,7 @@
   </div>
 
   <div class="table_container">
-    <table>
+    <table class="update_products_table">
       <thead>
         <tr>
           <th>Name</th>
@@ -53,14 +53,14 @@
       <tbody id="products">
         {{#each products}}
           <tr>
-            <td>{{title}}</td>
-            <td>{{description}}</td>
-            <td>${{price}}</td>
-            <td>{{code}}</td>
-            <td>{{stock}}</td>
-            <td>{{status}}</td>
-            <td>{{category}}</td>
-            <td><img src="{{thumbnail}}" alt="{{title}}" width="100" /></td>
+            <td class="row_realtime_table">{{title}}</td>
+            <td class="row_realtime_table">{{description}}</td>
+            <td class="row_realtime_table">${{price}}</td>
+            <td class="row_realtime_table">{{code}}</td>
+            <td class="row_realtime_table">{{stock}}</td>
+            <td class="row_realtime_table">{{status}}</td>
+            <td class="row_realtime_table">{{category}}</td>
+            <td class="row_realtime_table"><img src="{{thumbnail}}" alt="{{title}}" width="100" /></td>
           </tr>
         {{/each}}
       </tbody>

@@ -11,20 +11,20 @@ const removeFromCart = async (pid) => {
     console.log(data);
     Swal.fire({
       text: "Product removed!",
+      icon: "success",
+      color: "black",
       background: "#87a7ae",
-      confirmButtonColor: "black",
+      showConfirmButton: false,
       toast: true,
-      timer: 1000,
+      timer: 1500,
       toast: true,
-    })
-      .then(() => {
-        location.reload();
-      })
-      .then(() => {
-        getTotalQuantity();
-      });
+    }).then(() => {
+      location.reload();
+      getTotalQuantity();
+    });
   }
 };
+
 const add = async (pid) => {
   let inputCart = document.getElementById("cartId");
   let cid = inputCart.value;
@@ -39,16 +39,37 @@ const add = async (pid) => {
     Swal.fire({
       text: "Product added to cart!",
       background: "#87a7ae",
-      confirmButtonColor: "black",
-      timer: 1000,
+      icon: "success",
+      color: "black",
+      showConfirmButton: false,
+      timer: 1500,
       toast: true,
-    })
-      .then(() => {
-        location.reload();
-      })
-      .then(() => {
-        getTotalQuantity();
-      });
+    }).then(() => {
+      location.reload();
+      getTotalQuantity();
+    });
+  }
+};
+
+const deleteCart = async (cid) => {
+  let response = await fetch(`/api/carts/${cid}/`, {
+    method: "DELETE",
+  });
+
+  if (response.status === 200) {
+    await response.json();
+    Swal.fire({
+      text: "Empting your cart...",
+      icon: "success",
+      background: "#87a7ae",
+      color: "black",
+      showConfirmButton: false,
+      toast: true,
+      timer: 2000,
+    }).then(() => {
+      location.reload();
+      getTotalQuantity();
+    });
   }
 };
 

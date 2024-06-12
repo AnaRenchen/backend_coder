@@ -9,20 +9,18 @@
 <h2 class="cart_main">Cart</h2>
 <input type="text" value="{{cart._id}}" hidden id="cartId" />
 
+<div class="empty_cart">
+ <button type="button" class="empting_button" onclick="deleteCart('{{cart._id}}')"> Empty Cart </button>
+</div>
+
 <main class="main_cart">
   <div class="table_container">
   <table class="table_cart">
-    <thead>
-      <tr>
-        <th class="row_cart">Product</th>
-        <th class="row_cart">Unitary Price</th>
-        <th class="row_cart">Quantity</th>
-        <th class="row_cart">Image</th>
-      </tr>
-    </thead>
+   
     <tbody id="cartProducts">
       {{#each cart.products}}
       <tr>
+        <td class="row_cart_p"><img src="{{product.thumbnail}}" class="image_cart" alt="{{product.title}}" width="70"  /></td>
         <td class="row_cart_p"> <p> {{product.title}}</p></td>
         <td class="row_cart_P"><p class="product-price">${{product.price}}</p></td>
         <td class="row_cart_p">
@@ -32,7 +30,7 @@
             <button type="button" class="btn_cantidad" onclick="add('{{product._id}}')">+</button>
           </div>
         </td>
-        <td class="row_cart_p"><img src="{{product.thumbnail}}" class="image_cart" alt="{{product.title}}" width="70"  /></td>
+       
       </tr>
          {{/each}}
      
