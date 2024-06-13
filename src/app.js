@@ -82,12 +82,9 @@ io.on("connection", (socket) => {
 
 const connDB = async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://anamagbh:BackendCoder@cluster0.b6qhfhh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-      {
-        dbName: "ecommerce",
-      }
-    );
+    await mongoose.connect(config.MONGO_URL, {
+      dbName: config.DB_NAME,
+    });
     console.log("DB online!");
   } catch (error) {
     console.log("Error connecting to DB.", error.message);
