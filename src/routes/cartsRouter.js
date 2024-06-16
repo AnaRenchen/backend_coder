@@ -31,3 +31,5 @@ router2.delete(
   authUser(["user", "admin"]),
   CartsController.deleteCart
 );
+
+router2.post("/:cid/purchase");

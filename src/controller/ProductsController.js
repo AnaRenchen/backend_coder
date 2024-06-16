@@ -1,4 +1,4 @@
-import { productsServices } from "../services/ProductsServices.js";
+import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { io } from "../app.js";
 

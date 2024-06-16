@@ -1,5 +1,5 @@
-import { cartsServices } from "../services/CartsServices.js";
-import { productsServices } from "../services/ProductsServices.js";
+import { cartsServices } from "../repository/CartsServices.js";
+import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 
 export class CartsController {
@@ -283,4 +283,6 @@ export class CartsController {
       return res.status(500).json({ error: "Internal server error." });
     }
   };
+
+  static createPurchase = async (req, res) => {};
 }

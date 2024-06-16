@@ -1,13 +1,11 @@
 import passport from "passport";
 import local from "passport-local";
-import { usersManagerMongo as UsersManager } from "../dao/usersmanager.js";
+import { usersServices } from "../repository/UsersServices.js";
 import { generateHash } from "../utils.js";
-import { cartsServices } from "../services/CartsServices.js";
+import { cartsServices } from "../repository/CartsServices.js";
 import { validatePassword } from "../utils.js";
 import github from "passport-github2";
 import { config } from "./config.js";
-
-const usersManager = new UsersManager();
 
 export const initPassport = () => {
   passport.use(
@@ -26,7 +24,9 @@ export const initPassport = () => {
             });
           }
 
-          let exist = await usersManager.getByPopulate({ email: username });
+          let exist = await usersServices.getByPopulate({
+            email: username,
+          });
           if (exist) {
             return done(null, false, {
               message: `${username} is already registered `,
@@ -36,7 +36,7 @@ export const initPassport = () => {
           password = generateHash(password);
 
           let newCart = await cartsServices.createCart();
-          let newUser = await usersManager.create({
+          let newUser = await usersServices.create({
             name,
             last_name,
             email: username,
@@ -62,7 +62,7 @@ export const initPassport = () => {
       },
       async (username, password, done) => {
         try {
-          let user = await usersManager.getByPopulate({ email: username });
+          let user = await usersServices.getByPopulate({ email: username });
 
           if (!user) {
             return done(null, false, { message: "User not found" });
@@ -97,7 +97,7 @@ export const initPassport = () => {
           }
 
           let newCart = await cartsServices.createCart();
-          let user = await usersManager.getByPopulate({ email });
+          let user = await usersServices.getByPopulate({ email });
           if (!user) {
             let name = fullName.split(" ")[0];
             let last_name = fullName.split(" ")[1];
@@ -108,7 +108,7 @@ export const initPassport = () => {
               profile,
               cart: newCart._id,
             });
-            await usersManager.getByPopulate({ email });
+            await usersServices.getByPopulate({ email });
           }
           return done(null, user);
         } catch (error) {

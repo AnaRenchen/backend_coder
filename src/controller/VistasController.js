@@ -1,5 +1,5 @@
-import { cartsServices } from "../services/CartsServices.js";
-import { productsServices } from "../services/ProductsServices.js";
+import { cartsServices } from "../repository/CartsServices.js";
+import { productsServices } from "../repository/ProductsServices.js";
 
 export class VistasController {
   static getHome = async (req, res) => {

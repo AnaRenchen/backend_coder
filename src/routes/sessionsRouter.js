@@ -2,6 +2,8 @@ import { Router } from "express";
 import passport from "passport";
 import { passportCall } from "../middleware/passportCall.js";
 import { authUser } from "../middleware/authUser.js";
+import { usersServices } from "../repository/UsersServices.js";
+import { UsersDTO } from "../dto/UsersDTO.js";
 
 export const router4 = Router();
 
@@ -70,8 +72,11 @@ router4.get("/logout", async (req, res) => {
   }
 });
 
-router4.get("/current", authUser(["user", "admin"]), (req, res) => {
-  const user = req.session.user;
+router4.get("/current", authUser(["user", "admin"]), async (req, res) => {
+  let userId = req.session.user._id;
+
+  let user = await usersServices.getBy({ _id: userId });
+  user = new UsersDTO(user);
 
   res.setHeader("Content-Type", "application/json");
   res.status(200).json({ login: user });
