@@ -1,7 +1,7 @@
 import { cartsServices } from "../repository/CartsServices.js";
 import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
-import { ticketsSertices } from "../repository/TicketsServices.js";
+import { ticketsServices } from "../repository/TicketsServices.js";
 import { usersServices } from "../repository/UsersServices.js";
 
 export class CartsController {
@@ -295,33 +295,95 @@ export class CartsController {
           .status(400)
           .json({ error: "Please choose a valid Mongo ID for the cart." });
       }
-      const cart = await cartsServices.getCartbyId(cid);
-      console.log(cid);
+
+      const cart = await cartsServices.getCartbyId(cid, false);
 
       if (!cart) {
         return res.status(404).json({ error: "Cart not found" });
       }
+      console.log(cart);
 
       const user = await usersServices.getBy({ cart: cid });
+
       if (!user) {
         return res
           .status(404)
           .json({ error: "User not found for the given cart." });
       }
-      console.log({ cart: cid });
+      console.log(user);
+
+      const productsNotProcessed = [];
+      const updatedProducts = [];
+      let totalAmount = 0;
+
+      for (const item of cart.products) {
+        try {
+          const findProduct = await productsServices.getProductbyId(
+            item.product
+          );
+
+          if (!findProduct) {
+            res.setHeader("Content-Type", "application/json");
+            return res.status(404).json({
+              error: `Product with id ${item.product} was not found.`,
+            });
+          }
+
+          const existingProduct = cart.products.find(
+            (p) => p.product.toString() === item.product.toString()
+          );
+
+          if (!existingProduct) {
+            productsNotProcessed.push(item.product);
+            continue;
+          }
+
+          if (findProduct.stock >= existingProduct.quantity) {
+            const updatedStock = findProduct.stock - existingProduct.quantity;
+
+            await productsServices.updateProduct(findProduct._id, {
+              stock: updatedStock,
+            });
+
+            const subtotal = findProduct.price * existingProduct.quantity;
+            totalAmount += subtotal;
+
+            updatedProducts.push({
+              product: findProduct._id,
+              quantity: existingProduct.quantity,
+            });
+          } else {
+            productsNotProcessed.push(existingProduct.product);
+          }
+        } catch (error) {
+          console.error(`Error processing product ID ${item.product}:`, error);
+          productsNotProcessed.push(item.product);
+        }
+      }
 
       let dataTicket = {
-        amount: 3,
+        amount: totalAmount,
         purchaser: user.email,
         code: `TCK-${Date.now()}`,
       };
+
       console.log(dataTicket);
 
-      let newTicket = await ticketsSertices.createTicket(dataTicket);
-      res.setHeader("Content-Type", "application/json");
+      const newTicket = await ticketsServices.createTicket(dataTicket);
+
+      const remainingProducts = cart.products.filter(
+        (item) => !productsNotProcessed.includes(item.product)
+      );
+
+      await cartsServices.updateCartWithProducts(cid, remainingProducts);
+
+      console.log("Updated Products:", updatedProducts);
+      console.log("Remaining Products:", remainingProducts);
+      console.log("Ticket Data:", dataTicket);
+
       return res.status(200).json({ message: "Ticket created.", newTicket });
     } catch (error) {
-      res.setHeader("Content-Type", "application/json");
+      console.error("Error in createPurchase:", error);
       return res.status(500).json({ error: "Internal server error." });
     }
   };

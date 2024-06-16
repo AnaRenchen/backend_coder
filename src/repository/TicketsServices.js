@@ -10,4 +10,4 @@ class TicketsServices {
   };
 }
 
-export const ticketsSertices = new TicketsServices(new TicketsDAO());
+export const ticketsServices = new TicketsServices(new TicketsDAO());
