@@ -1,6 +1,8 @@
 import { cartsServices } from "../repository/CartsServices.js";
 import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
+import { ticketsSertices } from "../repository/TicketsServices.js";
+import { usersServices } from "../repository/UsersServices.js";
 
 export class CartsController {
   static getCarts = async (req, res) => {
@@ -30,7 +32,7 @@ export class CartsController {
     }
   };
 
-  static creatCart = async (req, res) => {
+  static createCart = async (req, res) => {
     try {
       let newCart = await cartsServices.createCart();
       res.setHeader("Content-Type", "application/json");
@@ -284,5 +286,43 @@ export class CartsController {
     }
   };
 
-  static createPurchase = async (req, res) => {};
+  static createPurchase = async (req, res) => {
+    try {
+      const { cid } = req.params;
+
+      if (!isValidObjectId(cid)) {
+        return res
+          .status(400)
+          .json({ error: "Please choose a valid Mongo ID for the cart." });
+      }
+      const cart = await cartsServices.getCartbyId(cid);
+      console.log(cid);
+
+      if (!cart) {
+        return res.status(404).json({ error: "Cart not found" });
+      }
+
+      const user = await usersServices.getBy({ cart: cid });
+      if (!user) {
+        return res
+          .status(404)
+          .json({ error: "User not found for the given cart." });
+      }
+      console.log({ cart: cid });
+
+      let dataTicket = {
+        amount: 3,
+        purchaser: user.email,
+        code: `TCK-${Date.now()}`,
+      };
+      console.log(dataTicket);
+
+      let newTicket = await ticketsSertices.createTicket(dataTicket);
+      res.setHeader("Content-Type", "application/json");
+      return res.status(200).json({ message: "Ticket created.", newTicket });
+    } catch (error) {
+      res.setHeader("Content-Type", "application/json");
+      return res.status(500).json({ error: "Internal server error." });
+    }
+  };
 }

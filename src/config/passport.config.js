@@ -36,7 +36,7 @@ export const initPassport = () => {
           password = generateHash(password);
 
           let newCart = await cartsServices.createCart();
-          let newUser = await usersServices.create({
+          let newUser = await usersServices.createUser({
             name,
             last_name,
             email: username,

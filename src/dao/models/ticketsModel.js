@@ -1,11 +1,10 @@
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from "uuid";
 
 const ticketsCollection = "tickets";
 
 const ticketsSchema = new mongoose.Schema(
   {
-    code: { type: String, unique: true, default: uuidv4 },
+    code: { type: String, unique: true },
     amount: { type: Number, required: true },
     purchaser: { type: String, required: true },
   },

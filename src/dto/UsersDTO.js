@@ -7,5 +7,6 @@ export class UsersDTO {
       : this.firstname;
     this.email = user.email;
     this.role = user.role;
+    this.cart = user.cart;
   }
 }

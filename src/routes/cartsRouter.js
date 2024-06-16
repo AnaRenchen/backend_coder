@@ -3,7 +3,7 @@ import { authUser } from "../middleware/authUser.js";
 import { CartsController } from "../controller/CartsController.js";
 export const router2 = Router();
 
-router2.post("/", authUser(["user", "admin"]), CartsController.creatCart);
+router2.post("/", authUser(["user", "admin"]), CartsController.createCart);
 
 router2.get("/:cid", CartsController.getCarts);
 
@@ -32,4 +32,4 @@ router2.delete(
   CartsController.deleteCart
 );
 
-router2.post("/:cid/purchase");
+router2.post("/:cid/purchase", CartsController.createPurchase);

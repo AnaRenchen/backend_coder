@@ -5,7 +5,7 @@ class UsersServices {
     this.dao = dao;
   }
 
-  create = async (user) => {
+  createUser = async (user) => {
     return await this.dao.create(user);
   };
 
