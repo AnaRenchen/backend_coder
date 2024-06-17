@@ -1,0 +1,27 @@
+<header>
+  <div class="up_page">
+    {{>header}}
+    </div>
+  {{>menu}}
+</header>
+
+<body>
+    <main class="main_checkout">
+        
+  <h3>Purchase Detail</h1>
+  <div>
+  <p>Ticket Code: {{ticket.code}}</p>
+  <p>Purchaser: {{ticket.purchaser}}</p>
+  <p>Total: ${{ticket.amount}}</p>
+  <h2>Products</h2>
+    <ul>
+                {{#each updatedProducts}}
+                    <li>{{ this.product.title }} - Quantity: {{ this.quantity }}</li>
+                {{/each}}
+    </ul>
+  </div>
+  </main>
+</body>
+
+<footer></footer>
+

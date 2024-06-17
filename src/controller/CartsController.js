@@ -322,11 +322,9 @@ export class CartsController {
 
           if (!findProduct) {
             res.setHeader("Content-Type", "application/json");
-            return res
-              .status(404)
-              .json({
-                error: `Product with id ${item.product} was not found.`,
-              });
+            return res.status(404).json({
+              error: `Product with id ${item.product} was not found.`,
+            });
           }
 
           const existingProduct = cart.products.find(
@@ -358,7 +356,6 @@ export class CartsController {
             });
 
             if (existingProduct.quantity > quantityToPurchase) {
-              // If the requested quantity is more than the available stock, reduce the quantity
               existingProduct.quantity -= quantityToPurchase;
               productsNotProcessed.push({
                 product: existingProduct.product,
@@ -405,7 +402,13 @@ export class CartsController {
       console.log("Ticket Data:", dataTicket);
       console.log(cart.products);
 
-      return res.status(200).json({ message: "Ticket created.", newTicket });
+      return res
+        .status(200)
+        .json({
+          message: "Ticket created.",
+          newTicketId: newTicket._id,
+          updatedProducts,
+        });
     } catch (error) {
       console.error("Error in createPurchase:", error);
       return res.status(500).json({ error: "Internal server error." });

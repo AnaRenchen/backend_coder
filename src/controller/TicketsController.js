@@ -13,4 +13,15 @@ export class TicketsController {
       return res.status(500).json({ error: "Internal server error." });
     }
   };
+
+  static getTicketbyId = async (req, res) => {
+    try {
+      let ticket = tickets.getTicketbyId(id);
+      res.setHeader("Content-Type", "application/json");
+      return res.status(200).json({ ticket });
+    } catch (error) {
+      res.setHeader("Content-Type", "application/json");
+      return res.status(500).json({ error: "Internal server error." });
+    }
+  };
 }

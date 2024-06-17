@@ -797,5 +797,8 @@ footer{
   cursor: pointer;
   padding: 8px;
   border-radius: 10px;
+}
 
+.main_checkout{
+  min-height: 70vh;
 }

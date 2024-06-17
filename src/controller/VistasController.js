@@ -1,5 +1,7 @@
 import { cartsServices } from "../repository/CartsServices.js";
 import { productsServices } from "../repository/ProductsServices.js";
+import { ticketsServices } from "../repository/TicketsServices.js";
+import { isValidObjectId } from "mongoose";
 
 export class VistasController {
   static getHome = async (req, res) => {
@@ -300,6 +302,36 @@ export class VistasController {
     } catch (error) {
       res.setHeader("Content-Type", "text/html");
       return res.status(500).json({ error: "Internal server error." });
+    }
+  };
+
+  static getcheckout = async (req, res) => {
+    try {
+      const { tid } = req.params;
+      console.log(`Received ticket ID: ${tid}`);
+
+      if (!isValidObjectId(tid)) {
+        return res.status(400).render("error", { error: "Invalid Ticket ID" });
+      }
+
+      const ticket = await ticketsServices.getTicketbyId(tid);
+      console.log(`Fetched ticket: ${JSON.stringify(ticket)}`);
+
+      if (!ticket) {
+        return res.status(404).render("error", { error: "Ticket not found" });
+      }
+
+      const { updatedProducts } = req.body;
+      console.log(updatedProducts);
+
+      res.render("checkout", {
+        ticket,
+        updatedProducts,
+        login: req.session.user,
+      });
+    } catch (error) {
+      console.error("Error fetching ticket:", error);
+      res.status(500).render("error", { error: "Internal server error" });
     }
   };
 }

@@ -8,6 +8,10 @@ class TicketsServices {
   createTicket = async (dataTicket) => {
     return await this.dao.createTicket(dataTicket);
   };
+
+  getTicketbyId = async (id) => {
+    return await this.dao.getTicketbyId({ _id: id });
+  };
 }
 
 export const ticketsServices = new TicketsServices(new TicketsDAO());

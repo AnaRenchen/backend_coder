@@ -6,7 +6,7 @@ export class TicketManagerMongo {
   }
 
   async getTicketbyId(id) {
-    return await ticketsModel.findOne({ _id: id });
+    return await ticketsModel.findOne({ _id: id }).lean();
   }
 
   async createTicket(dataTicket) {
