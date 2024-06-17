@@ -301,7 +301,6 @@ export class CartsController {
       if (!cart) {
         return res.status(404).json({ error: "Cart not found" });
       }
-      console.log(cart);
 
       const user = await usersServices.getBy({ cart: cid });
 
@@ -310,7 +309,6 @@ export class CartsController {
           .status(404)
           .json({ error: "User not found for the given cart." });
       }
-      console.log(user);
 
       const productsNotProcessed = [];
       const updatedProducts = [];
@@ -324,9 +322,11 @@ export class CartsController {
 
           if (!findProduct) {
             res.setHeader("Content-Type", "application/json");
-            return res.status(404).json({
-              error: `Product with id ${item.product} was not found.`,
-            });
+            return res
+              .status(404)
+              .json({
+                error: `Product with id ${item.product} was not found.`,
+              });
           }
 
           const existingProduct = cart.products.find(
@@ -338,26 +338,45 @@ export class CartsController {
             continue;
           }
 
-          if (findProduct.stock >= existingProduct.quantity) {
-            const updatedStock = findProduct.stock - existingProduct.quantity;
+          if (findProduct.stock > 0) {
+            const quantityToPurchase = Math.min(
+              findProduct.stock,
+              existingProduct.quantity
+            );
+            const updatedStock = findProduct.stock - quantityToPurchase;
 
             await productsServices.updateProduct(findProduct._id, {
               stock: updatedStock,
             });
 
-            const subtotal = findProduct.price * existingProduct.quantity;
+            const subtotal = findProduct.price * quantityToPurchase;
             totalAmount += subtotal;
 
             updatedProducts.push({
               product: findProduct._id,
+              quantity: quantityToPurchase,
+            });
+
+            if (existingProduct.quantity > quantityToPurchase) {
+              // If the requested quantity is more than the available stock, reduce the quantity
+              existingProduct.quantity -= quantityToPurchase;
+              productsNotProcessed.push({
+                product: existingProduct.product,
+                quantity: existingProduct.quantity,
+              });
+            }
+          } else {
+            productsNotProcessed.push({
+              product: existingProduct.product,
               quantity: existingProduct.quantity,
             });
-          } else {
-            productsNotProcessed.push(existingProduct.product);
           }
         } catch (error) {
           console.error(`Error processing product ID ${item.product}:`, error);
-          productsNotProcessed.push(item.product);
+          productsNotProcessed.push({
+            product: item.product,
+            quantity: item.quantity,
+          });
         }
       }
 
@@ -371,8 +390,12 @@ export class CartsController {
 
       const newTicket = await ticketsServices.createTicket(dataTicket);
 
-      const remainingProducts = cart.products.filter(
-        (item) => !productsNotProcessed.includes(item.product)
+      const remainingProducts = cart.products.filter((item) =>
+        productsNotProcessed.some(
+          (p) =>
+            p.product.toString() === item.product.toString() &&
+            p.quantity === item.quantity
+        )
       );
 
       await cartsServices.updateCartWithProducts(cid, remainingProducts);
@@ -380,6 +403,7 @@ export class CartsController {
       console.log("Updated Products:", updatedProducts);
       console.log("Remaining Products:", remainingProducts);
       console.log("Ticket Data:", dataTicket);
+      console.log(cart.products);
 
       return res.status(200).json({ message: "Ticket created.", newTicket });
     } catch (error) {
