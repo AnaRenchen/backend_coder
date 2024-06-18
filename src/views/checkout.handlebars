@@ -1,33 +1,31 @@
 <header>
   <div class="up_page">
     {{>header}}
-    </div>
+  </div>
   {{>menu}}
 </header>
 
 <body>
-    <main class="main_checkout">
-  <div class="ticket">
-     <h3 class="subtitle_ticket">Purchase Detail</h1>
-    <h2 class="products_ticket">Products:</h2>
-    <ul>
-               {{#each updatedProducts}}
-                    <li>- Product: {{this.product.title}}</li>
-                    <li>- Quantity: {{this.quantity}}</li>
-                    <br>
-                {{/each}}
-    </ul>
-  <h2 class="products_ticket">Ticket Information:</h2>
-  <p>Ticket Code: {{ticket.code}}</p>
-  <p>Purchaser: {{ticket.purchaser}}</p>
-  <p>Total: ${{ticket.amount}}</p>
-  
-  </div>
-
-  
+  <main class="main_checkout">
+    <div class="ticket">
+      <h3 class="subtitle_ticket">Purchase Detail</h3>
+      <h2 class="products_ticket">Products:</h2>
+      <ul>
+        {{#each updatedProducts}}
+        <li>- Product: {{this.product.title}}</li>
+        <li>- Quantity: {{this.quantity}}</li>
+        <br>
+        {{/each}}
+      </ul>
+      <h2 class="products_ticket">Ticket Information:</h2>
+      <p>Ticket Code: {{ticket.code}}</p>
+      <p>Purchaser: {{ticket.purchaser}}</p>
+      <p>Total: ${{ticket.amount}}</p>
+    </div>
+    <img class="checkout_gueixa" src="https://i.postimg.cc/q73wfB6z/cute-fox-kitsune-sitting-cartoon-vector-icon-illustration-animal-holiday-icon-concept-isolated-flat.png" alt="gueixa" width="250">
   </main>
-  <img class="checkout_gueixa" src="https://i.postimg.cc/d055Ppqd/hand-drawn-asian-cartoon-character-illustration.png" alt="gueixa" width="250">
 </body>
 
 <footer></footer>
+
 

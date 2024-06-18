@@ -307,8 +307,13 @@ export class VistasController {
 
   static getcheckout = async (req, res) => {
     try {
+      let cart = null;
+      if (req.session.user) {
+        cart = {
+          _id: req.session.user.cart._id,
+        };
+      }
       const { tid } = req.params;
-      console.log(`Received ticket ID: ${tid}`);
 
       if (!isValidObjectId(tid)) {
         return res.status(400).render("error", { error: "Invalid Ticket ID" });
@@ -324,12 +329,12 @@ export class VistasController {
       const updatedProducts = req.query.updatedProducts
         ? JSON.parse(req.query.updatedProducts)
         : [];
-      console.log(updatedProducts);
 
       res.render("checkout", {
         ticket,
         updatedProducts,
         login: req.session.user,
+        cart,
       });
     } catch (error) {
       console.error("Error fetching ticket:", error);
