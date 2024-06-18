@@ -32,7 +32,10 @@ async function checkout() {
     const result = await response.json();
 
     if (response.ok) {
-      window.location.href = `/checkout/${result.newTicketId}`;
+      const updatedProducts = encodeURIComponent(
+        JSON.stringify(result.updatedProducts)
+      );
+      window.location.href = `/checkout/${result.newTicketId}?updatedProducts=${updatedProducts}`;
     } else {
       alert(result.error);
     }

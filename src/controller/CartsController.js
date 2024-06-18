@@ -351,7 +351,11 @@ export class CartsController {
             totalAmount += subtotal;
 
             updatedProducts.push({
-              product: findProduct._id,
+              product: {
+                _id: findProduct._id,
+                title: findProduct.title,
+                price: findProduct.price,
+              },
               quantity: quantityToPurchase,
             });
 
@@ -402,13 +406,11 @@ export class CartsController {
       console.log("Ticket Data:", dataTicket);
       console.log(cart.products);
 
-      return res
-        .status(200)
-        .json({
-          message: "Ticket created.",
-          newTicketId: newTicket._id,
-          updatedProducts,
-        });
+      return res.status(200).json({
+        message: "Ticket created.",
+        newTicketId: newTicket._id,
+        updatedProducts,
+      });
     } catch (error) {
       console.error("Error in createPurchase:", error);
       return res.status(500).json({ error: "Internal server error." });

@@ -799,6 +799,36 @@ footer{
   border-radius: 10px;
 }
 
-.main_checkout{
-  min-height: 70vh;
+.subtitle_ticket{
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.ticket{
+  background-color:#d4d0cc;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  margin-top: 50px;
+  font-family: 'Times New Roman', Times, serif;
+  color:#454344;
+  letter-spacing: 0.8;
+  text-align:right;
+}
+
+.products_ticket{
+  margin-top: 20px;
+  font-size: 1.2rem;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.checkout_gueixa{
+  display: flex;
+  flex-wrap: wrap;
+  text-align: right;
+  margin-left: 100px;
+
+
 }
