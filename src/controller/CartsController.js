@@ -288,7 +288,7 @@ export class CartsController {
   static createPurchase = async (req, res) => {
     try {
       const { cid } = req.params;
-      let user = req.session.user;
+      const user = req.session.user;
       const productsNotProcessed = [];
       const productsProcessed = [];
 
@@ -308,23 +308,15 @@ export class CartsController {
         const findProduct = await productsServices.getProductbyId(item.product);
 
         if (!findProduct) {
-          res.setHeader("Content-Type", "application/json");
-          return res.status(404).json({
-            error: `Product with id ${item.product} was not found.`,
-          });
+          return res
+            .status(404)
+            .json({ error: `Product with id ${item.product} was not found.` });
         }
 
-        const existingProduct = cart.products.find(
-          (p) => p.product.toString() === item.product.toString()
-        );
+        const quantityToPurchase = Math.min(findProduct.stock, item.quantity);
+        const updatedStock = findProduct.stock - quantityToPurchase;
 
-        if (findProduct.stock > 0) {
-          const quantityToPurchase = Math.min(
-            findProduct.stock,
-            existingProduct.quantity
-          );
-          const updatedStock = findProduct.stock - quantityToPurchase;
-
+        if (quantityToPurchase > 0) {
           await productsServices.updateProduct(findProduct._id, {
             stock: updatedStock,
           });
@@ -338,17 +330,16 @@ export class CartsController {
             quantity: quantityToPurchase,
           });
 
-          if (existingProduct.quantity > quantityToPurchase) {
-            existingProduct.quantity -= quantityToPurchase;
+          if (item.quantity > quantityToPurchase) {
             productsNotProcessed.push({
-              product: existingProduct.product,
-              quantity: existingProduct.quantity,
+              product: item.product,
+              quantity: item.quantity - quantityToPurchase,
             });
           }
         } else {
           productsNotProcessed.push({
-            product: existingProduct.product,
-            quantity: existingProduct.quantity,
+            product: item.product,
+            quantity: item.quantity,
           });
         }
       }
@@ -357,14 +348,12 @@ export class CartsController {
         return total + item.product.price * item.quantity;
       }, 0);
 
-      let dataTicket = {
+      const dataTicket = {
         amount: totalAmount,
         purchaser: user.email,
         code: `TCK-${Date.now()}`,
         products: productsProcessed,
       };
-
-      console.log(dataTicket);
 
       const newTicket = await ticketsServices.createTicket(dataTicket);
 
@@ -381,7 +370,6 @@ export class CartsController {
       console.log("Updated Products:", productsProcessed);
       console.log("Remaining Products:", remainingProducts);
       console.log("Ticket Data:", dataTicket);
-      console.log(cart.products);
 
       return res.status(200).json({
         message: "Ticket created.",
