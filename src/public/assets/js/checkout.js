@@ -12,10 +12,7 @@ async function checkout() {
     const result = await response.json();
 
     if (response.ok) {
-      const updatedProducts = encodeURIComponent(
-        JSON.stringify(result.updatedProducts)
-      );
-      window.location.href = `/checkout/${result.newTicketId}?updatedProducts=${updatedProducts}`;
+      window.location.href = `/checkout/${result.newTicketId}`;
     } else {
       alert(result.error);
     }

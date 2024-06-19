@@ -11,7 +11,7 @@
       <h3 class="subtitle_ticket">Purchase Detail</h3>
       <h2 class="products_ticket">Products:</h2>
       <ul>
-        {{#each updatedProducts}}
+        {{#each ticket.products}}
         <li>- Product: {{this.product.title}}</li>
         <li>- Quantity: {{this.quantity}}</li>
         <br>

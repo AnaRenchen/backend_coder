@@ -326,13 +326,8 @@ export class VistasController {
         return res.status(404).render("error", { error: "Ticket not found" });
       }
 
-      const updatedProducts = req.query.updatedProducts
-        ? JSON.parse(req.query.updatedProducts)
-        : [];
-
       res.render("checkout", {
         ticket,
-        updatedProducts,
         login: req.session.user,
         cart,
       });

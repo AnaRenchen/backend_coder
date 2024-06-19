@@ -2,7 +2,6 @@ import { cartsServices } from "../repository/CartsServices.js";
 import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { ticketsServices } from "../repository/TicketsServices.js";
-import { usersServices } from "../repository/UsersServices.js";
 
 export class CartsController {
   static getCarts = async (req, res) => {
@@ -289,6 +288,9 @@ export class CartsController {
   static createPurchase = async (req, res) => {
     try {
       const { cid } = req.params;
+      let user = req.session.user;
+      const productsNotProcessed = [];
+      const productsProcessed = [];
 
       if (!isValidObjectId(cid)) {
         return res
@@ -302,89 +304,64 @@ export class CartsController {
         return res.status(404).json({ error: "Cart not found" });
       }
 
-      const user = await usersServices.getBy({ cart: cid });
-
-      if (!user) {
-        return res
-          .status(404)
-          .json({ error: "User not found for the given cart." });
-      }
-
-      const productsNotProcessed = [];
-      const updatedProducts = [];
-      let totalAmount = 0;
-
       for (const item of cart.products) {
-        try {
-          const findProduct = await productsServices.getProductbyId(
-            item.product
+        const findProduct = await productsServices.getProductbyId(item.product);
+
+        if (!findProduct) {
+          res.setHeader("Content-Type", "application/json");
+          return res.status(404).json({
+            error: `Product with id ${item.product} was not found.`,
+          });
+        }
+
+        const existingProduct = cart.products.find(
+          (p) => p.product.toString() === item.product.toString()
+        );
+
+        if (findProduct.stock > 0) {
+          const quantityToPurchase = Math.min(
+            findProduct.stock,
+            existingProduct.quantity
           );
+          const updatedStock = findProduct.stock - quantityToPurchase;
 
-          if (!findProduct) {
-            res.setHeader("Content-Type", "application/json");
-            return res.status(404).json({
-              error: `Product with id ${item.product} was not found.`,
-            });
-          }
+          await productsServices.updateProduct(findProduct._id, {
+            stock: updatedStock,
+          });
 
-          const existingProduct = cart.products.find(
-            (p) => p.product.toString() === item.product.toString()
-          );
+          productsProcessed.push({
+            product: {
+              _id: findProduct._id,
+              title: findProduct.title,
+              price: findProduct.price,
+            },
+            quantity: quantityToPurchase,
+          });
 
-          if (!existingProduct) {
-            productsNotProcessed.push(item.product);
-            continue;
-          }
-
-          if (findProduct.stock > 0) {
-            const quantityToPurchase = Math.min(
-              findProduct.stock,
-              existingProduct.quantity
-            );
-            const updatedStock = findProduct.stock - quantityToPurchase;
-
-            await productsServices.updateProduct(findProduct._id, {
-              stock: updatedStock,
-            });
-
-            const subtotal = findProduct.price * quantityToPurchase;
-            totalAmount += subtotal;
-
-            updatedProducts.push({
-              product: {
-                _id: findProduct._id,
-                title: findProduct.title,
-                price: findProduct.price,
-              },
-              quantity: quantityToPurchase,
-            });
-
-            if (existingProduct.quantity > quantityToPurchase) {
-              existingProduct.quantity -= quantityToPurchase;
-              productsNotProcessed.push({
-                product: existingProduct.product,
-                quantity: existingProduct.quantity,
-              });
-            }
-          } else {
+          if (existingProduct.quantity > quantityToPurchase) {
+            existingProduct.quantity -= quantityToPurchase;
             productsNotProcessed.push({
               product: existingProduct.product,
               quantity: existingProduct.quantity,
             });
           }
-        } catch (error) {
-          console.error(`Error processing product ID ${item.product}:`, error);
+        } else {
           productsNotProcessed.push({
-            product: item.product,
-            quantity: item.quantity,
+            product: existingProduct.product,
+            quantity: existingProduct.quantity,
           });
         }
       }
+
+      const totalAmount = productsProcessed.reduce((total, item) => {
+        return total + item.product.price * item.quantity;
+      }, 0);
 
       let dataTicket = {
         amount: totalAmount,
         purchaser: user.email,
         code: `TCK-${Date.now()}`,
+        products: productsProcessed,
       };
 
       console.log(dataTicket);
@@ -401,7 +378,7 @@ export class CartsController {
 
       await cartsServices.updateCartWithProducts(cid, remainingProducts);
 
-      console.log("Updated Products:", updatedProducts);
+      console.log("Updated Products:", productsProcessed);
       console.log("Remaining Products:", remainingProducts);
       console.log("Ticket Data:", dataTicket);
       console.log(cart.products);
@@ -409,7 +386,6 @@ export class CartsController {
       return res.status(200).json({
         message: "Ticket created.",
         newTicketId: newTicket._id,
-        updatedProducts,
       });
     } catch (error) {
       console.error("Error in createPurchase:", error);
