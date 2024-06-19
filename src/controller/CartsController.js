@@ -313,37 +313,38 @@ export class CartsController {
             .json({ error: `Product with id ${item.product} was not found.` });
         }
 
-        const quantityToPurchase = Math.min(findProduct.stock, item.quantity);
-        const updatedStock = findProduct.stock - quantityToPurchase;
+        // Verificar si hay suficiente stock para el producto en el carrito
+        if (item.quantity <= findProduct.stock) {
+          const updatedStock = findProduct.stock - item.quantity;
 
-        if (quantityToPurchase > 0) {
+          // Actualizar el stock del producto
           await productsServices.updateProduct(findProduct._id, {
             stock: updatedStock,
           });
 
+          // Agregar producto procesado a la lista
           productsProcessed.push({
             product: {
               _id: findProduct._id,
               title: findProduct.title,
               price: findProduct.price,
             },
-            quantity: quantityToPurchase,
+            quantity: item.quantity,
           });
-
-          if (item.quantity > quantityToPurchase) {
-            productsNotProcessed.push({
-              product: item.product,
-              quantity: item.quantity - quantityToPurchase,
-            });
-          }
         } else {
+          // Si no hay suficiente stock, agregar a productos no procesados
           productsNotProcessed.push({
-            product: item.product,
+            product: {
+              _id: findProduct._id,
+              title: findProduct.title,
+              price: findProduct.price,
+            },
             quantity: item.quantity,
           });
         }
       }
 
+      // Crear el ticket solo con los productos procesados
       const totalAmount = productsProcessed.reduce((total, item) => {
         return total + item.product.price * item.quantity;
       }, 0);
@@ -357,23 +358,13 @@ export class CartsController {
 
       const newTicket = await ticketsServices.createTicket(dataTicket);
 
-      const remainingProducts = cart.products.filter((item) =>
-        productsNotProcessed.some(
-          (p) =>
-            p.product.toString() === item.product.toString() &&
-            p.quantity === item.quantity
-        )
-      );
-
-      await cartsServices.updateCartWithProducts(cid, remainingProducts);
-
-      console.log("Updated Products:", productsProcessed);
-      console.log("Remaining Products:", remainingProducts);
-      console.log("Ticket Data:", dataTicket);
+      await cartsServices.updateCartWithProducts(cid, productsNotProcessed);
 
       return res.status(200).json({
         message: "Ticket created.",
         newTicketId: newTicket._id,
+        "Products processed": productsProcessed,
+        "Products not processed": productsNotProcessed,
       });
     } catch (error) {
       console.error("Error in createPurchase:", error);
