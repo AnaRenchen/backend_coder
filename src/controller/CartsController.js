@@ -313,16 +313,13 @@ export class CartsController {
             .json({ error: `Product with id ${item.product} was not found.` });
         }
 
-        // Verificar si hay suficiente stock para el producto en el carrito
         if (item.quantity <= findProduct.stock) {
           const updatedStock = findProduct.stock - item.quantity;
 
-          // Actualizar el stock del producto
           await productsServices.updateProduct(findProduct._id, {
             stock: updatedStock,
           });
 
-          // Agregar producto procesado a la lista
           productsProcessed.push({
             product: {
               _id: findProduct._id,
@@ -332,7 +329,6 @@ export class CartsController {
             quantity: item.quantity,
           });
         } else {
-          // Si no hay suficiente stock, agregar a productos no procesados
           productsNotProcessed.push({
             product: {
               _id: findProduct._id,
@@ -344,7 +340,6 @@ export class CartsController {
         }
       }
 
-      // Crear el ticket solo con los productos procesados
       const totalAmount = productsProcessed.reduce((total, item) => {
         return total + item.product.price * item.quantity;
       }, 0);

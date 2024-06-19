@@ -320,7 +320,6 @@ export class VistasController {
       }
 
       const ticket = await ticketsServices.getTicketbyId(tid);
-      console.log(`Fetched ticket: ${JSON.stringify(ticket)}`);
 
       if (!ticket) {
         return res.status(404).render("error", { error: "Ticket not found" });
