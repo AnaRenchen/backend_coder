@@ -825,7 +825,7 @@ footer{
   color: #454344;
   letter-spacing: 0.8px;
   text-align: center; 
-  margin-bottom: 80px;
+
 }
 
 .products_ticket {
@@ -833,6 +833,7 @@ footer{
   font-size: 1.2rem;
   font-family: 'Times New Roman', Times, serif;
 }
+
 ul {
   list-style-type: none; 
   padding: 0; 
@@ -846,5 +847,39 @@ li {
   position: absolute; 
   bottom: -50; 
   right: 80; 
+}
 
+.confirm_purchase{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  margin: 50px 100px 100px;
+}
+
+.purchase_msg{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1rem;
+  letter-spacing: 0.5;
+  margin-right: 20px;
+  padding: 8px;
+}
+
+.purchase_button{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.5;
+  width: 100px;
+  border: none;
+  background-color: #87a7ae;
+  font-weight:700;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.purchase_button:hover{
+  background-color: #b4b3ad;
 }
