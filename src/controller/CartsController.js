@@ -2,6 +2,7 @@ import { cartsServices } from "../repository/CartsServices.js";
 import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { ticketsServices } from "../repository/TicketsServices.js";
+import { sendTicket } from "../config/mailing.config.js";
 
 export class CartsController {
   static getCarts = async (req, res) => {
@@ -354,6 +355,14 @@ export class CartsController {
       const newTicket = await ticketsServices.createTicket(dataTicket);
 
       await cartsServices.updateCartWithProducts(cid, productsNotProcessed);
+
+      sendTicket(
+        user.email,
+        newTicket.amount,
+        newTicket.purchaser,
+        newTicket.code,
+        newTicket.purchase_datetime
+      );
 
       return res.status(200).json({
         message: "Ticket created.",

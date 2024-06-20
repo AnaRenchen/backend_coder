@@ -14,4 +14,6 @@ export const config = {
   SECRET: process.env.SECRET,
   CLIENT_ID: process.env.CLIENT_ID,
   CLIENT_SECRET: process.env.CLIENT_SECRET,
+  PASSWORD_GMAIL_NODEMAILER: process.env.PASSWORD_GMAIL_NODEMAILER,
+  USER_GMAIL_NODEMAILER: process.env.USER_GMAIL_NODEMAILER,
 };

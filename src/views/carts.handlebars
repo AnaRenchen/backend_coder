@@ -19,18 +19,18 @@
     <tbody id="cartProducts">
       {{#each cart.products}}
       <tr>
-        <td class="row_cart_p"><img src="{{product.thumbnail}}" class="image_cart" alt="{{product.title}}" width="70"  /></td>
-        <td class="row_cart_p"> <p> {{product.title}}</p></td>
-        <td class="row_cart_P"><p class="product-price">${{product.price}}</p></td>
-        <td class="row_cart_p">
-          <div class="controls">
-            <button type="button" class="btn_cantidad" onclick="removeFromCart('{{product._id}}')">-</button>
-            <p class="cantidad_producto">{{quantity}}</p>
-            <button type="button" class="btn_cantidad" onclick="add('{{product._id}}')">+</button>
-          </div>
-        </td>
-       
-      </tr>
+  <td class="row_cart_p"><img src="{{product.thumbnail}}" class="image_cart" alt="{{product.title}}" width="70" /></td>
+  <td class="row_cart_p"><p>{{product.title}}</p></td>
+  <td class="row_cart_P"><p class="product-price">${{product.price}}</p></td>
+  <td class="row_cart_p">
+    <div class="controls">
+      <button type="button" class="btn_cantidad" onclick="removeFromCart('{{product._id}}')">-</button>
+      <p class="cantidad_producto">{{quantity}}</p>
+      <button type="button" class="btn_cantidad" onclick="add('{{product._id}}')">+</button>
+    </div>
+  </td>
+</tr>
+
          {{/each}}
      
     </tbody>

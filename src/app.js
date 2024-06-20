@@ -14,12 +14,14 @@ import sessions from "express-session";
 import passport from "passport";
 import { initPassport } from "./config/passport.config.js";
 import { config } from "./config/config.js";
+import cors from "cors";
 
 const PORT = config.PORT;
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 app.use(
   sessions({
     secret: config.SECRET,
