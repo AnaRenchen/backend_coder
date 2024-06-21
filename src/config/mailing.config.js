@@ -142,7 +142,7 @@ export const sendTicket = async (
       </main>
       <p class="thank_message">Hope to see you again soon!</p>
       <footer>
-          <p>&copy; 2024 Horisada's Shop. All rights reserved.</p>
+          <p>&copy; 2024 HORISADA Shop. All rights reserved.</p>
       </footer>
   </body>
   </html>
