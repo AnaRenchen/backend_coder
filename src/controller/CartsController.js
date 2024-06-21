@@ -356,13 +356,16 @@ export class CartsController {
 
       await cartsServices.updateCartWithProducts(cid, productsNotProcessed);
 
-      sendTicket(
+      let result = await sendTicket(
         user.email,
         newTicket.amount,
         newTicket.purchaser,
         newTicket.code,
         newTicket.purchase_datetime
       );
+      if (result.accepted.length > 0) {
+        console.log(result);
+      }
 
       return res.status(200).json({
         message: "Ticket created.",
