@@ -1,5 +1,5 @@
 Swal.fire({
-  imageUrl: "https://i.postimg.cc/ZqrV8yL4/cat.png",
+  imageUrl: "https://i.postimg.cc/zXCWYBCz/icons8-talk-64.png",
   title: "Welcome to our chat",
   color: "black",
   input: "text",

@@ -32,4 +32,8 @@ router2.delete(
   CartsController.deleteCart
 );
 
-router2.post("/:cid/purchase", CartsController.createPurchase);
+router2.post(
+  "/:cid/purchase",
+  authUser(["user"]),
+  CartsController.createPurchase
+);
