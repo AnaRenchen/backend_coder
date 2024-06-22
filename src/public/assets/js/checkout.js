@@ -12,12 +12,19 @@ async function checkout() {
     const result = await response.json();
 
     if (response.ok) {
-      window.location.href = `/checkout/${result.newTicketId}`;
-    } else {
-      alert(result.error);
+      if (result.redirect) {
+        Swal.fire({
+          text: result.message,
+          confirmButtonColor: "black",
+          imageUrl: "https://i.postimg.cc/rwx3gPhz/icons8-sad-cat-100.png",
+        }).then(() => {
+          window.location.href = result.url;
+        });
+      } else {
+        window.location.href = `/checkout/${result.newTicketId}`;
+      }
     }
   } catch (error) {
     console.error("Error creating purchase:", error);
-    alert("Error creating purchase");
   }
 }

@@ -352,19 +352,31 @@ export class CartsController {
         products: productsProcessed,
       };
 
-      const newTicket = await ticketsServices.createTicket(dataTicket);
+      let newTicket = "";
+
+      if (productsProcessed.length > 0) {
+        newTicket = await ticketsServices.createTicket(dataTicket);
+        let result = await sendTicket(
+          user.email,
+          newTicket.amount,
+          newTicket.purchaser,
+          newTicket.code,
+          newTicket.purchase_datetime
+        );
+        if (result.accepted.length > 0) {
+          console.log(result);
+        }
+      }
 
       await cartsServices.updateCartWithProducts(cid, productsNotProcessed);
 
-      let result = await sendTicket(
-        user.email,
-        newTicket.amount,
-        newTicket.purchaser,
-        newTicket.code,
-        newTicket.purchase_datetime
-      );
-      if (result.accepted.length > 0) {
-        console.log(result);
+      if (productsProcessed.length === 0) {
+        return res.status(200).json({
+          redirect: true,
+          url: "/products",
+          message:
+            "The selected products are out of stock. Please choose other products.",
+        });
       }
 
       return res.status(200).json({
