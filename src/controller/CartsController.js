@@ -352,12 +352,17 @@ export class CartsController {
         products: productsProcessed,
       };
 
+      const productTitles = productsProcessed
+        .map((item) => item.product.title)
+        .join(", ");
+
       let newTicket = "";
 
       if (productsProcessed.length > 0) {
         newTicket = await ticketsServices.createTicket(dataTicket);
         let result = await sendTicket(
           user.email,
+          productTitles,
           newTicket.amount,
           newTicket.purchaser,
           newTicket.code,
