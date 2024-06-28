@@ -1,6 +1,7 @@
 import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { io } from "../app.js";
+import { generateMockingProducts } from "../utils.js";
 
 export class ProductsController {
   static getProducts = async (req, res) => {
@@ -279,6 +280,23 @@ export class ProductsController {
           .json({ error: `Product with id ${id} could not be deleted.` });
       }
     } catch (error) {
+      res.setHeader("Content-Type", "application/json");
+      return res.status(500).json({ error: "Internal server error." });
+    }
+  };
+
+  static getMockingProducts = async (req, res) => {
+    try {
+      let mockingProducts = [];
+
+      for (let i = 0; i < 100; i++) {
+        mockingProducts.push(generateMockingProducts());
+      }
+
+      res.setHeader("Content-Type", "application/json");
+      return res.status(200).json({ "Mocking Products": mockingProducts });
+    } catch (error) {
+      res.setHeader("Content-Type", "application/json");
       return res.status(500).json({ error: "Internal server error." });
     }
   };

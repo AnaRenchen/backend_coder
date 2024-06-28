@@ -13,3 +13,5 @@ router.post("/", authUser(["admin"]), ProductsController.addProduct);
 router.put("/:pid", authUser(["admin"]), ProductsController.updateProduct);
 
 router.delete("/:pid", authUser(["admin"]), ProductsController.deleteProduct);
+
+router.get("/mock/mockingproducts", ProductsController.getMockingProducts);
