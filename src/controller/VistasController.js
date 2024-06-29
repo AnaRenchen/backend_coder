@@ -111,6 +111,7 @@ export class VistasController {
         login: req.session.user,
       });
     } catch (error) {
+      res.setHeader("Content-Type", "text/html");
       res.status(500).send("Internal server error");
     }
   };
@@ -198,6 +199,7 @@ export class VistasController {
         login: req.session.user,
       });
     } catch (error) {
+      res.setHeader("Content-Type", "text/html");
       res.status(500).send("Internal server error");
     }
   };
@@ -237,6 +239,7 @@ export class VistasController {
         login: req.session.user,
       });
     } catch (error) {
+      res.setHeader("Content-Type", "text/html");
       res.status(500).send("Internal server error");
     }
   };
@@ -246,6 +249,7 @@ export class VistasController {
       let { error } = req.query;
       res.status(200).render("register", { error, login: req.session.user });
     } catch (error) {
+      res.setHeader("Content-Type", "text/html");
       res.status(500).send("Internal server error");
     }
   };
@@ -256,6 +260,7 @@ export class VistasController {
 
       res.status(200).render("login", { error, login: req.session.user });
     } catch (error) {
+      res.setHeader("Content-Type", "text/html");
       res.status(500).send("Internal server error");
     }
   };
@@ -275,6 +280,7 @@ export class VistasController {
         cart,
       });
     } catch (error) {
+      res.setHeader("Content-Type", "text/html");
       res.status(500).send("Internal server error");
     }
   };
@@ -332,6 +338,7 @@ export class VistasController {
       });
     } catch (error) {
       console.error("Error fetching ticket:", error);
+      res.setHeader("Content-Type", "text/html");
       res.status(500).render("error", { error: "Internal server error" });
     }
   };

@@ -6,7 +6,7 @@ import { router as productsRouter } from "./routes/productsRouter.js";
 import { router2 as cartsRouter } from "./routes/cartsRouter.js";
 import { router3 as viewsRouter } from "./routes/vistas.router.js";
 import { router4 as sessionsRouter } from "./routes/sessionsRouter.js";
-import __dirname from "./utils.js";
+import __dirname from "./utils/utils.js";
 import path from "path";
 import mongoose from "mongoose";
 import { messagesModel } from "./dao/models/messagesModel.js";
@@ -15,6 +15,7 @@ import passport from "passport";
 import { initPassport } from "./config/passport.config.js";
 import { config } from "./config/config.js";
 import cors from "cors";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const PORT = config.PORT;
 const app = express();
@@ -49,6 +50,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
+app.use(errorHandler);
 
 let users = [];
 

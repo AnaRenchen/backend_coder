@@ -3,47 +3,70 @@ import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { ticketsServices } from "../repository/TicketsServices.js";
 import { sendTicket } from "../config/mailing.config.js";
+import CustomError from "../utils/CustomError.js";
+import { TYPES_ERROR } from "../utils/EErrors.js";
+import { cartNotFound } from "../utils/errorsCart.js";
 
 export class CartsController {
-  static getCarts = async (req, res) => {
+  static getCarts = async (req, res, next) => {
     try {
       let id = req.params.cid;
       if (!isValidObjectId(id)) {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: "Please choose a valid Mongo id." });
+        return next(
+          CustomError.createError(
+            "Invalid Mongo Id.",
+            null,
+            "Please choose a valid Mongo Id.",
+            TYPES_ERROR.DATA_TYPE
+          )
+        );
       }
 
-      let products = await cartsServices.getCartbyId(id, false);
+      let cart = await cartsServices.getCartbyId(id, false);
 
-      if (products) {
+      if (cart) {
         res.setHeader("Content-Type", "application/json");
-        return res.status(200).json(products);
+        return res.status(200).json(cart);
       } else {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: `There are no carts with id: ${id}` });
+        return next(
+          CustomError.createError(
+            "Cart Not Found",
+            null,
+            cartNotFound(id),
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
     } catch (error) {
-      res.setHeader("Content-Type", "application/json");
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Could not get cart.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static createCart = async (req, res) => {
+  static createCart = async (req, res, next) => {
     try {
       let newCart = await cartsServices.createCart();
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ message: "Cart created.", newCart });
     } catch (error) {
-      res.setHeader("Content-Type", "application/json");
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Could not create cart.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static addProduct = async (req, res) => {
+  static addProduct = async (req, res, next) => {
     try {
       let { cid, pid } = req.params;
       if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
@@ -93,12 +116,18 @@ export class CartsController {
           .json({ error: `There was an error updating the cart.` });
       }
     } catch (error) {
-      res.setHeader("Content-Type", "application/json");
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Could not add product to cart.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static updateCart = async (req, res) => {
+  static updateCart = async (req, res, next) => {
     try {
       const { cid } = req.params;
       const { products } = req.body;
@@ -160,11 +189,18 @@ export class CartsController {
         cart: updatedCart,
       });
     } catch (error) {
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Could not update cart.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static updateQuantity = async (req, res) => {
+  static updateQuantity = async (req, res, next) => {
     try {
       const { cid, pid } = req.params;
       const { quantity } = req.body;
@@ -209,11 +245,18 @@ export class CartsController {
         cart: updatedQuantity,
       });
     } catch (error) {
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Could not update quantity.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static deleteProduct = async (req, res) => {
+  static deleteProduct = async (req, res, next) => {
     try {
       const { cid, pid } = req.params;
 
@@ -255,11 +298,18 @@ export class CartsController {
         cart: updatedCart,
       });
     } catch (error) {
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Could not delete product.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static deleteCart = async (req, res) => {
+  static deleteCart = async (req, res, next) => {
     try {
       const { cid } = req.params;
 
@@ -282,11 +332,18 @@ export class CartsController {
         cart: deletedCart,
       });
     } catch (error) {
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Could not delete cart.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static createPurchase = async (req, res) => {
+  static createPurchase = async (req, res, next) => {
     try {
       const { cid } = req.params;
       const user = req.session.user;
@@ -392,7 +449,14 @@ export class CartsController {
       });
     } catch (error) {
       console.error("Error in createPurchase:", error);
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Could not create purchase.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 }

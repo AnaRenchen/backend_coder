@@ -1,10 +1,18 @@
 import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { io } from "../app.js";
-import { generateMockingProducts } from "../utils.js";
+import { generateMockingProducts } from "../utils/utils.js";
+import CustomError from "../utils/CustomError.js";
+import { TYPES_ERROR } from "../utils/EErrors.js";
+import {
+  addProductArguments,
+  productCode,
+  productNotFound,
+  updateProductArguments,
+} from "../utils/errorsProducts.js";
 
 export class ProductsController {
-  static getProducts = async (req, res) => {
+  static getProducts = async (req, res, next) => {
     try {
       let limit = req.query.limit || 10;
       let page = req.query.page || 1;
@@ -66,21 +74,29 @@ export class ProductsController {
         nextLink: nextLink,
       });
     } catch (error) {
-      res.setHeader("Content-Type", "application/json");
-      return res
-        .status(500)
-        .json({ status: "error", error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Failed to get products.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static getProduct = async (req, res) => {
+  static getProduct = async (req, res, next) => {
     try {
       let id = req.params.pid;
       if (!isValidObjectId(id)) {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: "Please choose a valid Mongo id." });
+        return next(
+          CustomError.createError(
+            "Invalid Mongo Id.",
+            null,
+            "Please choose a valid Mongo Id.",
+            TYPES_ERROR.DATA_TYPE
+          )
+        );
       }
 
       let product = await productsServices.getProductbyId({ _id: id });
@@ -89,18 +105,28 @@ export class ProductsController {
         res.setHeader("Content-Type", "application/json");
         return res.status(200).json({ product });
       } else {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: `There are no products with id: ${id}` });
+        return next(
+          CustomError.createError(
+            "Product not found.",
+            null,
+            productNotFound(id),
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
     } catch (error) {
-      res.setHeader("Content-Type", "application/json");
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error.",
+          null,
+          "Failed to get product.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static addProduct = async (req, res) => {
+  static addProduct = async (req, res, next) => {
     try {
       let {
         title,
@@ -114,18 +140,18 @@ export class ProductsController {
       } = req.body;
 
       let exists;
-      try {
-        exists = await productsServices.getProductBy({ code });
-      } catch (error) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(500).json({ error: "Internal server error." });
-      }
+
+      exists = await productsServices.getProductBy({ code });
 
       if (exists) {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: `Product with code ${code} already exists` });
+        return next(
+          CustomError.createError(
+            "Product with the chosen code already exists.",
+            null,
+            productCode(code),
+            TYPES_ERROR.INVALID_ARGUMENTS
+          )
+        );
       }
 
       if (
@@ -138,10 +164,14 @@ export class ProductsController {
         !code ||
         !stock
       ) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(400).json({
-          error: `All fields are required: title, description, category, price, status, thumbnail, code, stock.`,
-        });
+        return next(
+          CustomError.createError(
+            "Must complete all valid properties to add product.",
+            null,
+            addProductArguments(),
+            TYPES_ERROR.INVALID_ARGUMENTS
+          )
+        );
       }
 
       let newProduct = await productsServices.addProduct({
@@ -162,46 +192,62 @@ export class ProductsController {
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ message: "Product added.", newProduct });
     } catch (error) {
-      res.setHeader("Content-Type", "application/json");
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Failed to add products.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static updateProduct = async (req, res) => {
+  static updateProduct = async (req, res, next) => {
     try {
       let id = req.params.pid;
 
       if (!isValidObjectId(id)) {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: "Please choose a valid Mongo id." });
+        return next(
+          CustomError.createError(
+            "Invalid Mongo Id.",
+            null,
+            "Please choose a valid Mongo Id.",
+            TYPES_ERROR.DATA_TYPE
+          )
+        );
       }
 
       let updateProperties = req.body;
 
       if (updateProperties.code) {
         let exists;
-        try {
-          exists = await productsServices.getProductBy({
-            _id: { $ne: id },
-            code: updateProperties.code,
-          });
-          if (exists) {
-            res.setHeader("Content-Type", "application/json");
-            return res.status(400).json({
-              error: `The code ${updateProperties.code} already exists.`,
-            });
-          }
-        } catch (error) {
-          res.setHeader("Content-Type", "application/json");
-          return res.status(500).json({ error: "Internal server error." });
+
+        exists = await productsServices.getProductBy({
+          _id: { $ne: id },
+          code: updateProperties.code,
+        });
+        if (exists) {
+          return next(
+            CustomError.createError(
+              "Code already exists.",
+              null,
+              productCode(updateProperties.code),
+              TYPES_ERROR.INVALID_ARGUMENTS
+            )
+          );
         }
       }
 
       if (!updateProperties) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(400).json({ error: "Properties not valid." });
+        return next(
+          CustomError.createError(
+            "Properties not valid.",
+            null,
+            updateProductArguments(validProperties),
+            TYPES_ERROR.INVALID_ARGUMENTS
+          )
+        );
       }
 
       let validProperties = [
@@ -218,10 +264,14 @@ export class ProductsController {
       let valid = properties.every((prop) => validProperties.includes(prop));
 
       if (!valid) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(400).json({
-          error: `The properties you are trying to update are not valid or do not exist. Valid properties are: ${validProperties}.`,
-        });
+        return next(
+          CustomError.createError(
+            "Properties not valid.",
+            null,
+            updateProductArguments(validProperties),
+            TYPES_ERROR.INVALID_ARGUMENTS
+          )
+        );
       }
 
       let updatedProduct = await productsServices.updateProduct(
@@ -229,41 +279,48 @@ export class ProductsController {
         updateProperties
       );
 
-      if (!updatedProduct) {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(404)
-          .json({ error: `Product with id ${id} was not found.` });
-      }
-
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({
         message: `Product with id ${id} was updated.`,
         updatedProduct,
       });
     } catch (error) {
-      res.setHeader("Content-Type", "application/json");
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Failed to update products.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static deleteProduct = async (req, res) => {
+  static deleteProduct = async (req, res, next) => {
     try {
       let id = req.params.pid;
 
       if (!isValidObjectId(id)) {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: "Please choose a valid Mongo id." });
+        return next(
+          CustomError.createError(
+            "Invalid Mongo Id.",
+            null,
+            "Please choose a valid Mongo Id.",
+            TYPES_ERROR.DATA_TYPE
+          )
+        );
       }
 
       let product = await productsServices.getProductbyId(id);
       if (!product) {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(404)
-          .json({ error: `Product with id ${id} was not found.` });
+        return next(
+          CustomError.createError(
+            "Product not found.",
+            null,
+            productNotFound(id),
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
 
       let result = await productsServices.deleteProduct(id);
@@ -275,17 +332,28 @@ export class ProductsController {
           .status(200)
           .json({ message: `Product with id ${id} was deleted.` });
       } else {
-        return res
-          .status(400)
-          .json({ error: `Product with id ${id} could not be deleted.` });
+        return next(
+          CustomError.createError(
+            "Could not delete product.",
+            error,
+            "Failed to delete product.",
+            TYPES_ERROR.INTERNAL_SERVER_ERROR
+          )
+        );
       }
     } catch (error) {
-      res.setHeader("Content-Type", "application/json");
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Internal Error",
+          error,
+          "Could not delete product.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 
-  static getMockingProducts = async (req, res) => {
+  static getMockingProducts = async (req, res, next) => {
     try {
       let mockingProducts = [];
 
@@ -296,8 +364,14 @@ export class ProductsController {
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ "Mocking Products": mockingProducts });
     } catch (error) {
-      res.setHeader("Content-Type", "application/json");
-      return res.status(500).json({ error: "Internal server error." });
+      next(
+        CustomError.createError(
+          "Could not get mocking products.",
+          error,
+          "Failed to get mocking products.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   };
 }
