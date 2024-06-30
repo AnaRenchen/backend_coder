@@ -5,13 +5,14 @@ import { generateMockingProducts } from "../utils.js";
 import CustomError from "../errors/CustomError.js";
 import { TYPES_ERROR } from "../errors/EErrors.js";
 import {
-  addProductArguments,
+  addProductArgumentsError,
   errorMongoId,
-  productCode,
+  productCodeError,
   productNotFound,
-  updateProductArguments,
-  addProduct,
-  deleteProduct,
+  updateProductArgumentsError,
+  addProductError,
+  updateProductError,
+  deleteProductError,
 } from "../errors/errorsProducts.js";
 
 export class ProductsController {
@@ -121,7 +122,7 @@ export class ProductsController {
       next(
         CustomError.createError(
           "Internal Error.",
-          null,
+          error,
           "Failed to get product.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
@@ -150,7 +151,7 @@ export class ProductsController {
         return next(
           CustomError.createError(
             "Code already exists.",
-            productCode(code),
+            productCodeError(code),
             "Product with the chosen code already exists.",
             TYPES_ERROR.INVALID_ARGUMENTS
           )
@@ -170,8 +171,8 @@ export class ProductsController {
         return next(
           CustomError.createError(
             "Invalid or missing properties.",
-            addProductArguments(),
-            "Must complete all valid properties to add product.",
+            addProductArgumentsError(),
+            "Must complete all valid properties to add product.Valid properties are: title, description, category, price, status, thumbnail, code, stock.",
             TYPES_ERROR.INVALID_ARGUMENTS
           )
         );
@@ -198,7 +199,7 @@ export class ProductsController {
       next(
         CustomError.createError(
           "Internal Error",
-          addProduct(),
+          addProductError(),
           "Failed to add products.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
@@ -234,7 +235,7 @@ export class ProductsController {
           return next(
             CustomError.createError(
               "Code already exists.",
-              productCode(updateProperties.code),
+              productCodeError(updateProperties.code),
               "There is already another product with the same code.",
               TYPES_ERROR.INVALID_ARGUMENTS
             )
@@ -259,8 +260,8 @@ export class ProductsController {
         return next(
           CustomError.createError(
             "Properties not valid.",
-            updateProductArguments(validProperties),
-            "You must give at least one valid property to update product.",
+            updateProductArgumentsError(validProperties),
+            "You must give at least one valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock.",
             TYPES_ERROR.INVALID_ARGUMENTS
           )
         );
@@ -270,8 +271,8 @@ export class ProductsController {
         return next(
           CustomError.createError(
             "Properties not valid.",
-            updateProductArguments(validProperties),
-            "You must choose a valid property to update product.",
+            updateProductArgumentsError(validProperties),
+            "You must choose a valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock.",
             TYPES_ERROR.INVALID_ARGUMENTS
           )
         );
@@ -291,8 +292,8 @@ export class ProductsController {
       next(
         CustomError.createError(
           "Internal Error",
-          error,
-          "Failed to update products.",
+          updateProductError(),
+          "Failed to update product.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
       );
@@ -338,7 +339,7 @@ export class ProductsController {
         return next(
           CustomError.createError(
             "Could not delete product.",
-            deleteProduct(),
+            deleteProductError(),
             "Failed to delete product.",
             TYPES_ERROR.INTERNAL_SERVER_ERROR
           )
@@ -348,7 +349,7 @@ export class ProductsController {
       next(
         CustomError.createError(
           "Internal Error",
-          error,
+          deleteProductError(),
           "Could not delete product.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )

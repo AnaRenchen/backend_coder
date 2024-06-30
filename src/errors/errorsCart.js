@@ -6,10 +6,10 @@ export function errorMongoId() {
   return `Please choose a valid Mongo Id.`;
 }
 
-export function updateCartArguments() {
+export function updateCartArgumentsError() {
   return `Please provide an array with properties product and quantity for product.`;
 }
-export function updateQuantity() {
+export function updateQuantityError() {
   return `Please provide a valid quantity for product.`;
 }
 
@@ -33,7 +33,7 @@ export function cartNotDeleted() {
   return `There was an error deleting cart.`;
 }
 
-export function purchaseTicket() {
+export function purchaseTicketError() {
   return `There was an error creating ticket.`;
 }
 

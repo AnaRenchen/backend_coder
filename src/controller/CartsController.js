@@ -13,8 +13,10 @@ import {
   createCartError,
   errorMongoId,
   productNotAddedCart,
-  updateCartArguments,
-  updateQuantity,
+  productNotDeletedCart,
+  purchaseTicketError,
+  updateCartArgumentsError,
+  updateQuantityError,
 } from "../errors/errorsCart.js";
 import { productNotFound } from "../errors/errorsProducts.js";
 
@@ -53,7 +55,7 @@ export class CartsController {
         CustomError.createError(
           "Internal Error",
           error,
-          "Failed to get products.",
+          "Failed to get cart.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
       );
@@ -148,7 +150,7 @@ export class CartsController {
       next(
         CustomError.createError(
           "Internal Error",
-          error,
+          productNotAddedCart(),
           "Could not add product to cart.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
@@ -176,7 +178,7 @@ export class CartsController {
         return next(
           CustomError.createError(
             "Invalid Arguments to update cart.",
-            updateCartArguments(),
+            updateCartArgumentsError(),
             "Please provide an array with properties product and quantity.",
             TYPES_ERROR.INVALID_ARGUMENTS
           )
@@ -194,7 +196,7 @@ export class CartsController {
           return next(
             CustomError.createError(
               "Invalid Arguments to update cart.",
-              updateCartArguments(),
+              updateCartArgumentsError(),
               "Each product should have only 'product' and 'quantity' properties.",
               TYPES_ERROR.INVALID_ARGUMENTS
             )
@@ -249,7 +251,7 @@ export class CartsController {
       next(
         CustomError.createError(
           "Internal Error",
-          error,
+          cartNotUpdated(),
           "Could not update cart.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
@@ -277,7 +279,7 @@ export class CartsController {
         return next(
           CustomError.createError(
             "Invalid quantity.",
-            updateQuantity(),
+            updateQuantityError(),
             "Please provide a valid quantity for product.",
             TYPES_ERROR.DATA_TYPE
           )
@@ -325,7 +327,7 @@ export class CartsController {
       next(
         CustomError.createError(
           "Internal Error",
-          error,
+          cartNotUpdated(),
           "Could not update quantity.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
@@ -393,7 +395,7 @@ export class CartsController {
       next(
         CustomError.createError(
           "Internal Error",
-          error,
+          productNotDeletedCart(),
           "Could not delete product.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
@@ -437,7 +439,7 @@ export class CartsController {
       next(
         CustomError.createError(
           "Internal Error",
-          error,
+          cartNotDeleted(),
           "Could not delete cart.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
@@ -581,7 +583,7 @@ export class CartsController {
       next(
         CustomError.createError(
           "Internal Error",
-          error,
+          purchaseTicketError(),
           "Could not create purchase.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
