@@ -52,6 +52,9 @@ export class CartsManagerMongo {
 
   async deleteCart(cid) {
     const cart = await cartsModel.findById(cid);
+    if (!cart) {
+      return null;
+    }
     cart.products = [];
     await cart.save();
     return cart;

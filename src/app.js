@@ -6,7 +6,7 @@ import { router as productsRouter } from "./routes/productsRouter.js";
 import { router2 as cartsRouter } from "./routes/cartsRouter.js";
 import { router3 as viewsRouter } from "./routes/vistas.router.js";
 import { router4 as sessionsRouter } from "./routes/sessionsRouter.js";
-import __dirname from "./utils/utils.js";
+import __dirname from "./utils.js";
 import path from "path";
 import mongoose from "mongoose";
 import { messagesModel } from "./dao/models/messagesModel.js";

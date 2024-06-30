@@ -2,8 +2,15 @@ export function cartNotFound(id) {
   return `There are no carts with id: ${id}`;
 }
 
+export function errorMongoId() {
+  return `Please choose a valid Mongo Id.`;
+}
+
 export function updateCartArguments() {
   return `Please provide an array with properties product and quantity for product.`;
+}
+export function updateQuantity() {
+  return `Please provide a valid quantity for product.`;
 }
 
 export function cartProductNotFound(pid) {
@@ -28,4 +35,8 @@ export function cartNotDeleted() {
 
 export function purchaseTicket() {
   return `There was an error creating ticket.`;
+}
+
+export function createCartError() {
+  return `Could not create cart.`;
 }

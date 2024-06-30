@@ -33,7 +33,7 @@ async function checkout() {
         await Swal.fire({
           text: result.message,
           confirmButtonColor: "black",
-          imageUrl: "https://i.postimg.cc/rwx3gPhz/icons8-sad-cat-100.png",
+          imageUrl: result.imageUrl,
         }).then(() => {
           window.location.href = result.url;
         });

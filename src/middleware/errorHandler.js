@@ -1,4 +1,4 @@
-import { TYPES_ERROR } from "../utils/EErrors.js";
+import { TYPES_ERROR } from "../errors/EErrors.js";
 
 export const errorHandler = (error, req, res, next) => {
   console.log(`${error.cause ? error.cause : error.message}`);

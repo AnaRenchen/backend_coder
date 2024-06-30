@@ -3,9 +3,20 @@ import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { ticketsServices } from "../repository/TicketsServices.js";
 import { sendTicket } from "../config/mailing.config.js";
-import CustomError from "../utils/CustomError.js";
-import { TYPES_ERROR } from "../utils/EErrors.js";
-import { cartNotFound } from "../utils/errorsCart.js";
+import CustomError from "../errors/CustomError.js";
+import { TYPES_ERROR } from "../errors/EErrors.js";
+import {
+  cartNotDeleted,
+  cartNotFound,
+  cartNotUpdated,
+  cartProductNotFound,
+  createCartError,
+  errorMongoId,
+  productNotAddedCart,
+  updateCartArguments,
+  updateQuantity,
+} from "../errors/errorsCart.js";
+import { productNotFound } from "../errors/errorsProducts.js";
 
 export class CartsController {
   static getCarts = async (req, res, next) => {
@@ -15,7 +26,7 @@ export class CartsController {
         return next(
           CustomError.createError(
             "Invalid Mongo Id.",
-            null,
+            errorMongoId(),
             "Please choose a valid Mongo Id.",
             TYPES_ERROR.DATA_TYPE
           )
@@ -31,8 +42,8 @@ export class CartsController {
         return next(
           CustomError.createError(
             "Cart Not Found",
-            null,
             cartNotFound(id),
+            "Could not find cart.",
             TYPES_ERROR.NOT_FOUND
           )
         );
@@ -42,7 +53,7 @@ export class CartsController {
         CustomError.createError(
           "Internal Error",
           error,
-          "Could not get cart.",
+          "Failed to get products.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
       );
@@ -58,7 +69,7 @@ export class CartsController {
       next(
         CustomError.createError(
           "Internal Error",
-          error,
+          createCartError(),
           "Could not create cart.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
@@ -70,24 +81,38 @@ export class CartsController {
     try {
       let { cid, pid } = req.params;
       if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: "Please choose a valid Mongo id." });
+        return next(
+          CustomError.createError(
+            "Invalid Mongo Id.",
+            errorMongoId(),
+            "Please choose a valid Mongo Id.",
+            TYPES_ERROR.DATA_TYPE
+          )
+        );
       }
 
       const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(404).json({ error: "Cart not found." });
+        return next(
+          CustomError.createError(
+            "Cart not found.",
+            cartNotFound(cid),
+            "Could not find the selected cart.",
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
 
       const findProduct = await productsServices.getProductbyId(pid);
       if (!findProduct) {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(404)
-          .json({ error: `Product with id ${pid} was not found.` });
+        return next(
+          CustomError.createError(
+            "Cart not find product.",
+            cartProductNotFound(pid),
+            "Could not find the selected product in cart.",
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
 
       const existingProduct = cart.products.find(
@@ -110,10 +135,14 @@ export class CartsController {
           .status(200)
           .json({ message: "Product added.", cart: updatedCart });
       } else {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: `There was an error updating the cart.` });
+        return next(
+          CustomError.createError(
+            "There was an error adding product to cart.",
+            productNotAddedCart(),
+            "Could not add product to cart.",
+            TYPES_ERROR.INTERNAL_SERVER_ERROR
+          )
+        );
       }
     } catch (error) {
       next(
@@ -133,16 +162,25 @@ export class CartsController {
       const { products } = req.body;
 
       if (!isValidObjectId(cid)) {
-        return res
-          .status(400)
-          .json({ error: "Please choose a valid Mongo ID for the cart." });
+        return next(
+          CustomError.createError(
+            "Invalid Mongo Id.",
+            errorMongoId(),
+            "Please choose a valid Mongo Id.",
+            TYPES_ERROR.DATA_TYPE
+          )
+        );
       }
 
       if (!Array.isArray(products)) {
-        return res.status(400).json({
-          error:
+        return next(
+          CustomError.createError(
+            "Invalid Arguments to update cart.",
+            updateCartArguments(),
             "Please provide an array with properties product and quantity.",
-        });
+            TYPES_ERROR.INVALID_ARGUMENTS
+          )
+        );
       }
 
       const validProperties = ["product", "quantity"];
@@ -153,24 +191,38 @@ export class CartsController {
           validProperties.includes(prop)
         );
         if (!valid || properties.length !== validProperties.length) {
-          return res.status(400).json({
-            error:
+          return next(
+            CustomError.createError(
+              "Invalid Arguments to update cart.",
+              updateCartArguments(),
               "Each product should have only 'product' and 'quantity' properties.",
-          });
+              TYPES_ERROR.INVALID_ARGUMENTS
+            )
+          );
         }
 
         if (!isValidObjectId(product.product)) {
-          return res
-            .status(400)
-            .json({ error: `Invalid product ID: ${product.product}.` });
+          return next(
+            CustomError.createError(
+              "Invalid Product Id.",
+              errorMongoId(),
+              "Please provide a valid Mongo Id for product.",
+              TYPES_ERROR.INVALID_ARGUMENTS
+            )
+          );
         }
       }
 
       const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
-        return res
-          .status(404)
-          .json({ error: `Cart with id ${cid} not found.` });
+        return next(
+          CustomError.createError(
+            "Could not find cart.",
+            cartNotFound(cid),
+            "Could not find the selected cart.",
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
 
       const updatedCart = await cartsServices.updateCartWithProducts(
@@ -179,9 +231,14 @@ export class CartsController {
       );
 
       if (!updatedCart) {
-        return res
-          .status(500)
-          .json({ error: "Failed to update cart with products." });
+        return next(
+          CustomError.createError(
+            "Failed to update cart",
+            cartNotUpdated(),
+            "Failed to update cart with products.",
+            TYPES_ERROR.INTERNAL_SERVER_ERROR
+          )
+        );
       }
 
       return res.status(200).json({
@@ -206,21 +263,37 @@ export class CartsController {
       const { quantity } = req.body;
 
       if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
-        return res.status(400).json({
-          error: "Please choose a valid Mongo ID for the cart and product.",
-        });
+        return next(
+          CustomError.createError(
+            "Invalid Mongo Id.",
+            errorMongoId(),
+            "Please choose a valid Mongo Id.",
+            TYPES_ERROR.DATA_TYPE
+          )
+        );
       }
 
       if (!Number.isInteger(quantity) || quantity <= 0) {
-        return res.status(400).json({
-          error: "Please provide a valid quantity.",
-        });
+        return next(
+          CustomError.createError(
+            "Invalid quantity.",
+            updateQuantity(),
+            "Please provide a valid quantity for product.",
+            TYPES_ERROR.DATA_TYPE
+          )
+        );
       }
 
       const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(404).json({ error: "Cart not found." });
+        return next(
+          CustomError.createError(
+            "Could not find cart.",
+            cartNotFound(cid),
+            "Could not find the selected cart.",
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
 
       const findProduct = cart.products.find(
@@ -228,10 +301,14 @@ export class CartsController {
       );
 
       if (!findProduct) {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(404)
-          .json({ error: `Product with id ${pid} was not found in the cart.` });
+        return next(
+          CustomError.createError(
+            "Cart not find product.",
+            cartProductNotFound(pid),
+            "Could not find the selected product in cart.",
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
 
       const updatedQuantity = await cartsServices.updateProductQuantity(
@@ -261,16 +338,26 @@ export class CartsController {
       const { cid, pid } = req.params;
 
       if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
-        return res
-          .status(400)
-          .json({ error: "Please choose valid Mongo IDs." });
+        return next(
+          CustomError.createError(
+            "Invalid Mongo Id.",
+            errorMongoId(),
+            "Please choose a valid Mongo Id.",
+            TYPES_ERROR.DATA_TYPE
+          )
+        );
       }
 
       const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
-        return res
-          .status(404)
-          .json({ error: `Cart with id ${cid} was not found.` });
+        return next(
+          CustomError.createError(
+            "Could not find cart.",
+            cartNotFound(cid),
+            "Could not find the selected cart.",
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
 
       const productIndex = cart.products.findIndex(
@@ -278,9 +365,14 @@ export class CartsController {
       );
 
       if (productIndex === -1) {
-        return res
-          .status(404)
-          .json({ error: `Product with id ${pid} not found in cart.` });
+        return next(
+          CustomError.createError(
+            "Could not find product in cart.",
+            cartProductNotFound(),
+            "Could not find the selected product in cart.",
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
 
       if (cart.products[productIndex].quantity > 1) {
@@ -314,17 +406,27 @@ export class CartsController {
       const { cid } = req.params;
 
       if (!isValidObjectId(cid)) {
-        return res
-          .status(400)
-          .json({ error: "Please choose a valid Mongo ID for the cart." });
+        return next(
+          CustomError.createError(
+            "Invalid Mongo Id.",
+            errorMongoId(),
+            "Please choose a valid Mongo Id.",
+            TYPES_ERROR.DATA_TYPE
+          )
+        );
       }
 
       const deletedCart = await cartsServices.deleteCart(cid);
 
       if (!deletedCart) {
-        return res.status(404).json({
-          error: `Cart with id ${cid} was not found or an error occurred.`,
-        });
+        return next(
+          CustomError.createError(
+            "Could not delete cart.",
+            cartNotDeleted(),
+            "Could not find cart or an error ocurred.",
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
 
       return res.status(200).json({
@@ -351,24 +453,41 @@ export class CartsController {
       const productsProcessed = [];
 
       if (!isValidObjectId(cid)) {
-        return res
-          .status(400)
-          .json({ error: "Please choose a valid Mongo ID for the cart." });
+        return next(
+          CustomError.createError(
+            "Invalid Mongo Id.",
+            errorMongoId(),
+            "Please choose a valid Mongo Id.",
+            TYPES_ERROR.DATA_TYPE
+          )
+        );
       }
 
       const cart = await cartsServices.getCartbyId(cid, false);
 
       if (!cart) {
-        return res.status(404).json({ error: "Cart not found" });
+        return next(
+          CustomError.createError(
+            "Could not find cart.",
+            cartNotFound(cid),
+            "Could not find the selected cart.",
+            TYPES_ERROR.NOT_FOUND
+          )
+        );
       }
 
       for (const item of cart.products) {
         const findProduct = await productsServices.getProductbyId(item.product);
 
         if (!findProduct) {
-          return res
-            .status(404)
-            .json({ error: `Product with id ${item.product} was not found.` });
+          return next(
+            CustomError.createError(
+              "Product not found.",
+              productNotFound(item.product),
+              "Could not find the selected product.",
+              TYPES_ERROR.NOT_FOUND
+            )
+          );
         }
 
         if (item.quantity <= findProduct.stock) {
@@ -433,12 +552,22 @@ export class CartsController {
       await cartsServices.updateCartWithProducts(cid, productsNotProcessed);
 
       if (productsProcessed.length === 0) {
-        return res.status(200).json({
-          redirect: true,
-          url: "/products",
-          message:
-            "The selected products are out of stock. Please choose other products.",
-        });
+        if (productsNotProcessed.length > 0) {
+          return res.status(200).json({
+            redirect: true,
+            url: "/products",
+            message:
+              "The selected products are out of stock. Please choose other products.",
+            imageUrl: "https://i.postimg.cc/rwx3gPhz/icons8-sad-cat-100.png",
+          });
+        } else {
+          return res.status(200).json({
+            redirect: true,
+            url: "/products",
+            message: "You must select products in order to check out.",
+            imageUrl: "https://i.postimg.cc/TYY2zvYm/icons8-geisha-80.png",
+          });
+        }
       }
 
       return res.status(200).json({

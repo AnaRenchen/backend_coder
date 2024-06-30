@@ -1,15 +1,18 @@
 import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { io } from "../app.js";
-import { generateMockingProducts } from "../utils/utils.js";
-import CustomError from "../utils/CustomError.js";
-import { TYPES_ERROR } from "../utils/EErrors.js";
+import { generateMockingProducts } from "../utils.js";
+import CustomError from "../errors/CustomError.js";
+import { TYPES_ERROR } from "../errors/EErrors.js";
 import {
   addProductArguments,
+  errorMongoId,
   productCode,
   productNotFound,
   updateProductArguments,
-} from "../utils/errorsProducts.js";
+  addProduct,
+  deleteProduct,
+} from "../errors/errorsProducts.js";
 
 export class ProductsController {
   static getProducts = async (req, res, next) => {
@@ -92,7 +95,7 @@ export class ProductsController {
         return next(
           CustomError.createError(
             "Invalid Mongo Id.",
-            null,
+            errorMongoId(),
             "Please choose a valid Mongo Id.",
             TYPES_ERROR.DATA_TYPE
           )
@@ -108,8 +111,8 @@ export class ProductsController {
         return next(
           CustomError.createError(
             "Product not found.",
-            null,
             productNotFound(id),
+            "Could not find the selected product.",
             TYPES_ERROR.NOT_FOUND
           )
         );
@@ -146,9 +149,9 @@ export class ProductsController {
       if (exists) {
         return next(
           CustomError.createError(
-            "Product with the chosen code already exists.",
-            null,
+            "Code already exists.",
             productCode(code),
+            "Product with the chosen code already exists.",
             TYPES_ERROR.INVALID_ARGUMENTS
           )
         );
@@ -166,9 +169,9 @@ export class ProductsController {
       ) {
         return next(
           CustomError.createError(
-            "Must complete all valid properties to add product.",
-            null,
+            "Invalid or missing properties.",
             addProductArguments(),
+            "Must complete all valid properties to add product.",
             TYPES_ERROR.INVALID_ARGUMENTS
           )
         );
@@ -195,7 +198,7 @@ export class ProductsController {
       next(
         CustomError.createError(
           "Internal Error",
-          error,
+          addProduct(),
           "Failed to add products.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
         )
@@ -211,7 +214,7 @@ export class ProductsController {
         return next(
           CustomError.createError(
             "Invalid Mongo Id.",
-            null,
+            errorMongoId(),
             "Please choose a valid Mongo Id.",
             TYPES_ERROR.DATA_TYPE
           )
@@ -231,23 +234,12 @@ export class ProductsController {
           return next(
             CustomError.createError(
               "Code already exists.",
-              null,
               productCode(updateProperties.code),
+              "There is already another product with the same code.",
               TYPES_ERROR.INVALID_ARGUMENTS
             )
           );
         }
-      }
-
-      if (!updateProperties) {
-        return next(
-          CustomError.createError(
-            "Properties not valid.",
-            null,
-            updateProductArguments(validProperties),
-            TYPES_ERROR.INVALID_ARGUMENTS
-          )
-        );
       }
 
       let validProperties = [
@@ -263,12 +255,23 @@ export class ProductsController {
       let properties = Object.keys(updateProperties);
       let valid = properties.every((prop) => validProperties.includes(prop));
 
+      if (!updateProperties || Object.keys(updateProperties).length === 0) {
+        return next(
+          CustomError.createError(
+            "Properties not valid.",
+            updateProductArguments(validProperties),
+            "You must give at least one valid property to update product.",
+            TYPES_ERROR.INVALID_ARGUMENTS
+          )
+        );
+      }
+
       if (!valid) {
         return next(
           CustomError.createError(
             "Properties not valid.",
-            null,
             updateProductArguments(validProperties),
+            "You must choose a valid property to update product.",
             TYPES_ERROR.INVALID_ARGUMENTS
           )
         );
@@ -304,7 +307,7 @@ export class ProductsController {
         return next(
           CustomError.createError(
             "Invalid Mongo Id.",
-            null,
+            errorMongoId(),
             "Please choose a valid Mongo Id.",
             TYPES_ERROR.DATA_TYPE
           )
@@ -316,8 +319,8 @@ export class ProductsController {
         return next(
           CustomError.createError(
             "Product not found.",
-            null,
             productNotFound(id),
+            "Could not find the selected product.",
             TYPES_ERROR.NOT_FOUND
           )
         );
@@ -335,7 +338,7 @@ export class ProductsController {
         return next(
           CustomError.createError(
             "Could not delete product.",
-            error,
+            deleteProduct(),
             "Failed to delete product.",
             TYPES_ERROR.INTERNAL_SERVER_ERROR
           )

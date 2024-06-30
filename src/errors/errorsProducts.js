@@ -25,3 +25,7 @@ export function updateProduct() {
 export function deleteProduct() {
   return `There was an error deleting product.`;
 }
+
+export function errorMongoId() {
+  return `Please choose a valid Mongo Id for product.`;
+}
