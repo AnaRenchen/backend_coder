@@ -25,13 +25,11 @@ export class CartsController {
     try {
       let id = req.params.cid;
       if (!isValidObjectId(id)) {
-        return next(
-          CustomError.createError(
-            "Invalid Mongo Id.",
-            errorMongoId(),
-            "Please choose a valid Mongo Id.",
-            TYPES_ERROR.DATA_TYPE
-          )
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -41,41 +39,33 @@ export class CartsController {
         res.setHeader("Content-Type", "application/json");
         return res.status(200).json(cart);
       } else {
-        return next(
-          CustomError.createError(
-            "Cart Not Found",
-            cartNotFound(id),
-            "Could not find cart.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Cart Not Found",
+          cartNotFound(id),
+          "Could not find cart.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get cart.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
   static createCart = async (req, res, next) => {
     try {
       let newCart = await cartsServices.createCart();
-      res.setHeader("Content-Type", "application/json");
-      return res.status(200).json({ message: "Cart created.", newCart });
-    } catch (error) {
-      next(
-        CustomError.createError(
+      if (!newCart) {
+        throw CustomError.createError(
           "Internal Error",
           createCartError(),
           "Could not create cart.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+        );
+      }
+      res.setHeader("Content-Type", "application/json");
+      return res.status(200).json({ message: "Cart created.", newCart });
+    } catch (error) {
+      next(error);
     }
   };
 
@@ -83,37 +73,31 @@ export class CartsController {
     try {
       let { cid, pid } = req.params;
       if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
-        return next(
-          CustomError.createError(
-            "Invalid Mongo Id.",
-            errorMongoId(),
-            "Please choose a valid Mongo Id.",
-            TYPES_ERROR.DATA_TYPE
-          )
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.DATA_TYPE
         );
       }
 
       const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
-        return next(
-          CustomError.createError(
-            "Cart not found.",
-            cartNotFound(cid),
-            "Could not find the selected cart.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Cart not found.",
+          cartNotFound(cid),
+          "Could not find the selected cart.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
 
       const findProduct = await productsServices.getProductbyId(pid);
       if (!findProduct) {
-        return next(
-          CustomError.createError(
-            "Cart not find product.",
-            cartProductNotFound(pid),
-            "Could not find the selected product in cart.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Cart not find product.",
+          cartProductNotFound(pid),
+          "Could not find the selected product in cart.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
 
@@ -137,24 +121,15 @@ export class CartsController {
           .status(200)
           .json({ message: "Product added.", cart: updatedCart });
       } else {
-        return next(
-          CustomError.createError(
-            "There was an error adding product to cart.",
-            productNotAddedCart(),
-            "Could not add product to cart.",
-            TYPES_ERROR.INTERNAL_SERVER_ERROR
-          )
-        );
-      }
-    } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
+        throw CustomError.createError(
+          "There was an error adding product to cart.",
           productNotAddedCart(),
           "Could not add product to cart.",
           TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+        );
+      }
+    } catch (error) {
+      next(error);
     }
   };
 
@@ -164,24 +139,20 @@ export class CartsController {
       const { products } = req.body;
 
       if (!isValidObjectId(cid)) {
-        return next(
-          CustomError.createError(
-            "Invalid Mongo Id.",
-            errorMongoId(),
-            "Please choose a valid Mongo Id.",
-            TYPES_ERROR.DATA_TYPE
-          )
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.DATA_TYPE
         );
       }
 
       if (!Array.isArray(products)) {
-        return next(
-          CustomError.createError(
-            "Invalid Arguments to update cart.",
-            updateCartArgumentsError(),
-            "Please provide an array with properties product and quantity.",
-            TYPES_ERROR.INVALID_ARGUMENTS
-          )
+        throw CustomError.createError(
+          "Invalid Arguments to update cart.",
+          updateCartArgumentsError(),
+          "Please provide an array with properties product and quantity.",
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -193,37 +164,31 @@ export class CartsController {
           validProperties.includes(prop)
         );
         if (!valid || properties.length !== validProperties.length) {
-          return next(
-            CustomError.createError(
-              "Invalid Arguments to update cart.",
-              updateCartArgumentsError(),
-              "Each product should have only 'product' and 'quantity' properties.",
-              TYPES_ERROR.INVALID_ARGUMENTS
-            )
+          throw CustomError.createError(
+            "Invalid Arguments to update cart.",
+            updateCartArgumentsError(),
+            "Each product should have only 'product' and 'quantity' properties.",
+            TYPES_ERROR.INVALID_ARGUMENTS
           );
         }
 
         if (!isValidObjectId(product.product)) {
-          return next(
-            CustomError.createError(
-              "Invalid Product Id.",
-              errorMongoId(),
-              "Please provide a valid Mongo Id for product.",
-              TYPES_ERROR.INVALID_ARGUMENTS
-            )
+          throw CustomError.createError(
+            "Invalid Product Id.",
+            errorMongoId(),
+            "Please provide a valid Mongo Id for product.",
+            TYPES_ERROR.INVALID_ARGUMENTS
           );
         }
       }
 
       const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
-        return next(
-          CustomError.createError(
-            "Could not find cart.",
-            cartNotFound(cid),
-            "Could not find the selected cart.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Could not find cart.",
+          cartNotFound(cid),
+          "Could not find the selected cart.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
 
@@ -233,13 +198,11 @@ export class CartsController {
       );
 
       if (!updatedCart) {
-        return next(
-          CustomError.createError(
-            "Failed to update cart",
-            cartNotUpdated(),
-            "Failed to update cart with products.",
-            TYPES_ERROR.INTERNAL_SERVER_ERROR
-          )
+        throw CustomError.createError(
+          "Failed to update cart",
+          cartNotUpdated(),
+          "Failed to update cart with products.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
         );
       }
 
@@ -248,14 +211,7 @@ export class CartsController {
         cart: updatedCart,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          cartNotUpdated(),
-          "Could not update cart.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -265,36 +221,30 @@ export class CartsController {
       const { quantity } = req.body;
 
       if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
-        return next(
-          CustomError.createError(
-            "Invalid Mongo Id.",
-            errorMongoId(),
-            "Please choose a valid Mongo Id.",
-            TYPES_ERROR.DATA_TYPE
-          )
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.DATA_TYPE
         );
       }
 
       if (!Number.isInteger(quantity) || quantity <= 0) {
-        return next(
-          CustomError.createError(
-            "Invalid quantity.",
-            updateQuantityError(),
-            "Please provide a valid quantity for product.",
-            TYPES_ERROR.DATA_TYPE
-          )
+        throw CustomError.createError(
+          "Invalid quantity.",
+          updateQuantityError(),
+          "Please provide a valid quantity for product.",
+          TYPES_ERROR.DATA_TYPE
         );
       }
 
       const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
-        return next(
-          CustomError.createError(
-            "Could not find cart.",
-            cartNotFound(cid),
-            "Could not find the selected cart.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Could not find cart.",
+          cartNotFound(cid),
+          "Could not find the selected cart.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
 
@@ -303,13 +253,11 @@ export class CartsController {
       );
 
       if (!findProduct) {
-        return next(
-          CustomError.createError(
-            "Cart not find product.",
-            cartProductNotFound(pid),
-            "Could not find the selected product in cart.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Cart not find product.",
+          cartProductNotFound(pid),
+          "Could not find the selected product in cart.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
 
@@ -324,14 +272,7 @@ export class CartsController {
         cart: updatedQuantity,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          cartNotUpdated(),
-          "Could not update quantity.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -340,25 +281,21 @@ export class CartsController {
       const { cid, pid } = req.params;
 
       if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
-        return next(
-          CustomError.createError(
-            "Invalid Mongo Id.",
-            errorMongoId(),
-            "Please choose a valid Mongo Id.",
-            TYPES_ERROR.DATA_TYPE
-          )
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.DATA_TYPE
         );
       }
 
       const cart = await cartsServices.getCartbyId(cid, false);
       if (!cart) {
-        return next(
-          CustomError.createError(
-            "Could not find cart.",
-            cartNotFound(cid),
-            "Could not find the selected cart.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Could not find cart.",
+          cartNotFound(cid),
+          "Could not find the selected cart.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
 
@@ -367,13 +304,11 @@ export class CartsController {
       );
 
       if (productIndex === -1) {
-        return next(
-          CustomError.createError(
-            "Could not find product in cart.",
-            cartProductNotFound(),
-            "Could not find the selected product in cart.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Could not find product in cart.",
+          cartProductNotFound(),
+          "Could not find the selected product in cart.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
 
@@ -392,14 +327,7 @@ export class CartsController {
         cart: updatedCart,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          productNotDeletedCart(),
-          "Could not delete product.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -408,26 +336,22 @@ export class CartsController {
       const { cid } = req.params;
 
       if (!isValidObjectId(cid)) {
-        return next(
-          CustomError.createError(
-            "Invalid Mongo Id.",
-            errorMongoId(),
-            "Please choose a valid Mongo Id.",
-            TYPES_ERROR.DATA_TYPE
-          )
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.DATA_TYPE
         );
       }
 
       const deletedCart = await cartsServices.deleteCart(cid);
 
       if (!deletedCart) {
-        return next(
-          CustomError.createError(
-            "Could not delete cart.",
-            cartNotDeleted(),
-            "Could not find cart or an error ocurred.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Could not delete cart.",
+          cartNotDeleted(),
+          "Could not find cart or an error ocurred.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
 
@@ -436,14 +360,7 @@ export class CartsController {
         cart: deletedCart,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          cartNotDeleted(),
-          "Could not delete cart.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -455,26 +372,22 @@ export class CartsController {
       const productsProcessed = [];
 
       if (!isValidObjectId(cid)) {
-        return next(
-          CustomError.createError(
-            "Invalid Mongo Id.",
-            errorMongoId(),
-            "Please choose a valid Mongo Id.",
-            TYPES_ERROR.DATA_TYPE
-          )
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.DATA_TYPE
         );
       }
 
       const cart = await cartsServices.getCartbyId(cid, false);
 
       if (!cart) {
-        return next(
-          CustomError.createError(
-            "Could not find cart.",
-            cartNotFound(cid),
-            "Could not find the selected cart.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Could not find cart.",
+          cartNotFound(cid),
+          "Could not find the selected cart.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
 
@@ -482,13 +395,11 @@ export class CartsController {
         const findProduct = await productsServices.getProductbyId(item.product);
 
         if (!findProduct) {
-          return next(
-            CustomError.createError(
-              "Product not found.",
-              productNotFound(item.product),
-              "Could not find the selected product.",
-              TYPES_ERROR.NOT_FOUND
-            )
+          throw CustomError.createError(
+            "Product not found.",
+            productNotFound(item.product),
+            "Could not find the selected product.",
+            TYPES_ERROR.NOT_FOUND
           );
         }
 
@@ -579,15 +490,7 @@ export class CartsController {
         "Products not processed": productsNotProcessed,
       });
     } catch (error) {
-      console.error("Error in createPurchase:", error);
-      next(
-        CustomError.createError(
-          "Internal Error",
-          purchaseTicketError(),
-          "Could not create purchase.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 }

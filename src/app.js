@@ -50,7 +50,6 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
-app.use(errorHandler);
 
 let users = [];
 
@@ -96,3 +95,5 @@ const connDB = async () => {
 };
 
 connDB();
+
+app.use(errorHandler);
