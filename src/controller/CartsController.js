@@ -13,8 +13,6 @@ import {
   createCartError,
   errorMongoId,
   productNotAddedCart,
-  productNotDeletedCart,
-  purchaseTicketError,
   updateCartArgumentsError,
   updateQuantityError,
 } from "../errors/errorsCart.js";

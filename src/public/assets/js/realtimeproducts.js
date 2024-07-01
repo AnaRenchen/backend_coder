@@ -6,16 +6,16 @@ socket.on("newproduct", (productsList) => {
   productsUpdate.innerHTML = "";
   productsList.forEach((p) => {
     productsUpdate.innerHTML += `
-        <tr>
-          <td>${p.title}</td>
-          <td>${p.description}</td>
-          <td>$${p.price}</td>
-          <td>${p.code}</td>
-          <td>${p.stock}</td>
-          <td>${p.status}</td>
-          <td>${p.category}</td>
-          <td><img src=${p.thumbnail} alt="{{p.title}}" width="100" /></td>
-        </tr>`;
+       <tr>
+        <td class="row_realtime_table">${p.title}</td>
+        <td class="row_realtime_table">${p.description}</td>
+        <td class="row_realtime_table">$${p.price}</td>
+        <td class="row_realtime_table">${p.code}</td>
+        <td class="row_realtime_table">${p.stock}</td>
+        <td class="row_realtime_table">${p.status}</td>
+        <td class="row_realtime_table">${p.category}</td>
+        <td class="row_realtime_table"><img src="${p.thumbnail}" alt="{{p.title}}" width="100" /></td>
+      </tr>`;
   });
 });
 
@@ -24,14 +24,14 @@ socket.on("deletedproduct", (products) => {
   products.forEach((p) => {
     productsUpdate.innerHTML += `
       <tr>
-        <td>${p.title}</td>
-        <td>${p.description}</td>
-        <td>$${p.price}</td>
-        <td>${p.code}</td>
-        <td>${p.stock}</td>
-        <td>${p.status}</td>
-        <td>${p.category}</td>
-        <td><img src="${p.thumbnail}" alt="{{p.title}}" width="100" /></td>
+        <td class="row_realtime_table">${p.title}</td>
+        <td class="row_realtime_table">${p.description}</td>
+        <td class="row_realtime_table">$${p.price}</td>
+        <td class="row_realtime_table">${p.code}</td>
+        <td class="row_realtime_table">${p.stock}</td>
+        <td class="row_realtime_table">${p.status}</td>
+        <td class="row_realtime_table">${p.category}</td>
+        <td class="row_realtime_table"><img src="${p.thumbnail}" alt="{{p.title}}" width="100" /></td>
       </tr>`;
   });
 });

@@ -78,14 +78,7 @@ export class ProductsController {
         nextLink: nextLink,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get products.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -93,13 +86,11 @@ export class ProductsController {
     try {
       let id = req.params.pid;
       if (!isValidObjectId(id)) {
-        return next(
-          CustomError.createError(
-            "Invalid Mongo Id.",
-            errorMongoId(),
-            "Please choose a valid Mongo Id.",
-            TYPES_ERROR.DATA_TYPE
-          )
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -109,24 +100,15 @@ export class ProductsController {
         res.setHeader("Content-Type", "application/json");
         return res.status(200).json({ product });
       } else {
-        return next(
-          CustomError.createError(
-            "Product not found.",
-            productNotFound(id),
-            "Could not find the selected product.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Product not found.",
+          productNotFound(id),
+          "Could not find the selected product.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error.",
-          error,
-          "Failed to get product.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -148,13 +130,11 @@ export class ProductsController {
       exists = await productsServices.getProductBy({ code });
 
       if (exists) {
-        return next(
-          CustomError.createError(
-            "Code already exists.",
-            productCodeError(code),
-            "Product with the chosen code already exists.",
-            TYPES_ERROR.INVALID_ARGUMENTS
-          )
+        throw CustomError.createError(
+          "Code already exists.",
+          productCodeError(code),
+          "Product with the chosen code already exists.",
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -168,13 +148,11 @@ export class ProductsController {
         !code ||
         !stock
       ) {
-        return next(
-          CustomError.createError(
-            "Invalid or missing properties.",
-            addProductArgumentsError(),
-            "Must complete all valid properties to add product.Valid properties are: title, description, category, price, status, thumbnail, code, stock.",
-            TYPES_ERROR.INVALID_ARGUMENTS
-          )
+        throw CustomError.createError(
+          "Invalid or missing properties.",
+          addProductArgumentsError(),
+          "Must complete all valid properties to add product.Valid properties are: title, description, category, price, status, thumbnail, code, stock.",
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -196,14 +174,7 @@ export class ProductsController {
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ message: "Product added.", newProduct });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          addProductError(),
-          "Failed to add products.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -212,13 +183,21 @@ export class ProductsController {
       let id = req.params.pid;
 
       if (!isValidObjectId(id)) {
-        return next(
-          CustomError.createError(
-            "Invalid Mongo Id.",
-            errorMongoId(),
-            "Please choose a valid Mongo Id.",
-            TYPES_ERROR.DATA_TYPE
-          )
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.INVALID_ARGUMENTS
+        );
+      }
+
+      const findProduct = await productsServices.getProductbyId(id);
+      if (!findProduct) {
+        throw CustomError.createError(
+          "Cart not find product.",
+          productNotFound(id),
+          "Could not find the selected product in cart.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
 
@@ -232,13 +211,11 @@ export class ProductsController {
           code: updateProperties.code,
         });
         if (exists) {
-          return next(
-            CustomError.createError(
-              "Code already exists.",
-              productCodeError(updateProperties.code),
-              "There is already another product with the same code.",
-              TYPES_ERROR.INVALID_ARGUMENTS
-            )
+          throw CustomError.createError(
+            "Code already exists.",
+            productCodeError(updateProperties.code),
+            "There is already another product with the same code.",
+            TYPES_ERROR.INVALID_ARGUMENTS
           );
         }
       }
@@ -257,24 +234,20 @@ export class ProductsController {
       let valid = properties.every((prop) => validProperties.includes(prop));
 
       if (!updateProperties || Object.keys(updateProperties).length === 0) {
-        return next(
-          CustomError.createError(
-            "Properties not valid.",
-            updateProductArgumentsError(validProperties),
-            "You must give at least one valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock.",
-            TYPES_ERROR.INVALID_ARGUMENTS
-          )
+        throw CustomError.createError(
+          "Properties not valid.",
+          updateProductArgumentsError(validProperties),
+          "You must give at least one valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock.",
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
       if (!valid) {
-        return next(
-          CustomError.createError(
-            "Properties not valid.",
-            updateProductArgumentsError(validProperties),
-            "You must choose a valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock.",
-            TYPES_ERROR.INVALID_ARGUMENTS
-          )
+        throw CustomError.createError(
+          "Properties not valid.",
+          updateProductArgumentsError(validProperties),
+          "You must choose a valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock.",
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -289,14 +262,7 @@ export class ProductsController {
         updatedProduct,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          updateProductError(),
-          "Failed to update product.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -305,25 +271,21 @@ export class ProductsController {
       let id = req.params.pid;
 
       if (!isValidObjectId(id)) {
-        return next(
-          CustomError.createError(
-            "Invalid Mongo Id.",
-            errorMongoId(),
-            "Please choose a valid Mongo Id.",
-            TYPES_ERROR.DATA_TYPE
-          )
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.DATA_TYPE
         );
       }
 
       let product = await productsServices.getProductbyId(id);
       if (!product) {
-        return next(
-          CustomError.createError(
-            "Product not found.",
-            productNotFound(id),
-            "Could not find the selected product.",
-            TYPES_ERROR.NOT_FOUND
-          )
+        throw CustomError.createError(
+          "Product not found.",
+          productNotFound(id),
+          "Could not find the selected product.",
+          TYPES_ERROR.NOT_FOUND
         );
       }
 
@@ -336,24 +298,15 @@ export class ProductsController {
           .status(200)
           .json({ message: `Product with id ${id} was deleted.` });
       } else {
-        return next(
-          CustomError.createError(
-            "Could not delete product.",
-            deleteProductError(),
-            "Failed to delete product.",
-            TYPES_ERROR.INTERNAL_SERVER_ERROR
-          )
+        throw CustomError.createError(
+          "Could not delete product.",
+          deleteProductError(),
+          "Failed to delete product.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
         );
       }
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          deleteProductError(),
-          "Could not delete product.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -368,14 +321,7 @@ export class ProductsController {
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ "Mocking Products": mockingProducts });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Could not get mocking products.",
-          error,
-          "Failed to get mocking products.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 }

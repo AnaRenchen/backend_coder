@@ -23,14 +23,7 @@ export class VistasController {
         cart,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get home.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -117,14 +110,7 @@ export class VistasController {
         login: req.session.user,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get realtime products.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -211,14 +197,7 @@ export class VistasController {
         login: req.session.user,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get products.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -234,14 +213,7 @@ export class VistasController {
       res.setHeader("Content-Type", "text/html");
       res.status(200).render("chat", { cart, login: req.session.user });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get chat.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -263,14 +235,7 @@ export class VistasController {
         login: req.session.user,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get cart.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -279,14 +244,7 @@ export class VistasController {
       let { error } = req.query;
       res.status(200).render("register", { error, login: req.session.user });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get register.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -296,14 +254,7 @@ export class VistasController {
 
       res.status(200).render("login", { error, login: req.session.user });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get login.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -322,14 +273,7 @@ export class VistasController {
         cart,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get profile.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -354,14 +298,7 @@ export class VistasController {
         errorMessage,
       });
     } catch (error) {
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get error page.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 
@@ -392,14 +329,7 @@ export class VistasController {
       });
     } catch (error) {
       console.error("Error fetching ticket:", error);
-      next(
-        CustomError.createError(
-          "Internal Error",
-          error,
-          "Failed to get ticket.",
-          TYPES_ERROR.INTERNAL_SERVER_ERROR
-        )
-      );
+      next(error);
     }
   };
 }
