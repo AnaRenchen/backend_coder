@@ -1,7 +1,7 @@
 import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { io } from "../app.js";
-import { generateMockingProducts } from "../utils.js";
+
 import CustomError from "../errors/CustomError.js";
 import { TYPES_ERROR } from "../errors/EErrors.js";
 import {
@@ -10,9 +10,9 @@ import {
   productCodeError,
   productNotFound,
   updateProductArgumentsError,
+  deleteProductError,
   addProductError,
   updateProductError,
-  deleteProductError,
 } from "../errors/errorsProducts.js";
 
 export class ProductsController {
@@ -78,7 +78,7 @@ export class ProductsController {
         nextLink: nextLink,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -108,7 +108,7 @@ export class ProductsController {
         );
       }
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -167,6 +167,15 @@ export class ProductsController {
         stock,
       });
 
+      if (!newProduct) {
+        throw CustomError.createError(
+          "Error adding product.",
+          addProductError(),
+          "Could not add product.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        );
+      }
+
       let { docs: productsList } = await productsServices.getProductsPaginate();
       io.emit("newproduct", productsList);
       console.log("added");
@@ -174,7 +183,7 @@ export class ProductsController {
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ message: "Product added.", newProduct });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -256,13 +265,22 @@ export class ProductsController {
         updateProperties
       );
 
+      if (!updatedProduct) {
+        throw CustomError.createError(
+          "Error updating product.",
+          updateProductError(),
+          "Could not update product.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        );
+      }
+
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({
         message: `Product with id ${id} was updated.`,
         updatedProduct,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -275,7 +293,7 @@ export class ProductsController {
           "Invalid Mongo Id.",
           errorMongoId(),
           "Please choose a valid Mongo Id.",
-          TYPES_ERROR.DATA_TYPE
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -306,22 +324,7 @@ export class ProductsController {
         );
       }
     } catch (error) {
-      next(error);
-    }
-  };
-
-  static getMockingProducts = async (req, res, next) => {
-    try {
-      let mockingProducts = [];
-
-      for (let i = 0; i < 100; i++) {
-        mockingProducts.push(generateMockingProducts());
-      }
-
-      res.setHeader("Content-Type", "application/json");
-      return res.status(200).json({ "Mocking Products": mockingProducts });
-    } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 }

@@ -6,6 +6,7 @@ import { router as productsRouter } from "./routes/productsRouter.js";
 import { router2 as cartsRouter } from "./routes/cartsRouter.js";
 import { router3 as viewsRouter } from "./routes/vistas.router.js";
 import { router4 as sessionsRouter } from "./routes/sessionsRouter.js";
+import { router5 as mockingRouter } from "./routes/mockingRouter.js";
 import __dirname from "./utils.js";
 import path from "path";
 import mongoose from "mongoose";
@@ -50,6 +51,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
+app.use("/mock", mockingRouter);
 
 let users = [];
 

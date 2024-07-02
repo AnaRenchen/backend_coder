@@ -23,7 +23,7 @@ export class VistasController {
         cart,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -110,7 +110,7 @@ export class VistasController {
         login: req.session.user,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -197,7 +197,7 @@ export class VistasController {
         login: req.session.user,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -213,7 +213,7 @@ export class VistasController {
       res.setHeader("Content-Type", "text/html");
       res.status(200).render("chat", { cart, login: req.session.user });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -235,7 +235,7 @@ export class VistasController {
         login: req.session.user,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -244,7 +244,7 @@ export class VistasController {
       let { error } = req.query;
       res.status(200).render("register", { error, login: req.session.user });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -254,7 +254,7 @@ export class VistasController {
 
       res.status(200).render("login", { error, login: req.session.user });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -273,7 +273,7 @@ export class VistasController {
         cart,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -298,7 +298,7 @@ export class VistasController {
         errorMessage,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -329,7 +329,7 @@ export class VistasController {
       });
     } catch (error) {
       console.error("Error fetching ticket:", error);
-      next(error);
+      return next(error);
     }
   };
 }

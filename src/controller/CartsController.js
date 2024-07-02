@@ -45,7 +45,7 @@ export class CartsController {
         );
       }
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -63,7 +63,7 @@ export class CartsController {
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ message: "Cart created.", newCart });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -75,7 +75,7 @@ export class CartsController {
           "Invalid Mongo Id.",
           errorMongoId(),
           "Please choose a valid Mongo Id.",
-          TYPES_ERROR.DATA_TYPE
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -127,7 +127,7 @@ export class CartsController {
         );
       }
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -141,7 +141,7 @@ export class CartsController {
           "Invalid Mongo Id.",
           errorMongoId(),
           "Please choose a valid Mongo Id.",
-          TYPES_ERROR.DATA_TYPE
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -209,7 +209,7 @@ export class CartsController {
         cart: updatedCart,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -223,7 +223,7 @@ export class CartsController {
           "Invalid Mongo Id.",
           errorMongoId(),
           "Please choose a valid Mongo Id.",
-          TYPES_ERROR.DATA_TYPE
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -252,7 +252,7 @@ export class CartsController {
 
       if (!findProduct) {
         throw CustomError.createError(
-          "Cart not find product.",
+          "Product not found in cart.",
           cartProductNotFound(pid),
           "Could not find the selected product in cart.",
           TYPES_ERROR.NOT_FOUND
@@ -265,12 +265,20 @@ export class CartsController {
         quantity
       );
 
+      if (!updatedQuantity) {
+        throw CustomError.createError(
+          "Could not update quantity.",
+          updateQuantityError(),
+          "The quantity was not updated.",
+          TYPES_ERROR.INTERNAL_SERVER_ERROR
+        );
+      }
       return res.status(200).json({
         message: `Quantity of product with id ${pid} in cart with id ${cid} was updated.`,
         cart: updatedQuantity,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -283,7 +291,7 @@ export class CartsController {
           "Invalid Mongo Id.",
           errorMongoId(),
           "Please choose a valid Mongo Id.",
-          TYPES_ERROR.DATA_TYPE
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -325,7 +333,7 @@ export class CartsController {
         cart: updatedCart,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
@@ -338,7 +346,7 @@ export class CartsController {
           "Invalid Mongo Id.",
           errorMongoId(),
           "Please choose a valid Mongo Id.",
-          TYPES_ERROR.DATA_TYPE
+          TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
 
@@ -358,7 +366,7 @@ export class CartsController {
         cart: deletedCart,
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   };
 
