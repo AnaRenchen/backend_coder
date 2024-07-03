@@ -9,8 +9,6 @@ export class MockingController {
         mockingProducts.push(generateMockingProducts());
       }
 
-      console.log(mockingProducts);
-
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ "Mocking Products": mockingProducts });
     } catch (error) {

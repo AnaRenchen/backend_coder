@@ -15,9 +15,10 @@ export const validatePassword = (password, passwordHash) =>
 
 export const generateMockingProducts = () => {
   return {
+    _id: faker.database.mongodbObjectId(),
     title: faker.commerce.productName(),
     description: faker.commerce.productDescription(),
-    price: faker.commerce.price({ dec: 0 }),
+    price: faker.commerce.price({ dec: 0, min: 100, max: 500 }),
     thumbnail: faker.image.url(),
     code: faker.string.alphanumeric(5),
     stock: faker.number.int({ min: 0, max: 50 }),

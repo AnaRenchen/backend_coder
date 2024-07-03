@@ -31,6 +31,20 @@ const add = async (pid) => {
   let inputCart = document.getElementById("cartId");
   let cid = inputCart.value;
 
+  if (!cid) {
+    await Swal.fire({
+      text: "You must register and login to buy a product.",
+      background: "#87a7ae",
+      icon: "error",
+      color: "black",
+      showConfirmButton: true,
+      confirmButtonText: "OK",
+      confirmButtonColor: "black",
+      toast: true,
+    });
+    return;
+  }
+
   try {
     let response = await fetch(`/api/carts/${cid}/product/${pid}`, {
       method: "POST",
