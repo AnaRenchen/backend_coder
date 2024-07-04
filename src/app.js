@@ -17,6 +17,7 @@ import { initPassport } from "./config/passport.config.js";
 import { config } from "./config/config.js";
 import cors from "cors";
 import { errorHandler } from "./middleware/errorHandler.js";
+import compression from "express-compression";
 
 const PORT = config.PORT;
 const app = express();
@@ -44,7 +45,7 @@ app.use(passport.session());
 app.engine("handlebars", engine());
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "handlebars");
-
+app.use(compression({ brotli: { enabled: true } }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/products", productsRouter);
