@@ -3,11 +3,11 @@ export const productNotFound = (id) => {
 };
 
 export function productCodeError(code) {
-  return `Product with code ${code} already exists`;
+  return `Product with code ${code} already exists, please choose a different one.`;
 }
 
 export function addProductArgumentsError() {
-  return `All fields are required: title, description, category, price, status, thumbnail, code, stock.`;
+  return `All fields are required to add product: title, description, category, price, status, thumbnail, code, stock.`;
 }
 
 export function updateProductArgumentsError(validProperties) {
@@ -19,7 +19,7 @@ export function addProductError() {
 }
 
 export function updateProductError() {
-  return `There was an error updting product.`;
+  return `There was an error updating product.`;
 }
 
 export function deleteProductError() {

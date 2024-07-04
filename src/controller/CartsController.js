@@ -3,8 +3,8 @@ import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { ticketsServices } from "../repository/TicketsServices.js";
 import { sendTicket } from "../config/mailing.config.js";
-import CustomError from "../errors/CustomError.js";
-import { TYPES_ERROR } from "../errors/EErrors.js";
+import CustomError from "../utils/CustomError.js";
+import { TYPES_ERROR } from "../utils/EErrors.js";
 import {
   cartNotDeleted,
   cartNotFound,
@@ -15,8 +15,8 @@ import {
   productNotAddedCart,
   updateCartArgumentsError,
   updateQuantityError,
-} from "../errors/errorsCart.js";
-import { productNotFound } from "../errors/errorsProducts.js";
+} from "../utils/errorsCart.js";
+import { productNotFound } from "../utils/errorsProducts.js";
 
 export class CartsController {
   static getCarts = async (req, res, next) => {

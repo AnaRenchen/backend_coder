@@ -2,8 +2,8 @@ import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { io } from "../app.js";
 
-import CustomError from "../errors/CustomError.js";
-import { TYPES_ERROR } from "../errors/EErrors.js";
+import CustomError from "../utils/CustomError.js";
+import { TYPES_ERROR } from "../utils/EErrors.js";
 import {
   addProductArgumentsError,
   errorMongoId,
@@ -13,7 +13,7 @@ import {
   deleteProductError,
   addProductError,
   updateProductError,
-} from "../errors/errorsProducts.js";
+} from "../utils/errorsProducts.js";
 
 export class ProductsController {
   static getProducts = async (req, res, next) => {
