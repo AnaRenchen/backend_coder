@@ -18,11 +18,13 @@ import { config } from "./config/config.js";
 import cors from "cors";
 import { errorHandler } from "./middleware/errorHandler.js";
 import compression from "express-compression";
+import { logger, middLogger } from "./utils/logger.js";
 
 const PORT = config.PORT;
 const app = express();
 
 app.use(express.json());
+app.use(middLogger);
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(
@@ -56,7 +58,7 @@ app.use("/mock", mockingRouter);
 
 let users = [];
 
-const server = app.listen(PORT, () => console.log(`Server online on ${PORT}`));
+const server = app.listen(PORT, () => logger.info(`Server online on ${PORT}`));
 
 export const io = new Server(server);
 

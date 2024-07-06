@@ -96,6 +96,8 @@ export class ProductsController {
 
       let product = await productsServices.getProductbyId({ _id: id });
 
+      req.logger.warning("prueba10");
+
       if (product) {
         res.setHeader("Content-Type", "application/json");
         return res.status(200).json({ product });
