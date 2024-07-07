@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendTicket = async (
   to,
-  product_title,
+  productDetails,
   amount,
   purchaser,
   code,
@@ -125,7 +125,7 @@ export const sendTicket = async (
               </tr>
               <tr>
                   <td>Products:</td>
-                  <td>${product_title}</td>
+                  <td>${productDetails}</td>
               </tr>
               <tr>
                   <td>Ticket Code:</td>

@@ -531,8 +531,8 @@ export class CartsController {
         products: productsProcessed,
       };
 
-      const productTitles = productsProcessed
-        .map((item) => item.product.title)
+      const productDetails = productsProcessed
+        .map((item) => `${item.product.title} (Quantity: ${item.quantity})`)
         .join(", ");
 
       let newTicket = "";
@@ -541,7 +541,7 @@ export class CartsController {
         newTicket = await ticketsServices.createTicket(dataTicket);
         let result = await sendTicket(
           user.email,
-          productTitles,
+          productDetails,
           newTicket.amount,
           newTicket.purchaser,
           newTicket.code,

@@ -26,7 +26,16 @@ const devTransport = new winston.transports.Console({
   level: "debug",
   format: winston.format.combine(
     winston.format.colorize({ all: true }),
-    winston.format.timestamp(),
+    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    winston.format.simple()
+  ),
+});
+
+const prodTransport = new winston.transports.Console({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.colorize({ all: true }),
+    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     winston.format.simple()
   ),
 });
@@ -37,13 +46,18 @@ export const logger = winston.createLogger({
     new winston.transports.File({
       level: "error",
       filename: "./src/utils/errors.log",
-      format: winston.format.combine(winston.format.timestamp()),
+      format: winston.format.combine(
+        winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" })
+      ),
     }),
   ],
 });
 if (config.MODE === "dev") {
   logger.add(devTransport);
+} else if (config.MODE === "prod") {
+  logger.add(prodTransport);
 }
+
 export const middLogger = (req, res, next) => {
   req.logger = logger;
   next();

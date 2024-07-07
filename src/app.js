@@ -7,6 +7,7 @@ import { router2 as cartsRouter } from "./routes/cartsRouter.js";
 import { router3 as viewsRouter } from "./routes/vistas.router.js";
 import { router4 as sessionsRouter } from "./routes/sessionsRouter.js";
 import { router5 as mockingRouter } from "./routes/mockingRouter.js";
+import { router6 as loggerRouter } from "./routes/loggerRouter.js";
 import __dirname from "./utils.js";
 import path from "path";
 import mongoose from "mongoose";
@@ -55,6 +56,7 @@ app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
 app.use("/mock", mockingRouter);
+app.use("/loggerTest", loggerRouter);
 
 let users = [];
 
@@ -63,7 +65,7 @@ const server = app.listen(PORT, () => logger.info(`Server online on ${PORT}`));
 export const io = new Server(server);
 
 io.on("connection", (socket) => {
-  console.log(`A cliente with id ${socket.id} is connected.`);
+  logger.info(`A cliente with id ${socket.id} is connected.`);
 
   socket.on("id", async (name) => {
     users.push({ id: socket.id, name });
@@ -93,7 +95,7 @@ const connDB = async () => {
     await mongoose.connect(config.MONGO_URL, {
       dbName: config.DB_NAME,
     });
-    console.log("DB online!");
+    logger.info("DB online!");
   } catch (error) {
     console.log("Error connecting to DB.", error.message);
   }
