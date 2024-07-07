@@ -78,6 +78,18 @@ export class ProductsController {
         nextLink: nextLink,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -96,8 +108,6 @@ export class ProductsController {
 
       let product = await productsServices.getProductbyId({ _id: id });
 
-      req.logger.warning("prueba10");
-
       if (product) {
         res.setHeader("Content-Type", "application/json");
         return res.status(200).json({ product });
@@ -110,6 +120,18 @@ export class ProductsController {
         );
       }
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -185,6 +207,18 @@ export class ProductsController {
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ message: "Product added.", newProduct });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -282,6 +316,18 @@ export class ProductsController {
         updatedProduct,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -326,6 +372,18 @@ export class ProductsController {
         );
       }
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };

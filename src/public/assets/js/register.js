@@ -41,6 +41,6 @@ const register = async (e) => {
     window.location.href = `/login?message=Registration sucessful!`;
   } else {
     window.location.href =
-      "/register?error=Unable to register, please try again.";
+      "/register?error=Unable to register. An error ocurred or username is already registered.";
   }
 };

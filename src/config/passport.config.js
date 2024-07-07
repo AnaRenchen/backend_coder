@@ -48,6 +48,7 @@ export const initPassport = () => {
 
           return done(null, newUser);
         } catch (error) {
+          req.logger.error(error.message);
           return done(error);
         }
       }

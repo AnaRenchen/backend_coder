@@ -1,7 +1,7 @@
 import { TYPES_ERROR } from "../utils/EErrors.js";
 
 export const errorHandler = (error, req, res, next) => {
-  console.log(`${error.cause ? error.cause : error.message}`);
+  req.logger.debug(`${error.cause ? error.cause : error.message}`);
 
   switch (error.code) {
     case TYPES_ERROR.AUTHENTICATION:

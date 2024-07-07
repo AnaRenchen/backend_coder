@@ -42,6 +42,18 @@ router4.post("/login", passportCall("login"), async (req, res) => {
       role: user.role,
     });
   } catch (error) {
+    req.logger.error(
+      JSON.stringify(
+        {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+          code: error.code,
+        },
+        null,
+        5
+      )
+    );
     res.setHeader("Content-Type", "application/json");
     return res.status(500).json({
       error: `Unexpected error.`,
@@ -64,6 +76,18 @@ router4.get("/logout", async (req, res) => {
     res.setHeader("Content-Type", "application/json");
     return res.status(200).json({ payload: "Logout successful." });
   } catch (error) {
+    req.logger.error(
+      JSON.stringify(
+        {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+          code: error.code,
+        },
+        null,
+        5
+      )
+    );
     res.setHeader("Content-Type", "application/json");
     return res.status(500).json({
       error: `Unexpected error.`,

@@ -18,6 +18,18 @@ export class TicketsController {
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ message: "Ticket created.", newTicket });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       next(error);
     }
   };

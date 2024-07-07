@@ -45,6 +45,18 @@ export class CartsController {
         );
       }
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -63,6 +75,18 @@ export class CartsController {
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ message: "Cart created.", newCart });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -127,6 +151,18 @@ export class CartsController {
         );
       }
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -209,6 +245,18 @@ export class CartsController {
         cart: updatedCart,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -278,6 +326,18 @@ export class CartsController {
         cart: updatedQuantity,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -333,6 +393,18 @@ export class CartsController {
         cart: updatedCart,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -366,6 +438,18 @@ export class CartsController {
         cart: deletedCart,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -464,7 +548,7 @@ export class CartsController {
           newTicket.purchase_datetime
         );
         if (result.accepted.length > 0) {
-          console.log(result);
+          req.logger.info(result);
         }
       }
 
@@ -496,6 +580,18 @@ export class CartsController {
         "Products not processed": productsNotProcessed,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       next(error);
     }
   };
