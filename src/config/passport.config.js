@@ -6,6 +6,7 @@ import { cartsServices } from "../repository/CartsServices.js";
 import { validatePassword } from "../utils.js";
 import github from "passport-github2";
 import { config } from "./config.js";
+import { logger } from "../utils/logger.js";
 
 export const initPassport = () => {
   passport.use(
@@ -70,6 +71,7 @@ export const initPassport = () => {
           }
 
           if (!validatePassword(password, user.password)) {
+            logger.error("Invalid password");
             return done(null, false, { message: "Invalid password" });
           }
 
