@@ -71,7 +71,7 @@ export const initPassport = () => {
           }
 
           if (!validatePassword(password, user.password)) {
-            logger.error("Invalid password");
+            logger.error(JSON.stringify(`Invalid password for ${user.email}`));
             return done(null, false, { message: "Invalid password" });
           }
 
