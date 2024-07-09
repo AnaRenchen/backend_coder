@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import { config } from "./config.js";
 import path from "path";
 import __dirname from "../utils.js";
+import { logger } from "../utils/logger.js";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -109,8 +110,8 @@ export const sendTicket = async (
       }
       </style>
   </head>
-  <header></header>
   <body>
+   <header></header>
       <div class="header-container">
           <img class="logo" src="cid:logo" alt="Logo"/>
           <h1>HORISADA Shop</h1>
@@ -161,17 +162,34 @@ export const sendTicket = async (
     "logo_header.png"
   );
 
-  return await transporter.sendMail({
-    from: `"Horisada´s Shop" <${config.USER_GMAIL_NODEMAILER}>`,
-    to: to,
-    subject: `Purchase Ticket from Horisada´s Shop #${code}`,
-    html: htmlContent,
-    attachments: [
-      {
-        path: logoPath,
-        filename: "logo_header.png",
-        cid: "logo",
-      },
-    ],
-  });
+  try {
+    const email = await transporter.sendMail({
+      from: `"Horisada´s Shop" <${config.USER_GMAIL_NODEMAILER}>`,
+      to: to,
+      subject: `Purchase Ticket from Horisada´s Shop #${code}`,
+      html: htmlContent,
+      attachments: [
+        {
+          path: logoPath,
+          filename: "logo_header.png",
+          cid: "logo",
+        },
+      ],
+    });
+
+    return email;
+  } catch (error) {
+    logger.error(
+      JSON.stringify(
+        {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+          code: error.code,
+        },
+        null,
+        5
+      )
+    );
+  }
 };

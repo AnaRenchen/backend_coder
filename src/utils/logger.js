@@ -1,5 +1,6 @@
 import winston from "winston";
 import { config } from "../config/config.js";
+import { model } from "mongoose";
 
 const customLevelOptions = {
   levels: {
@@ -11,7 +12,7 @@ const customLevelOptions = {
     debug: 5,
   },
   colors: {
-    fatal: "red",
+    fatal: "bold white redBG",
     error: "red",
     warning: "magenta",
     info: "green",
