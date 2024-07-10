@@ -5,6 +5,9 @@ const removeFromCart = async (pid) => {
   try {
     let response = await fetch(`/api/carts/${cid}/product/${pid}`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     if (response.status === 200) {
@@ -48,6 +51,9 @@ const add = async (pid) => {
   try {
     let response = await fetch(`/api/carts/${cid}/product/${pid}`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     if (response.status === 200) {
@@ -74,6 +80,9 @@ const deleteCart = async (cid) => {
   try {
     let response = await fetch(`/api/carts/${cid}/`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     if (response.status === 200) {

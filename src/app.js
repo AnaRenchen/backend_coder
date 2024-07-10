@@ -97,7 +97,18 @@ const connDB = async () => {
     });
     logger.info("DB online!");
   } catch (error) {
-    console.log("Error connecting to DB.", error.message);
+    logger.fatal(
+      JSON.stringify(
+        {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+          code: error.code,
+        },
+        null,
+        5
+      )
+    );
   }
 };
 

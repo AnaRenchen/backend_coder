@@ -1,6 +1,5 @@
 import winston from "winston";
 import { config } from "../config/config.js";
-import { model } from "mongoose";
 
 const customLevelOptions = {
   levels: {
