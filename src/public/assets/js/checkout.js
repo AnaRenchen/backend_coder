@@ -38,6 +38,14 @@ async function checkout() {
           window.location.href = result.url;
         });
       } else {
+        if (result.showAlert) {
+          const productNames = result.notProcessedProductNames.join(", ");
+          await Swal.fire({
+            text: `We are sorry to inform the following products could not be processed due to lack of stock: ${productNames}`,
+            confirmButtonColor: "black",
+            imageUrl: "https://i.postimg.cc/rwx3gPhz/icons8-sad-cat-100.png",
+          });
+        }
         window.location.href = `/checkout/${result.newTicketId}`;
       }
     }

@@ -526,7 +526,7 @@ export class CartsController {
 
       const dataTicket = {
         amount: totalAmount,
-        purchaser: req.session.user.email,
+        purchaser: user.email,
         code: `TCK-${Date.now()}`,
         products: productsProcessed,
       };
@@ -560,7 +560,7 @@ export class CartsController {
             redirect: true,
             url: "/products",
             message:
-              "The selected products are out of stock or stock is not enough. Please review your seleccion of products.",
+              "The selected products are out of stock. Please choose other products.",
             imageUrl: "https://i.postimg.cc/rwx3gPhz/icons8-sad-cat-100.png",
           });
         } else {
@@ -578,6 +578,10 @@ export class CartsController {
         newTicketId: newTicket._id,
         "Products processed": productsProcessed,
         "Products not processed": productsNotProcessed,
+        showAlert: productsNotProcessed.length > 0,
+        notProcessedProductNames: productsNotProcessed.map(
+          (item) => item.product.title
+        ),
       });
     } catch (error) {
       req.logger.error(
