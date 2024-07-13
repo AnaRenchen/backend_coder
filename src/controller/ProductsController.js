@@ -150,6 +150,12 @@ export class ProductsController {
       } = req.body;
 
       let exists;
+      let owner = req.session.user;
+      if (owner.role !== "premium" && owner.role !== "admin") {
+        return res.status(403).json({
+          message: "Only premium users and admin can create products.",
+        });
+      }
 
       exists = await productsServices.getProductBy({ code });
 
@@ -189,6 +195,7 @@ export class ProductsController {
         thumbnail,
         code,
         stock,
+        owner: owner.email,
       });
 
       if (!newProduct) {
