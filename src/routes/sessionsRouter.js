@@ -26,7 +26,7 @@ router4.get("/error", (req, res) => {
 
 router4.post("/register", passportCall("register"), async (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  return res.status(500).json({ message: `Unexpected error.` });
+  return res.status(200).json({ message: `Registration sucessful.` });
 });
 
 router4.post("/login", passportCall("login"), async (req, res) => {

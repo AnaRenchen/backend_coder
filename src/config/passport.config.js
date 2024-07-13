@@ -30,7 +30,7 @@ export const initPassport = () => {
           });
           if (exist) {
             return done(null, false, {
-              message: `${username} is already registered `,
+              message: `${username} is already registered. `,
             });
           }
 

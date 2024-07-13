@@ -38,9 +38,16 @@ const register = async (e) => {
   let data = await response.json();
   console.log(data);
   if (response.ok) {
-    window.location.href = `/login?message=Registration sucessful!`;
+    window.location.href = `/login?message=Registration successful!`;
   } else {
-    window.location.href =
-      "/register?error=Unable to register. An error ocurred or username is already registered.";
+    Swal.fire({
+      imageUrl: "https://i.postimg.cc/g0qCjgXP/icons8-geisha-64-2.png",
+      background: "white",
+      text:
+        data.error ||
+        "Unable to register. An error occurred or email is already registered.",
+      confirmButtonText: "OK",
+      confirmButtonColor: "black",
+    });
   }
 };
