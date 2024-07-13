@@ -526,7 +526,7 @@ export class CartsController {
 
       const dataTicket = {
         amount: totalAmount,
-        purchaser: user.email,
+        purchaser: req.session.user.email,
         code: `TCK-${Date.now()}`,
         products: productsProcessed,
       };
@@ -560,7 +560,7 @@ export class CartsController {
             redirect: true,
             url: "/products",
             message:
-              "The selected products are out of stock. Please choose other products.",
+              "The selected products are out of stock or stock is not enough. Please review your seleccion of products.",
             imageUrl: "https://i.postimg.cc/rwx3gPhz/icons8-sad-cat-100.png",
           });
         } else {
