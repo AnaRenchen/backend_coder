@@ -37,7 +37,7 @@ const add = async (pid) => {
   if (!cid) {
     await Swal.fire({
       text: "You must register and login to buy a product.",
-      background: "#87a7ae",
+      background: "white",
       icon: "error",
       color: "black",
       showConfirmButton: true,
@@ -55,6 +55,21 @@ const add = async (pid) => {
         "Content-Type": "application/json",
       },
     });
+
+    if (response.status === 403) {
+      let data = await response.json();
+      console.log(data);
+      await Swal.fire({
+        text: "You cannot add this product to cart!",
+        background: "#87a7ae",
+        icon: "error",
+        color: "black",
+        showConfirmButton: true,
+        confirmButtonText: "OK",
+        confirmButtonColor: "black",
+        toast: true,
+      });
+    }
 
     if (response.status === 200) {
       let data = await response.json();

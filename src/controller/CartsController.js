@@ -93,6 +93,7 @@ export class CartsController {
 
   static addProduct = async (req, res, next) => {
     try {
+      let user = req.session.user;
       let { cid, pid } = req.params;
       if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
         throw CustomError.createError(
@@ -121,6 +122,17 @@ export class CartsController {
           "Could not find the selected product in cart.",
           TYPES_ERROR.NOT_FOUND
         );
+      }
+
+      if (user.role === "premium" && findProduct.owner === user.email) {
+        {
+          throw CustomError.createError(
+            "Premium own product",
+            null,
+            "You cannot add your own product to cart.",
+            TYPES_ERROR.AUTHORIZATION
+          );
+        }
       }
 
       const existingProduct = cart.products.find(

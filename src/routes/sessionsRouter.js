@@ -96,12 +96,16 @@ router4.get("/logout", async (req, res) => {
   }
 });
 
-router4.get("/current", authUser(["user", "admin"]), async (req, res) => {
-  let userId = req.session.user._id;
+router4.get(
+  "/current",
+  authUser(["user", "admin", "premium"]),
+  async (req, res) => {
+    let userId = req.session.user._id;
 
-  let user = await usersServices.getBy({ _id: userId });
-  user = new UsersDTO(user);
+    let user = await usersServices.getBy({ _id: userId });
+    user = new UsersDTO(user);
 
-  res.setHeader("Content-Type", "application/json");
-  res.status(200).json({ login: user });
-});
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json({ login: user });
+  }
+);

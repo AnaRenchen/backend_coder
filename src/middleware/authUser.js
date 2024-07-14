@@ -1,5 +1,7 @@
-export const authUser = (privileges = []) => {
-  return (req, res, next) => {
+import { productsServices } from "../repository/ProductsServices.js";
+
+export const authUser = (privileges = [], checkOwnership = false) => {
+  return async (req, res, next) => {
     privileges = privileges.map((p) => p.toLowerCase());
 
     if (privileges.includes("public")) {
@@ -21,7 +23,27 @@ export const authUser = (privileges = []) => {
       );
       return res
         .status(403)
-        .json({ error: `Unauthorised.Insufficient privileges to access.` });
+        .json({ error: `Unauthorised. Insufficient privileges to access.` });
+    }
+
+    if (checkOwnership && (req.method === "DELETE" || req.method === "PUT")) {
+      const { pid } = req.params;
+      const product = await productsServices.getProductbyId(pid);
+
+      if (!product) {
+        return res.status(404).json({
+          message: "Product not found.",
+        });
+      }
+
+      if (
+        req.session.user.role === "premium" &&
+        product.owner !== req.session.user.email
+      ) {
+        return res.status(403).json({
+          message: "You do not have permission to modify/delete this product.",
+        });
+      }
     }
 
     return next();

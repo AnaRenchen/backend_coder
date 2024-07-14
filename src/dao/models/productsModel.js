@@ -14,7 +14,8 @@ const productsSchema = new mongoose.Schema(
     category: { type: String, required: true },
     owner: {
       type: String,
-      default: "admin",
+      ref: "users",
+      default: "adminCoder@coder.com",
     },
   },
   {

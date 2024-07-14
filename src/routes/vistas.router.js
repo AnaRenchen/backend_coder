@@ -10,17 +10,21 @@ router3.get("/home", VistasController.getHome);
 
 router3.get(
   "/realtimeproducts",
-  authUserVistas(["admin"]),
+  authUserVistas(["admin", "premium"]),
   VistasController.getRealTimeProducts
 );
 
 router3.get("/products", VistasController.getProducts);
 
-router3.get("/chat", authUserVistas(["user"]), VistasController.getChat);
+router3.get(
+  "/chat",
+  authUserVistas(["user", "premium"]),
+  VistasController.getChat
+);
 
 router3.get(
   "/carts/:cid",
-  authUserVistas(["admin", "user"]),
+  authUserVistas(["admin", "user", "premium"]),
   VistasController.getCarts
 );
 
@@ -30,7 +34,7 @@ router3.get("/login", VistasController.getLogin);
 
 router3.get(
   "/profile",
-  authUserVistas(["admin", "user"]),
+  authUserVistas(["admin", "user", "premium"]),
   VistasController.getProfile
 );
 

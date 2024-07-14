@@ -33,6 +33,8 @@ async function checkout() {
         await Swal.fire({
           text: result.message,
           confirmButtonColor: "black",
+          background: "#87a7ae",
+          color: "black",
           imageUrl: result.imageUrl,
         }).then(() => {
           window.location.href = result.url;
@@ -43,6 +45,8 @@ async function checkout() {
           await Swal.fire({
             text: `We are sorry to inform the following products could not be processed due to lack of stock: ${productNames}`,
             confirmButtonColor: "black",
+            color: "black",
+            background: "#87a7ae",
             imageUrl: "https://i.postimg.cc/rwx3gPhz/icons8-sad-cat-100.png",
           });
         }

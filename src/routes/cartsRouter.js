@@ -9,31 +9,35 @@ router2.get("/:cid", CartsController.getCarts);
 
 router2.post(
   "/:cid/product/:pid",
-  authUser(["user"]),
+  authUser(["user", "premium"]),
   CartsController.addProduct
 );
 
-router2.put("/:cid", authUser(["user", "admin"]), CartsController.updateCart);
+router2.put(
+  "/:cid",
+  authUser(["user", "admin", "premium"]),
+  CartsController.updateCart
+);
 
 router2.put(
   "/:cid/products/:pid",
-  authUser(["user", "admin"]),
+  authUser(["user", "admin", "premium"]),
   CartsController.updateQuantity
 );
 router2.delete(
   "/:cid/product/:pid",
-  authUser(["user", "admin"]),
+  authUser(["user", "admin", "premium"]),
   CartsController.deleteProduct
 );
 
 router2.delete(
   "/:cid/",
-  authUser(["user", "admin"]),
+  authUser(["user", "admin", "premium"]),
   CartsController.deleteCart
 );
 
 router2.post(
   "/:cid/purchase",
-  authUser(["user"]),
+  authUser(["user", "premium"]),
   CartsController.createPurchase
 );

@@ -10,6 +10,14 @@ router.get("/:pid", ProductsController.getProduct);
 
 router.post("/", authUser(["admin", "premium"]), ProductsController.addProduct);
 
-router.put("/:pid", authUser(["admin"]), ProductsController.updateProduct);
+router.put(
+  "/:pid",
+  authUser(["admin", "premium"], true),
+  ProductsController.updateProduct
+);
 
-router.delete("/:pid", authUser(["admin"]), ProductsController.deleteProduct);
+router.delete(
+  "/:pid",
+  authUser(["admin", "premium"], true),
+  ProductsController.deleteProduct
+);
