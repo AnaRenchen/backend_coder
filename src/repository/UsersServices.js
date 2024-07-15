@@ -16,6 +16,10 @@ class UsersServices {
   getByPopulate = async (filter) => {
     return await this.dao.getByPopulate(filter);
   };
+
+  updateUser = async (id, property) => {
+    return await this.dao.updateUser(id, property);
+  };
 }
 
 export const usersServices = new UsersServices(new UsersDao());

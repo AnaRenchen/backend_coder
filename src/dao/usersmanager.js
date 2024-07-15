@@ -13,4 +13,13 @@ export class usersManagerMongo {
   async getByPopulate(filter = {}) {
     return await usersModel.findOne(filter).populate("cart").lean();
   }
+
+  async updateUser(id, property = {}) {
+    const updatedUser = await usersModel.findByIdAndUpdate(
+      id,
+      { $set: property },
+      { new: true, runValidators: true }
+    );
+    return updatedUser;
+  }
 }
