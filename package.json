@@ -5,6 +5,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js --mode dev",
+    "prod": "node ./src/app.js --mode prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

@@ -5,6 +5,10 @@ import { authUser } from "../middleware/authUser.js";
 import { usersServices } from "../repository/UsersServices.js";
 import { UsersDTO } from "../dto/UsersDTO.js";
 import { isValidObjectId } from "mongoose";
+import { config } from "../config/config.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import { emailRecoverPassword } from "../config/mailing.config.js";
 
 export const router4 = Router();
 
@@ -153,5 +157,35 @@ router4.put("/premium/:uid", async (req, res) => {
       error: `Unexpected error.`,
       detalle: `${error.message}`,
     });
+  }
+});
+
+router4.post("/requestPassword", async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Please enter your email." });
+  }
+
+  try {
+    const user = await usersServices.getBy({ email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User with given email does not exist." });
+    }
+
+    const token = jwt.sign({ userId: user._id }, config.SECRET, {
+      expiresIn: "1h",
+    });
+    const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
+
+    await emailRecoverPassword(user.email, resetUrl);
+    return res
+      .status(200)
+      .json({ message: "Password recover link was sent to your email." });
+  } catch (error) {
+    req.logger.error("Error requesting password recovery:", error);
+    return res.status(500).json({ message: "Internal server error." });
   }
 });

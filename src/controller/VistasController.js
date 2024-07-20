@@ -332,4 +332,17 @@ export class VistasController {
       return next(error);
     }
   };
+
+  static getRecoverEmail = async (req, res, next) => {
+    try {
+      let { error } = req.query;
+      const { token } = req.query;
+
+      res
+        .status(200)
+        .render("recoverMail", { token, error, login: req.session.user });
+    } catch (error) {
+      return next(error);
+    }
+  };
 }

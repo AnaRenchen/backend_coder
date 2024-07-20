@@ -41,3 +41,5 @@ router3.get(
 router3.get("/error", auth, VistasController.getError);
 
 router3.get("/checkout/:tid", VistasController.getcheckout);
+
+router3.get("/recoverMail", VistasController.getRecoverEmail);

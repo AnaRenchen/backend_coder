@@ -1,0 +1,26 @@
+<header>
+  <div class="up_page">
+    {{>header}}
+  </div>
+  {{>menu}}
+</header>
+
+ <input type="hidden" name="token" value="{{token}}">
+<main class="recover_email">
+  <p class="recover_msg">Please enter your email to recover password</p>
+  <form onsubmit="recoverEmail(event)" id="formRecoverEmail" action="/api/sessions/requestPassword" method="post">
+   
+    <div class="container_form_recover">
+      <label for="email"><b>Enter your email</b></label>
+      <input class="form_input" type="email" placeholder="Enter Email" name="email" />
+      <div class="button-container">
+        <button class="button_form" type="submit">Request new password</button>
+      </div>
+    </div>
+  </form>
+</main>
+
+<footer></footer>
+
+<script src="/assets/js/recoverEmail.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

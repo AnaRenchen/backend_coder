@@ -176,3 +176,8 @@
 {"level":"error","message":"Request GET from unauthenticated user to the route: /api/sessions/current"}
 {"level":"error","message":"\"Invalid password for wania@gmail.com\""}
 {"level":"error","message":"{\n     \"name\": \"Premium own product\",\n     \"message\": \"You cannot add your own product to cart.\",\n     \"stack\": \"Premium own product: You cannot add your own product to cart.\\n    at CustomError.createError (file:///C:/Users/anama/Desktop/Escritorio/Programacion/backend/desafio1/src/utils/CustomError.js:10:19)\\n    at addProduct (file:///C:/Users/anama/Desktop/Escritorio/Programacion/backend/desafio1/src/controller/CartsController.js:129:29)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\",\n     \"code\": 403\n}"}
+{"level":"error","message":"Test logger error"}
+{"level":"fatal","message":"Test logger fatal"}
+{"level":"error","message":"Test logger error"}
+{"level":"fatal","message":"Test logger fatal"}
+{"level":"error","message":"Request POST from unauthenticated user to the route: /api/products/"}

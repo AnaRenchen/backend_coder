@@ -884,3 +884,59 @@ li {
 .purchase_button:hover{
   background-color: #b4b3ad;
 }
+
+/* Botnes para recuperar clave*/
+
+.recover_password{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    margin: 8px 100px 100px;
+    text-align: center;
+  }
+
+  .recover_msg_login{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1rem;
+    letter-spacing: 0.5;
+    margin-right: 20px;
+    padding: 8px;
+  }
+
+  .recover_message_button{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.5;
+    width: 160px;
+    border: none;
+    background-color: #3fb19a;
+    font-weight:700;
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  .recover_message_button:hover{
+    background-color: #b4b3ad;
+  }
+
+  /*Formulario email para recuperar clave*/
+  .recover_email{
+    margin-top: 100px;
+  }
+
+  .recover_msg{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.5;
+    margin-right: 20px;
+    margin-bottom: 50px;
+    padding: 8px;
+    text-align: center;
+  }
+
+  .container_form_recover {
+    padding: 16px;
+    margin-bottom: 100px;
+  }
