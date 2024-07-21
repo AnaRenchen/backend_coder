@@ -41,7 +41,8 @@ export const authUser = (privileges = [], checkOwnership = false) => {
         product.owner !== req.session.user.email
       ) {
         return res.status(403).json({
-          message: "You do not have permission to modify/delete this product.",
+          message:
+            "You do not have permission to modify or delete this product.",
         });
       }
     }

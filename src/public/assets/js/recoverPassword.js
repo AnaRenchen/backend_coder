@@ -23,7 +23,20 @@ const recoverEmail = async (e) => {
     email,
   };
 
-  console.log(body);
+  Swal.fire({
+    text: "Processing your request...",
+    icon: "info",
+    background: "white",
+    color: "black",
+    showConfirmButton: false,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false,
+    toast: true,
+    didOpen: () => {
+      Swal.showLoading();
+    },
+  });
 
   let response = await fetch("api/sessions/requestPassword", {
     method: "post",
@@ -44,6 +57,8 @@ const recoverEmail = async (e) => {
       confirmButtonText: "OK",
       confirmButtonColor: "black",
       toast: true,
+    }).then(() => {
+      location.reload();
     });
   } else if (response.status === 404) {
     Swal.fire({

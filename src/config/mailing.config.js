@@ -164,9 +164,9 @@ export const sendTicket = async (
 
   try {
     const email = await transporter.sendMail({
-      from: `"Horisada´s Shop" <${config.USER_GMAIL_NODEMAILER}>`,
+      from: `"Horisada's Shop" <${config.USER_GMAIL_NODEMAILER}>`,
       to: to,
-      subject: `Purchase Ticket from Horisada´s Shop #${code}`,
+      subject: `Purchase Ticket from Horisada's Shop #${code}`,
       html: htmlContent,
       attachments: [
         {
@@ -194,7 +194,7 @@ export const sendTicket = async (
   }
 };
 
-export const emailRecoverPassword = async (to, resetUrl) => {
+export const emailRecoverPassword = async (to, resetUrl, userName) => {
   const htmlContent = `
   <!DOCTYPE html>
   <html lang="es">
@@ -214,7 +214,7 @@ export const emailRecoverPassword = async (to, resetUrl) => {
           padding: 20px 0;
       }
       body {
-          min-height: 120vh;
+          min-height: 150vh;
           font-family: 'Times New Roman', Times, serif;
           color: #454344;
           text-align: center;
@@ -228,7 +228,6 @@ export const emailRecoverPassword = async (to, resetUrl) => {
           justify-content: center;
           padding: 20px;
           background-color: #f4f4f4;
-          height: 80vh;
       }
       
       h1, h4 {
@@ -258,7 +257,7 @@ export const emailRecoverPassword = async (to, resetUrl) => {
           text-align: center;
       }
       .recover_message_email {
-          text-align: center;
+          text-align: left;
           margin-top: 20px;
           font-family: 'Times New Roman', Times, serif;
           font-size: 1.2rem;
@@ -282,10 +281,13 @@ export const emailRecoverPassword = async (to, resetUrl) => {
           <img class="logo" src="cid:logo" alt="Logo"/>
           <h1>HORISADA Shop</h1>
       </div>
-      <h4>Password Recover</h4>
+      <h4>Password Recovery</h4>
       
       <main class="main_recover_email">
-      <p class="recover_message_email">Click <a href="${resetUrl}">here</a> to recover your password. This link will expire in 1 hour.</p>
+      <p class="recover_message_email"> Hello, ${userName}!:) </p>
+      <p class="recover_message_email">We received a request to reset your password for Horisada's Shop. To proceed, please click <a href="${resetUrl}">here</a> to set a new password. For your security, this link will expire in 1 hour.</p>
+      <p class="recover_message_email"> If you did not request a password reset, please ignore this email. </p>
+      <p class="recover_message_email"> The Horisada's Shop Team </p>
       </main>
       <footer>
           <p>&copy; 2024 HORISADA Shop. All rights reserved.</p>
@@ -304,9 +306,9 @@ export const emailRecoverPassword = async (to, resetUrl) => {
 
   try {
     const email = await transporter.sendMail({
-      from: `"Horisada´s Shop" <${config.USER_GMAIL_NODEMAILER}>`,
+      from: `"Horisada's Shop" <${config.USER_GMAIL_NODEMAILER}>`,
       to: to,
-      subject: `Password Recover from Horisada´s Shop`,
+      subject: `Password Recovery Request from Horisada's Shop`,
       html: htmlContent,
       attachments: [
         {

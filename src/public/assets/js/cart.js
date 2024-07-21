@@ -60,7 +60,7 @@ const add = async (pid) => {
       let data = await response.json();
       console.log(data);
       await Swal.fire({
-        text: "You cannot add this product to cart!",
+        text: "You cannot add this product to cart, because you are its owner.",
         background: "#87a7ae",
         icon: "error",
         color: "black",

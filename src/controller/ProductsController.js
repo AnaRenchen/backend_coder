@@ -196,11 +196,6 @@ export class ProductsController {
         owner: owner.email,
       });
 
-      if (!newProduct.owner) {
-        newProduct.owner = "adminCoder@coder.com";
-        await newProduct.save();
-      }
-
       if (!newProduct) {
         throw CustomError.createError(
           "Error adding product.",
@@ -284,6 +279,7 @@ export class ProductsController {
         "thumbnail",
         "code",
         "stock",
+        "owner",
       ];
       let properties = Object.keys(updateProperties);
       let valid = properties.every((prop) => validProperties.includes(prop));
@@ -292,7 +288,7 @@ export class ProductsController {
         throw CustomError.createError(
           "Properties not valid.",
           updateProductArgumentsError(validProperties),
-          "You must give at least one valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock.",
+          "You must give at least one valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock, owner.",
           TYPES_ERROR.INVALID_ARGUMENTS
         );
       }
@@ -301,7 +297,7 @@ export class ProductsController {
         throw CustomError.createError(
           "Properties not valid.",
           updateProductArgumentsError(validProperties),
-          "You must choose a valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock.",
+          "You must choose a valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock, owner.",
           TYPES_ERROR.INVALID_ARGUMENTS
         );
       }

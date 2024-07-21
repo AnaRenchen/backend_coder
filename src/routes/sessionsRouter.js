@@ -138,7 +138,7 @@ router4.put("/premium/:uid", async (req, res) => {
       user.role = "user";
     } else {
       return res.status(400).json({
-        error: `"User role can only be changed between 'user' and 'premium'.`,
+        error: `User role can only be changed between 'user' and 'premium'.`,
       });
     }
 
@@ -176,6 +176,8 @@ router4.post("/requestPassword", async (req, res) => {
         .json({ message: "User with given email does not exist." });
     }
 
+    const userName = user.name;
+
     const token = jwt.sign({ userId: user._id }, config.SECRET, {
       expiresIn: "1h",
     });
@@ -183,7 +185,7 @@ router4.post("/requestPassword", async (req, res) => {
     console.log(token);
     const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
 
-    await emailRecoverPassword(user.email, resetUrl);
+    await emailRecoverPassword(user.email, resetUrl, userName);
     return res
       .status(200)
       .json({ message: "Password recover link was sent to your email." });
@@ -197,8 +199,9 @@ router4.post("/reset-password", async (req, res) => {
   const { token, newPassword } = req.body;
 
   try {
-    const decodeToken = jwt.verify(token, config.SECRET);
-    const user = await usersServices.getBy({ _id: decodeToken.userId });
+    const decodedToken = jwt.verify(token, config.SECRET);
+
+    const user = await usersServices.getBy({ _id: decodedToken.userId });
 
     if (!user) {
       return res.status(400).json({
@@ -213,9 +216,9 @@ router4.post("/reset-password", async (req, res) => {
     console.log("Password Validation Result:", passwordIsSame);
 
     if (passwordIsSame) {
-      return res
-        .status(400)
-        .json({ message: "You cannot use the same password as before." });
+      return res.status(400).json({
+        message: "New password must be different from the previous one.",
+      });
     }
 
     const hashedPassword = generateHash(newPassword);
@@ -223,7 +226,18 @@ router4.post("/reset-password", async (req, res) => {
 
     res.status(200).json({ message: "Password has been reset successfully." });
   } catch (error) {
-    console.error("Error resetting password:", error); // Cambiado a console.error
+    if (error.name === "TokenExpiredError") {
+      return res.status(400).json({
+        message:
+          "The token has expired. Please request a new password recovery.",
+        redirect: "/recoverPassword",
+      });
+    } else if (error.name === "JsonWebTokenError") {
+      return res.status(400).json({
+        message: "Invalid token. Please request a new password recovery.",
+      });
+    }
+
     req.logger.error("Error resetting password:", error);
     return res.status(500).json({
       message: "Internal server error.",

@@ -43,16 +43,31 @@ const resetPassword = async (e) => {
       confirmButtonText: "OK",
       confirmButtonColor: "black",
       toast: true,
+    }).then(() => {
+      window.location.href = "/login";
     });
   } else {
-    Swal.fire({
-      icon: "error",
-      background: "white",
-      text: data.message,
-      confirmButtonText: "OK",
-      confirmButtonColor: "black",
-      toast: true,
-    });
+    if (data.redirect) {
+      Swal.fire({
+        icon: "success",
+        background: "white",
+        text: data.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "black",
+        toast: true,
+      }).then(() => {
+        window.location.href = data.redirect;
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        background: "white",
+        text: data.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "black",
+        toast: true,
+      });
+    }
   }
 };
 
