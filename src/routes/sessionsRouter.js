@@ -182,13 +182,15 @@ router4.post("/requestPassword", async (req, res) => {
       expiresIn: "1h",
     });
 
-    console.log(token);
+    req.logger.info(token);
     const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
 
     await emailRecoverPassword(user.email, resetUrl, userName);
     return res
       .status(200)
-      .json({ message: "Password recover link was sent to your email." });
+      .json({
+        message: "A password recovery link has been sent to your email.",
+      });
   } catch (error) {
     req.logger.error("Error requesting password recovery:", error);
     return res.status(500).json({ message: "Internal server error." });
@@ -211,9 +213,6 @@ router4.post("/reset-password", async (req, res) => {
     }
 
     const passwordIsSame = bcrypt.compareSync(newPassword, user.password);
-    console.log("New Password:", newPassword);
-    console.log("User Password Hash:", user.password);
-    console.log("Password Validation Result:", passwordIsSame);
 
     if (passwordIsSame) {
       return res.status(400).json({
