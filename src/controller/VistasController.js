@@ -333,14 +333,29 @@ export class VistasController {
     }
   };
 
-  static getRecoverEmail = async (req, res, next) => {
+  static getRecoverPassword = async (req, res, next) => {
     try {
       let { error } = req.query;
-      const { token } = req.query;
 
       res
         .status(200)
-        .render("recoverMail", { token, error, login: req.session.user });
+        .render("recoverPassword", { error, login: req.session.user });
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  static getResetPassword = async (req, res) => {
+    try {
+      const { token } = req.query;
+
+      if (!token) {
+        return res
+          .status(400)
+          .json({ message: "Token is missing or invalid." });
+      }
+
+      res.render("resetPassword", { token, login: req.session.user });
     } catch (error) {
       return next(error);
     }

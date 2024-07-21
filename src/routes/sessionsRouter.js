@@ -9,6 +9,7 @@ import { config } from "../config/config.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { emailRecoverPassword } from "../config/mailing.config.js";
+import { generateHash, validatePassword } from "../utils.js";
 
 export const router4 = Router();
 
@@ -178,6 +179,8 @@ router4.post("/requestPassword", async (req, res) => {
     const token = jwt.sign({ userId: user._id }, config.SECRET, {
       expiresIn: "1h",
     });
+
+    console.log(token);
     const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
 
     await emailRecoverPassword(user.email, resetUrl);
@@ -187,5 +190,43 @@ router4.post("/requestPassword", async (req, res) => {
   } catch (error) {
     req.logger.error("Error requesting password recovery:", error);
     return res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+router4.post("/reset-password", async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    const decodeToken = jwt.verify(token, config.SECRET);
+    const user = await usersServices.getBy({ _id: decodeToken.userId });
+
+    if (!user) {
+      return res.status(400).json({
+        message:
+          "Invalid or expired token. Please request a new password recovery.",
+      });
+    }
+
+    const passwordIsSame = bcrypt.compareSync(newPassword, user.password);
+    console.log("New Password:", newPassword);
+    console.log("User Password Hash:", user.password);
+    console.log("Password Validation Result:", passwordIsSame);
+
+    if (passwordIsSame) {
+      return res
+        .status(400)
+        .json({ message: "You cannot use the same password as before." });
+    }
+
+    const hashedPassword = generateHash(newPassword);
+    await usersServices.updateUser(user._id, { password: hashedPassword });
+
+    res.status(200).json({ message: "Password has been reset successfully." });
+  } catch (error) {
+    console.error("Error resetting password:", error); // Cambiado a console.error
+    req.logger.error("Error resetting password:", error);
+    return res.status(500).json({
+      message: "Internal server error.",
+    });
   }
 });

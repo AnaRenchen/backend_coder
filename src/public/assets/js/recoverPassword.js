@@ -7,6 +7,18 @@ const recoverEmail = async (e) => {
   ).values();
   console.log(email);
 
+  if (!email) {
+    Swal.fire({
+      icon: "error",
+      background: "white",
+      text: "Please enter your email.",
+      confirmButtonText: "OK",
+      confirmButtonColor: "black",
+      toast: true,
+    });
+    return;
+  }
+
   let body = {
     email,
   };

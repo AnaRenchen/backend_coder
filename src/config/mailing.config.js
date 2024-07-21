@@ -228,6 +228,7 @@ export const emailRecoverPassword = async (to, resetUrl) => {
           justify-content: center;
           padding: 20px;
           background-color: #f4f4f4;
+          height: 80vh;
       }
       
       h1, h4 {
@@ -281,7 +282,7 @@ export const emailRecoverPassword = async (to, resetUrl) => {
           <img class="logo" src="cid:logo" alt="Logo"/>
           <h1>HORISADA Shop</h1>
       </div>
-      <h4>Password Recovery</h4>
+      <h4>Password Recover</h4>
       
       <main class="main_recover_email">
       <p class="recover_message_email">Click <a href="${resetUrl}">here</a> to recover your password. This link will expire in 1 hour.</p>
