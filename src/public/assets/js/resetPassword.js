@@ -37,12 +37,11 @@ const resetPassword = async (e) => {
 
   if (response.ok) {
     Swal.fire({
-      icon: "success",
+      imageUrl: "https://i.postimg.cc/3RCRHrsP/ninja-1.png",
       background: "white",
       text: data.message,
       confirmButtonText: "OK",
       confirmButtonColor: "black",
-      toast: true,
     }).then(() => {
       window.location.href = "/login";
     });

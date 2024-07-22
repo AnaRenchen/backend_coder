@@ -223,3 +223,4 @@
 {"level":"error","message":"{\n     \"name\": \"Code already exists.\",\n     \"message\": \"Product with the chosen code already exists.\",\n     \"stack\": \"Code already exists.: Product with the chosen code already exists.\\n    at CustomError.createError (file:///C:/Users/anama/Desktop/Escritorio/Programacion/backend/desafio1/src/utils/CustomError.js:10:19)\\n    at addProduct (file:///C:/Users/anama/Desktop/Escritorio/Programacion/backend/desafio1/src/controller/ProductsController.js:161:27)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\",\n     \"code\": 400\n}"}
 {"level":"error","message":"\"Invalid password for anamagbh@gmail.com\""}
 {"level":"error","message":"\"Invalid password for anamagbh@gmail.com\""}
+{"level":"error","message":"\"Invalid password for anamagbh@gmail.com\""}

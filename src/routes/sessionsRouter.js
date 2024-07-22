@@ -186,11 +186,9 @@ router4.post("/requestPassword", async (req, res) => {
     const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
 
     await emailRecoverPassword(user.email, resetUrl, userName);
-    return res
-      .status(200)
-      .json({
-        message: "A password recovery link has been sent to your email.",
-      });
+    return res.status(200).json({
+      message: "A password recovery link has been sent to your email.",
+    });
   } catch (error) {
     req.logger.error("Error requesting password recovery:", error);
     return res.status(500).json({ message: "Internal server error." });

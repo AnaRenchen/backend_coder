@@ -287,6 +287,7 @@ export const emailRecoverPassword = async (to, resetUrl, userName) => {
       <p class="recover_message_email"> Hello, ${userName}!:) </p>
       <p class="recover_message_email">We received a request to reset your password for Horisada's Shop. To proceed, please click <a href="${resetUrl}">here</a> to set a new password. For your security, this link will expire in 1 hour.</p>
       <p class="recover_message_email"> If you did not request a password reset, please ignore this email. </p>
+      <p class="recover_message_email"> Kind regards, </p>
       <p class="recover_message_email"> The Horisada's Shop Team </p>
       </main>
       <footer>
