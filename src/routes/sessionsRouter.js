@@ -116,51 +116,6 @@ router4.get(
   }
 );
 
-router4.put("/premium/:uid", async (req, res) => {
-  const { uid } = req.params;
-  try {
-    if (!isValidObjectId(uid)) {
-      return res.status(400).json({
-        error: `You must choose a valid Mongo ID.`,
-      });
-    }
-
-    let user = await usersServices.getBy({ _id: uid });
-    if (!user) {
-      return res.status(404).json({
-        error: `Could not find the seleccted user.`,
-      });
-    }
-
-    if (user.role === "user") {
-      user.role = "premium";
-    } else if (user.role === "premium") {
-      user.role = "user";
-    } else {
-      return res.status(400).json({
-        error: `User role can only be changed between 'user' and 'premium'.`,
-      });
-    }
-
-    let updatedUser = await usersServices.updateUser(uid, {
-      role: user.role,
-    });
-
-    req.logger.info(updatedUser);
-
-    return res.status(200).json({
-      message: "User role updated successfully.",
-      user: updatedUser,
-    });
-  } catch (error) {
-    res.setHeader("Content-Type", "application/json");
-    return res.status(500).json({
-      error: `Unexpected error.`,
-      detalle: `${error.message}`,
-    });
-  }
-});
-
 router4.post("/requestPassword", async (req, res) => {
   const { email } = req.body;
 
@@ -183,6 +138,7 @@ router4.post("/requestPassword", async (req, res) => {
     });
 
     req.logger.info(token);
+
     const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
 
     await emailRecoverPassword(user.email, resetUrl, userName);
