@@ -4,10 +4,8 @@ import { passportCall } from "../middleware/passportCall.js";
 import { authUser } from "../middleware/authUser.js";
 import { usersServices } from "../repository/UsersServices.js";
 import { UsersDTO } from "../dto/UsersDTO.js";
-import { isValidObjectId } from "mongoose";
 import { config } from "../config/config.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 import { emailRecoverPassword } from "../config/mailing.config.js";
 import { generateHash, validatePassword } from "../utils.js";
 
@@ -166,7 +164,7 @@ router4.post("/reset-password", async (req, res) => {
       });
     }
 
-    const passwordIsSame = bcrypt.compareSync(newPassword, user.password);
+    const passwordIsSame = validatePassword(newPassword, user.password);
 
     if (passwordIsSame) {
       return res.status(400).json({

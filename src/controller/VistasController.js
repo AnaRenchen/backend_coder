@@ -2,6 +2,8 @@ import { cartsServices } from "../repository/CartsServices.js";
 import { productsServices } from "../repository/ProductsServices.js";
 import { ticketsServices } from "../repository/TicketsServices.js";
 import { isValidObjectId } from "mongoose";
+import CustomError from "../utils/CustomError.js";
+import { TYPES_ERROR } from "../utils/EErrors.js";
 
 export class VistasController {
   static getHome = async (req, res, next) => {
@@ -313,13 +315,23 @@ export class VistasController {
       const { tid } = req.params;
 
       if (!isValidObjectId(tid)) {
-        return res.status(400).render("error", { error: "Invalid Ticket ID" });
+        throw CustomError.createError(
+          "Invalid ticket Id.",
+          null,
+          "Ticket Id is not valid.",
+          TYPES_ERROR.INVALID_ARGUMENTS
+        );
       }
 
       const ticket = await ticketsServices.getTicketbyId(tid);
 
       if (!ticket) {
-        return res.status(404).render("error", { error: "Ticket not found" });
+        throw CustomError.createError(
+          "Ticket not found.",
+          null,
+          "Ticket not found.",
+          TYPES_ERROR.NOT_FOUND
+        );
       }
 
       res.render("checkout", {
@@ -328,7 +340,7 @@ export class VistasController {
         cart,
       });
     } catch (error) {
-      console.error("Error fetching ticket:", error);
+      req.logger.error("Error fetching ticket:", error);
       return next(error);
     }
   };
@@ -345,14 +357,17 @@ export class VistasController {
     }
   };
 
-  static getResetPassword = async (req, res) => {
+  static getResetPassword = async (req, res, next) => {
     try {
       const { token } = req.query;
 
       if (!token) {
-        return res
-          .status(400)
-          .json({ message: "Token is missing or invalid." });
+        throw CustomError.createError(
+          "Invalid token.",
+          null,
+          "Not valid or missing token.",
+          TYPES_ERROR.INVALID_ARGUMENTS
+        );
       }
 
       res.render("resetPassword", { token, login: req.session.user });

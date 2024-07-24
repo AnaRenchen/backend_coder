@@ -5,9 +5,6 @@ const resetPassword = async (e) => {
   let token = formData.get("token");
   let password = formData.get("password");
 
-  console.log("Token:", token);
-  console.log("Password:", password);
-
   if (!password || !token) {
     Swal.fire({
       icon: "error",
