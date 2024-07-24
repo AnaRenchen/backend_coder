@@ -559,9 +559,7 @@ export class CartsController {
           newTicket.code,
           newTicket.purchase_datetime
         );
-        if (result.accepted.length > 0) {
-          req.logger.info(result);
-        }
+        req.logger.info(result);
       }
 
       await cartsServices.updateCartWithProducts(cid, productsNotProcessed);
