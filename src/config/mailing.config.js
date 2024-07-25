@@ -159,7 +159,7 @@ export const sendTicket = async (
     "public",
     "assets",
     "images",
-    "logo_header.png"
+    "logo_header.PNG"
   );
 
   try {
@@ -302,7 +302,7 @@ export const emailRecoverPassword = async (to, resetUrl, userName) => {
     "public",
     "assets",
     "images",
-    "logo_header.png"
+    "logo_header.PNG"
   );
 
   try {
