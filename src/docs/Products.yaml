@@ -1,0 +1,185 @@
+paths:
+  /api/products:
+    get:
+      summary: Returns a list of products.
+      tags:
+        - Products
+      description: Optional extended description in CommonMark or HTML.
+      responses:
+        "200": # status code
+          description: A JSON array of products.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "500": # status code
+          description: Internal server error.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+    post:
+      summary: Add a product to Mongo DB.
+      tags:
+        - Products
+      description: Only premium users and admin can add a product to the database. They must login first.
+      responses:
+        "200": # status code
+          description: A JSON object of the new product.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "400": # status code
+          description: Invalid arguments, because code already exists or a property is missing.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "401": # status code
+          description: Unauthorized, only admin and premium users can add product.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "500": # status code
+          description: Internal server error.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+  /api/products/:pid:
+    get:
+      summary: Returns the product with the given id.
+      tags:
+        - Products
+      description: Optional extended description in CommonMark or HTML.
+      responses:
+        "200": # status code
+          description: A JSON object of a product.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "404": # status code
+          description: Error, product not found.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "400": # status code
+          description: Error, invalid product id.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "500": # status code
+          description: Internal server error.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+    put:
+      summary: Update a product at Mongo DB.
+      tags:
+        - Products
+      description: Only premium users and admin can update a product. They must login first.
+      responses:
+        "200": # status code
+          description: A JSON object of the updated product.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "400": # status code
+          description: Invalid arguments, because code already exists, or user must enter at least one valid property, or property is not valid.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "401": # status code
+          description: Unauthorized, only admin and premium users can update a product. Premium users can only update their own product.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "404": # status code
+          description: Error, product not found.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "500": # status code
+          description: Internal server error.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+    delete:
+      summary: delete a product from Mongo DB.
+      tags:
+        - Products
+      description: Only premium users and admin can delete a product. They must login first.
+      responses:
+        "200": # status code
+          description: A message saying product with given id was deleted.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "401": # status code
+          description: Unauthorized, only admin and premium users can delete a product. Premium users can only delete their own products.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "404": # status code
+          description: Error, product not found.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "500": # status code
+          description: Internal server error.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string

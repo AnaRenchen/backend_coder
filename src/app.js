@@ -21,6 +21,8 @@ import cors from "cors";
 import { errorHandler } from "./middleware/errorHandler.js";
 import compression from "express-compression";
 import { logger, middLogger } from "./utils/logger.js";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUI from "swagger-ui-express";
 
 const PORT = config.PORT;
 const app = express();
@@ -51,6 +53,20 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "handlebars");
 app.use(compression({ brotli: { enabled: true } }));
 app.use(express.static(path.join(__dirname, "public")));
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Horisada Shop",
+      version: "1.0.0",
+      description: "Ecommerce Horisada Shop Backend Coder",
+    },
+  },
+  apis: ["src/docs/*.yaml"],
+};
+const spec = swaggerJSDoc(options);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(spec));
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
