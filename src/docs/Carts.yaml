@@ -130,6 +130,193 @@ paths:
           #       type: array
           #       items:
           #         type: string
+  /api/carts/:cid/product/:pid:
+    post:
+      summary: Add a product to the given cart.
+      tags:
+        - Carts
+      description: Add products to a cart.Only users with "user" and "premium" roles can add products to cart, but users with a "premium" role cannot add their own products. Must login first.
+      responses:
+        "200": # status code
+          description: A JSON object of the created cart with an array of products and the quantity added of each product.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "400": # status code
+          description: Invalid cart or product mongo id.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "401": # status code
+          description: Unauthorized, must login to add products to a cart.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "404": # status code
+          description: Cart or product not found.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "500": # status code
+          description: Internal server error.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+    delete:
+      summary: Delete a product from the given cart.
+      tags:
+        - Carts
+      description: Delete products from a cart, decreasing the quantity one by one. Must login first.
+      responses:
+        "200": # status code
+          description: A JSON object of the cart with an array of products without the deleted product or with the updated quantity of the deleted product.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "400": # status code
+          description: Invalid cart or product mongo id.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "401": # status code
+          description: Unauthorized, must login to delete a product from the cart.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "404": # status code
+          description: Cart or product not found.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "500": # status code
+          description: Internal server error.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+  /api/carts/:cid/products/:pid:
+    put:
+      summary: Update product quantity of the given cart.
+      tags:
+        - Carts
+      description: Update product quantity of the given cart. Must login first.
+      responses:
+        "200": # status code
+          description: A JSON object of the cart with an array of products and the updatd quantity.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "400": # status code
+          description: Invalid cart or product mongo id, or not a valid quantity.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "401": # status code
+          description: Unauthorized, must login to update product quantity of a cart.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "404": # status code
+          description: Cart or product not found.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "500": # status code
+          description: Internal server error.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+  /api/carts/:cid/purchase:
+    post:
+      summary: Create a purchase ticket.
+      tags:
+        - Carts
+      description: Create a purchase ticket with products that have stock and send an email with the ticket to client. Products without stock remain in the cart. Must login first.
+      responses:
+        "200": # status code
+          description: A JSON object of the created cart.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "400": # status code
+          description: Invalid cart mongo id.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "401": # status code
+          description: Unauthorized, must login to purchase.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "404": # status code
+          description: Cart or product not found.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
+        "500": # status code
+          description: Internal server error.
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: string
   /api/carts:
     post:
       summary: Create a cart at Mongo DB.
