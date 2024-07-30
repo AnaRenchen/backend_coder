@@ -104,7 +104,7 @@ export const initPassport = () => {
           if (!user) {
             let name = fullName.split(" ")[0];
             let last_name = fullName.split(" ")[1];
-            user = await usersManager.create({
+            user = await usersServices.createUser({
               name,
               last_name,
               email,
@@ -126,7 +126,7 @@ export const initPassport = () => {
   });
 
   passport.deserializeUser(async (id, done) => {
-    let user = await usersManager.getBy({ _id: id });
+    let user = await usersServices.getBy({ _id: id });
     return done(null, user);
   });
 };
