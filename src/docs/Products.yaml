@@ -4,6 +4,62 @@ paths:
       summary: Returns a list of products.
       tags:
         - Products
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+          description: number of pages to show
+        - in: query
+          name: limit
+          schema:
+            type: number
+          description: number of products to show
+        - in: query
+          name: sort
+          schema:
+            type: string
+          description: sort by price asc/desc
+        - in: query
+          name: title
+          schema:
+            type: string
+          description: Filter by product title
+        - in: query
+          name: description
+          schema:
+            type: string
+          description: Filter by product description
+        - in: query
+          name: price
+          schema:
+            type: number
+          description: Filter by product price
+        - in: query
+          name: thumbnail
+          schema:
+            type: string
+          description: Filter by product thumbnail
+        - in: query
+          name: code
+          schema:
+            type: string
+          description: Filter by product code
+        - in: query
+          name: stock
+          schema:
+            type: number
+          description: Filter by product stock
+        - in: query
+          name: status
+          schema:
+            type: boolean
+          description: Filter by product status
+        - in: query
+          name: category
+          schema:
+            type: string
+          description: Filter by product category
       description: Retrieves a list of products from the database. The response includes product details and pagination information.
       responses:
         "200":
@@ -140,42 +196,65 @@ paths:
                     example: Internal server error.
     put:
       summary: Update a product at Mongo DB.
+      security:
+        -OAuth2: [admin, premium]
       tags:
         - Products
-      description: Only premium users and admin can update a product. They must login first.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProductRequestBody"
+              description: property to be updated
+      description: Updated properties of a product. Only premium users and admin can perform this action.
       responses:
         "200":
           description: A JSON object of the updated product.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateProductResponse"
         "400":
           description: Invalid arguments, because code already exists, or user must enter at least one valid property, or property is not valid.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "You must choose a valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock, owner."
         "401":
-          description: Unauthorized, only admin and premium users can update a product. Premium users can only update their own product.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          description: Unauthorized, must login to update a product.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please login, or problem with the role.
+        "403":
+          description: Unauthorised, only admin and premium users can update a product.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorised. Insufficient privileges to access.
         "404":
           description: Error, product not found.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Could not find the selected product.
         "500":
           description: Internal server error.
           content:
@@ -188,6 +267,8 @@ paths:
                     example: Internal server error.
     delete:
       summary: delete a product from Mongo DB.
+      security:
+        -OAuth2: [admin, premium]
       tags:
         - Products
       description: Only premium users and admin can delete a product. They must login first.
@@ -406,3 +487,41 @@ components:
           __v: 0
           owner: "adminCoder@coder.com"
           id: "662c37bcb8c5a4462d6c586f"
+    UpdateProductRequestBody:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Product title
+        description:
+          type: string
+          description: Product description
+        price:
+          type: number
+          description: Product price
+        thumbnail:
+          type: string
+          description: Product image URL
+        code:
+          type: string
+          description: Product code, must be unique
+        stock:
+          type: number
+          description: Product stock
+        status:
+          type: boolean
+          description: Product status (available/not available)
+        category:
+          type: string
+          description: Product category
+      description: Properties to be updated
+      example:
+        stock: "New Stock Value"
+    UpdateProductResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Product with id 662c37bcb8c5a4462d6c586f was updated."
+        updatedProduct:
+          $ref: "#/components/schemas/Product"
