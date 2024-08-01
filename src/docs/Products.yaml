@@ -6,61 +6,77 @@ paths:
         - Products
       description: Optional extended description in CommonMark or HTML.
       responses:
-        "200": # status code
+        "200":
           description: A JSON array of products.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "500": # status code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductsResponse"
+        "500":
           description: Internal server error.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error.
     post:
       summary: Add a product to Mongo DB.
       tags:
         - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductBody"
       description: Only premium users and admin can add a product to the database. They must login first.
       responses:
-        "200": # status code
-          description: A JSON object of the new product.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "400": # status code
+        "200":
+          description: A JSON object with the new product.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadProductResponse"
+        "400":
           description: Invalid arguments, because code already exists or a property is missing.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "401": # status code
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Product with the chosen code already exists.
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Must complete all valid properties to add product.Valid properties are: title, description, category, price, status, thumbnail, code, stock"
+        "401":
           description: Unauthorized, only admin and premium users can add product.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please login, or problem with the role
         "500": # status code
           description: Internal server error.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-  /api/products/:pid:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error."
+  /api/products/{pid}:
     get:
       summary: Returns the product with the given id.
       tags:
@@ -183,3 +199,126 @@ paths:
           #       type: array
           #       items:
           #         type: string
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "662c37bcb8c5a4462d6c586f"
+        title:
+          type: string
+          example: "karajishi"
+        description:
+          type: string
+          example: "Original Painting A3 Size"
+        price:
+          type: number
+          example: 230
+        thumbnail:
+          type: string
+          example: "https://i.postimg.cc/dQCLz41h/karajishi.jpg"
+        code:
+          type: string
+          example: "horisada6"
+        stock:
+          type: number
+          example: 3
+        status:
+          type: boolean
+          example: true
+        category:
+          type: string
+          example: "folklore"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-04-26T23:24:44.393Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-07-24T19:28:29.103Z"
+        __v:
+          type: number
+          example: 0
+        owner:
+          type: string
+          example: "adminCoder@coder.com"
+        id:
+          type: string
+          example: "662c37bcb8c5a4462d6c586f"
+    ProductsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "success"
+        payload:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        totalPages:
+          type: number
+          example: 1
+        prevPage:
+          type: string
+          nullable: true
+          example: null
+        nextPage:
+          type: string
+          nullable: true
+          example: null
+        page:
+          type: number
+          example: 1
+        hasPrevPage:
+          type: boolean
+          example: false
+        hasNextPage:
+          type: boolean
+          example: false
+        prevLink:
+          type: string
+          nullable: true
+          example: null
+        nextLink:
+          type: string
+          nullable: true
+          example: null
+    ProductBody:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "karajishi"
+        description:
+          type: string
+          example: "Original Painting A3 Size"
+        price:
+          type: number
+          example: 230
+        thumbnail:
+          type: string
+          example: "https://i.postimg.cc/dQCLz41h/karajishi.jpg"
+        code:
+          type: string
+          example: "horisada6"
+        stock:
+          type: number
+          example: 3
+        status:
+          type: boolean
+          example: true
+        category:
+          type: string
+          example: "folklore"
+    UploadProductResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Product added."
+        newProduct:
+          $ref: "#/components/schemas/Product"

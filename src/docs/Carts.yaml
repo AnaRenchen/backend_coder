@@ -1,10 +1,16 @@
 paths:
-  /api/carts/:cid:
+  /api/carts/{cid}:
     get:
       summary: Returns the cart with the given mongo id.
       tags:
         - Carts
-      description: Optional extended description in CommonMark or HTML.
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: Mongo ID of the cart to get
       responses:
         "200": # status code
           description: A JSON object of the cart.
@@ -130,53 +136,80 @@ paths:
           #       type: array
           #       items:
           #         type: string
-  /api/carts/:cid/product/:pid:
+  /api/carts/{cid}/product/{pid}:
     post:
       summary: Add a product to the given cart.
+      security:
+        -OAuth2: [user, premium]
       tags:
         - Carts
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: Mongo ID of the cart
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: Mongo Id of the product
       description: Add products to a cart.Only users with "user" and "premium" roles can add products to cart, but users with a "premium" role cannot add their own products. Must login first.
       responses:
-        "200": # status code
-          description: A JSON object of the created cart with an array of products and the quantity added of each product.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "400": # status code
+        "200":
+          description: A JSON object of the created cart with 2 properties, a message and an object cart with an array of objects named products.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddProductResponse"
+        "400":
           description: Invalid cart or product mongo id.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "401": # status code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please choose a valid mongo Id.
+        "401":
           description: Unauthorized, must login to add products to a cart.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "404": # status code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please login, or problem with the role.
+        "404":
           description: Cart or product not found.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "500": # status code
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Could not find the selected cart.
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Could not find the selected product in cart.
+        "500":
           description: Internal server error.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error."
     delete:
       summary: Delete a product from the given cart.
       tags:
@@ -223,7 +256,7 @@ paths:
           #       type: array
           #       items:
           #         type: string
-  /api/carts/:cid/products/:pid:
+  /api/carts/{cid}/products/{pid}:
     put:
       summary: Update product quantity of the given cart.
       tags:
@@ -270,7 +303,7 @@ paths:
           #       type: array
           #       items:
           #         type: string
-  /api/carts/:cid/purchase:
+  /api/carts/{cid}/purchase:
     post:
       summary: Create a purchase ticket.
       tags:
@@ -340,3 +373,83 @@ paths:
           #       type: array
           #       items:
           #         type: string
+components:
+  schemas:
+    AddProductResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Product added.
+        cart:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: 665cc3d4c6d44e8003d48052
+            products:
+              type: array
+              items:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: 662c37bcb8c5a4462d6c586f
+                      title:
+                        type: string
+                        example: karajishi
+                      description:
+                        type: string
+                        example: Original Painting A3 Size
+                      price:
+                        type: number
+                        example: 230
+                      thumbnail:
+                        type: string
+                        example: https://i.postimg.cc/dQCLz41h/karajishi.jpg
+                      code:
+                        type: string
+                        example: horisada6
+                      stock:
+                        type: number
+                        example: 3
+                      status:
+                        type: boolean
+                        example: true
+                      category:
+                        type: string
+                        example: folklore
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2024-04-26T23:24:44.393Z"
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: "2024-07-24T19:28:29.103Z"
+                      __v:
+                        type: number
+                        example: 0
+                      owner:
+                        type: string
+                        example: adminCoder@coder.com
+                  quantity:
+                    type: number
+                    example: 2
+                  _id:
+                    type: string
+                    example: 66a5495e2b6d976435d5ab81
+            createdAt:
+              type: string
+              format: date-time
+              example: "2024-06-02T19:11:16.718Z"
+            updatedAt:
+              type: string
+              format: date-time
+              example: "2024-07-31T19:38:28.290Z"
+            __v:
+              type: number
+              example: 48

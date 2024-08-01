@@ -63,7 +63,7 @@ const options = {
       description: "Ecommerce Horisada Shop Backend Coder",
     },
   },
-  apis: ["src/docs/*.yaml"],
+  apis: ["./src/docs/*.yaml"],
 };
 const spec = swaggerJSDoc(options);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(spec));
