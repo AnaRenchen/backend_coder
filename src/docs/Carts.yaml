@@ -11,6 +11,7 @@ paths:
             type: string
           required: true
           description: Mongo ID of the cart to get.
+      description: Returns the cart with the given mongo id.
       responses:
         "200":
           description: A JSON object ot the cart.
@@ -52,9 +53,16 @@ paths:
       summary: Delete all products from the given cart.
       tags:
         - Carts
-      description: Optional extended description in CommonMark or HTML.
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: Mongo ID of the cart to get.
+      description: Delete all products from the given cart, does not delete the cart.
       responses:
-        "200": # status code
+        "200":
           description: A JSON object of the cart with an empty products array inside.
           # content:
           #   application/json:
@@ -72,22 +80,26 @@ paths:
                   error:
                     type: string
                     example: Please choose a valid mongo Id.
-        "401": # status code
+        "401":
           description: Unauthorized, must login to delete all products from cart.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "404": # status code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please login, or problem with the role.
+        "404":
           description: Error, cart not found.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Could not find the selected cart.
         "500":
           description: Internal server error.
           content:
@@ -102,40 +114,63 @@ paths:
       summary: Update cart with the given mongo id.
       tags:
         - Carts
-      description: Optional extended description in CommonMark or HTML.
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: Mongo ID of the cart to get.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCartRequest"
+      description: Update the cart content of products and/or quantity.
       responses:
-        "200": # status code
+        "200":
           description: A JSON object of the updated cart.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "400": # status code
-          description: Invalid arguments, or invalid mongo id, or invalid properties.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "401": # status code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateCartResponse"
+        "400":
+          description: Invalid arguments, either because the Mongo ID or property is not valid.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Please choose a valid Mongo Id.
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Please provide an array with properties product and quantity for product."
+        "401":
           description: Unauthorized, must login to update cart.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "404": # status code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please login, or problem with the role.
+        "404":
           description: Error, cart not found.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Could not find the selected cart.
         "500":
           description: Internal server error.
           content:
@@ -234,7 +269,20 @@ paths:
       summary: Delete a product from the given cart.
       tags:
         - Carts
-      description: Delete products from a cart, decreasing the quantity one by one. Must login first.
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: Mongo ID of the cart
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: Mongo Id of the product
+      description: Delete products from a cart, decreasing the quantity one by one.
       responses:
         "200": # status code
           description: A JSON object of the cart with an array of products without the deleted product or with the updated quantity of the deleted product.
@@ -244,30 +292,42 @@ paths:
           #       type: array
           #       items:
           #         type: string
-        "400": # status code
-          description: Invalid cart or product mongo id.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "401": # status code
+        "400":
+          description: Invalid cart or product id.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please choose a valid mongo Id.
+        "401":
           description: Unauthorized, must login to delete a product from the cart.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "404": # status code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please login, or problem with the role.
+        "404":
           description: Cart or product not found.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Could not find the selected cart.
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Could not find the selected product in cart.
         "500":
           description: Internal server error.
           content:
@@ -283,7 +343,20 @@ paths:
       summary: Update product quantity of the given cart.
       tags:
         - Carts
-      description: Update product quantity of the given cart. Must login first.
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: Mongo ID of the cart
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: Mongo Id of the product
+      description: Update product quantity of the given cart.
       responses:
         "200": # status code
           description: A JSON object of the cart with an array of products and the updatd quantity.
@@ -293,30 +366,48 @@ paths:
           #       type: array
           #       items:
           #         type: string
-        "400": # status code
-          description: Invalid cart or product mongo id, or not a valid quantity.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "401": # status code
+        "400":
+          description: Invalid cart or product mongo Id, or invalid quantity.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Please choose a valid Mongo Id.
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Please provide a valid quantity for product."
+        "401":
           description: Unauthorized, must login to update product quantity of a cart.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "404": # status code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please login, or problem with the role.
+        "404":
           description: Cart or product not found.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Could not find the selected cart.
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Could not find the selected product in cart.
         "500":
           description: Internal server error.
           content:
@@ -332,7 +423,14 @@ paths:
       summary: Create a purchase ticket.
       tags:
         - Carts
-      description: Create a purchase ticket with products that have stock and send an email with the ticket to client. Products without stock remain in the cart. Must login first.
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: Mongo ID of the cart
+      description: Create a purchase ticket with products that have stock and send an email with the ticket to client. Products without stock remain in the cart. Cannot be performed by admin.
       responses:
         "200": # status code
           description: A JSON object of the created cart.
@@ -342,30 +440,36 @@ paths:
           #       type: array
           #       items:
           #         type: string
-        "400": # status code
-          description: Invalid cart mongo id.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "401": # status code
+        "400":
+          description: Invalid cart id.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please choose a valid mongo Id.
+        "401":
           description: Unauthorized, must login to purchase.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "404": # status code
-          description: Cart or product not found.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please login, or problem with the role.
+        "404":
+          description: Error, cart not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Could not find the selected cart.
         "500":
           description: Internal server error.
           content:
@@ -498,3 +602,57 @@ components:
     GetCartResponse:
       type: object
       $ref: "#/components/schemas/Cart"
+    UpdateCartRequest:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                description: Mongo ID of the product.
+                example: "662c374cb8c5a4462d6c5863"
+              quantity:
+                type: integer
+                description: Quantity of the product.
+                example: 2
+          description: Array of products to update in the cart.
+    UpdateCartResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Cart with id 665cc3d4c6d44e8003d48052 was updated."
+        cart:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: "665cc3d4c6d44e8003d48052"
+            products:
+              type: array
+              items:
+                type: object
+                properties:
+                  product:
+                    type: string
+                    example: "662c374cb8c5a4462d6c5863"
+                  quantity:
+                    type: integer
+                    example: 2
+                  _id:
+                    type: string
+                    example: "66ac429062a84cc0d6459d16"
+            createdAt:
+              type: string
+              format: date-time
+              example: "2024-06-02T19:11:16.718Z"
+            updatedAt:
+              type: string
+              format: date-time
+              example: "2024-08-02T02:21:04.929Z"
+            __v:
+              type: integer
+              example: 49

@@ -231,7 +231,6 @@ export class ProductsController {
   static updateProduct = async (req, res, next) => {
     try {
       let id = req.params.pid;
-
       if (!isValidObjectId(id)) {
         throw CustomError.createError(
           "Invalid Mongo Id.",
@@ -341,7 +340,6 @@ export class ProductsController {
   static deleteProduct = async (req, res, next) => {
     try {
       let id = req.params.pid;
-
       if (!isValidObjectId(id)) {
         throw CustomError.createError(
           "Invalid Mongo Id.",

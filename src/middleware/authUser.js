@@ -1,4 +1,5 @@
 import { productsServices } from "../repository/ProductsServices.js";
+import { isValidObjectId } from "mongoose";
 
 export const authUser = (privileges = [], checkOwnership = false) => {
   return async (req, res, next) => {
@@ -28,6 +29,11 @@ export const authUser = (privileges = [], checkOwnership = false) => {
 
     if (checkOwnership && (req.method === "DELETE" || req.method === "PUT")) {
       const { pid } = req.params;
+      if (!isValidObjectId(pid)) {
+        return res.status(400).json({
+          message: "Please choose a valid Mongo Id.",
+        });
+      }
       const product = await productsServices.getProductbyId(pid);
 
       if (!product) {

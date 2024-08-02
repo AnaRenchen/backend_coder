@@ -200,6 +200,13 @@ paths:
         -OAuth2: [admin, premium]
       tags:
         - Products
+      parameters:
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: Mongo ID of the product to update.
       requestBody:
         required: true
         content:
@@ -216,15 +223,26 @@ paths:
               schema:
                 $ref: "#/components/schemas/UpdateProductResponse"
         "400":
-          description: Invalid arguments, because code already exists, or user must enter at least one valid property, or property is not valid.
+          description: Invalid arguments, either because the Mongo ID is invalid, the code already exists, or the user must enter at least one valid property.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "You must choose a valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock, owner."
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Please choose a valid Mongo Id.
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "You must choose a valid property to update product.Valid properties are: title,description,category,price,status,thumbnail,code,stock, owner."
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: There is already another product with the same code.
         "401":
           description: Unauthorized, must login to update a product.
           content:
@@ -271,32 +289,55 @@ paths:
         -OAuth2: [admin, premium]
       tags:
         - Products
+      parameters:
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: Mongo ID of the product to be deleted.
       description: Only premium users and admin can delete a product. They must login first.
       responses:
         "200":
           description: A message saying product with given id was deleted.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product with id 66ac29748a150b8bc602f343 was deleted.
         "401":
-          description: Unauthorized, only admin and premium users can delete a product. Premium users can only delete their own products.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          description: Unauthorized, only admin and premium users can delete a product.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Please login, or problem with the role.
+        "403":
+          description: Unauthorised, only admin and premium users can delete a product. Premium users can only delete their own products.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorised. Insufficient privileges to access.
         "404":
           description: Error, product not found.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Could not find the selected product.
         "500":
           description: Internal server error.
           content:
