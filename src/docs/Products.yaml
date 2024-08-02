@@ -409,6 +409,7 @@ components:
         __v: 0
         owner: "adminCoder@coder.com"
         id: "662c37bcb8c5a4462d6c586f"
+
     ProductsResponse:
       type: object
       properties:
@@ -463,6 +464,7 @@ components:
         hasNextPage: false
         prevLink: null
         nextLink: null
+
     ProductBody:
       type: object
       properties:
@@ -499,11 +501,13 @@ components:
         stock: 3
         status: true
         category: "folklore"
+
     GetProductResponse:
       type: object
       properties:
         product:
           $ref: "#/components/schemas/Product"
+
     UploadProductResponse:
       type: object
       properties:
@@ -528,6 +532,7 @@ components:
           __v: 0
           owner: "adminCoder@coder.com"
           id: "662c37bcb8c5a4462d6c586f"
+
     UpdateProductRequestBody:
       type: object
       properties:
@@ -558,6 +563,7 @@ components:
       description: Properties to be updated
       example:
         stock: "New Stock Value"
+
     UpdateProductResponse:
       type: object
       properties:

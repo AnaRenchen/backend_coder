@@ -574,7 +574,7 @@ export class CartsController {
             imageUrl: "https://i.postimg.cc/rwx3gPhz/icons8-sad-cat-100.png",
           });
         } else {
-          return res.status(200).json({
+          return res.status(400).json({
             redirect: true,
             url: "/products",
             message: "You must select products in order to check out.",
@@ -586,7 +586,7 @@ export class CartsController {
       return res.status(200).json({
         message: "Ticket created.",
         newTicketId: newTicket._id,
-        "Products processed": productsProcessed,
+        "Ticket Products": productsProcessed,
         "Products not processed": productsNotProcessed,
         showAlert: productsNotProcessed.length > 0,
         notProcessedProductNames: productsNotProcessed.map(

@@ -282,14 +282,12 @@ paths:
           description: Mongo Id of the product
       description: Delete products from a cart, decreasing the quantity one by one.
       responses:
-        "200": # status code
+        "200":
           description: A JSON object of the cart with an array of products without the deleted product or with the updated quantity of the deleted product.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteProductsCartResponse"
         "400":
           description: Invalid cart or product id.
           content:
@@ -341,6 +339,12 @@ paths:
       summary: Update product quantity of the given cart.
       tags:
         - Carts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateQuantityBody"
       parameters:
         - in: path
           name: cid
@@ -356,14 +360,12 @@ paths:
           description: Mongo Id of the product
       description: Update product quantity of the given cart.
       responses:
-        "200": # status code
+        "200":
           description: A JSON object of the cart with an array of products and the updatd quantity.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateQuantityResponse"
         "400":
           description: Invalid cart or product mongo Id, or invalid quantity.
           content:
@@ -419,6 +421,8 @@ paths:
   /api/carts/{cid}/purchase:
     post:
       summary: Create a purchase ticket.
+      security:
+        -OAuth2: [user, premium]
       tags:
         - Carts
       parameters:
@@ -430,24 +434,28 @@ paths:
           description: Mongo ID of the cart
       description: Create a purchase ticket with products that have stock and send an email with the ticket to client. Products without stock remain in the cart. Cannot be performed by admin.
       responses:
-        "200": # status code
-          description: A JSON object of the created cart.
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: array
-          #       items:
-          #         type: string
-        "400":
-          description: Invalid cart id.
+        "200":
+          description: A JSON object of products processed to create the ticket. The answet also shows products that were not processed.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Please choose a valid mongo Id.
+                $ref: "#/components/schemas/CreatePurchaseResponse"
+        "400":
+          description: Invalid cart id or no products in cart.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Please choose a valid Mongo id.
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: You must select products in order to check out.
         "401":
           description: Unauthorized, must login to purchase.
           content:
@@ -458,8 +466,8 @@ paths:
                   error:
                     type: string
                     example: Please login, or problem with the role.
-        "404":
-          description: Error, cart not found.
+        "403":
+          description: Unauthorised, cannot be performed by admin.
           content:
             application/json:
               schema:
@@ -467,7 +475,23 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: Could not find the selected cart.
+                    example: Unauthorised. Insufficient privileges to access.
+        "404":
+          description: Cart or product not found.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Could not find the selected cart.
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Could not find the selected product in cart.
         "500":
           description: Internal server error.
           content:
@@ -762,7 +786,7 @@ components:
       properties:
         message:
           type: string
-        newCart:
+        cart:
           $ref: "#/components/schemas/NewCart"
       example:
         message: "All products were removed from the cart."
@@ -772,3 +796,155 @@ components:
           createdAt: "2024-08-02T02:42:53.556Z"
           updatedAt: "2024-08-02T02:42:53.556Z"
           __v: 0
+
+    DeleteProductsCartResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        cart:
+          $ref: "#/components/schemas/Cart"
+      example:
+        message: "Product with id 662c37bcb8c5a4462d6c586f was removed from the cart."
+        cart:
+          _id: "665cc3d4c6d44e8003d48052"
+          products:
+            - product:
+                _id: "662c37bcb8c5a4462d6c586f"
+                title: "karajishi"
+                description: "Original Painting A3 Size"
+                price: 230
+                thumbnail: "https://i.postimg.cc/dQCLz41h/karajishi.jpg"
+                code: "horisada6"
+                stock: 3
+                status: true
+                category: "folklore"
+                createdAt: "2024-04-26T23:24:44.393Z"
+                updatedAt: "2024-07-24T19:28:29.103Z"
+                __v: 0
+                owner: "adminCoder@coder.com"
+              quantity: 2
+              _id: "66a5495e2b6d976435d5ab81"
+          createdAt: "2024-06-02T19:11:16.718Z"
+          updatedAt: "2024-07-31T19:38:28.290Z"
+          __v: 48
+
+    UpdateQuantityBody:
+      type: object
+      properties:
+        quantity:
+          type: number
+          description: new quantity
+      example:
+        quantity: 3
+
+    CartUpdatedQuantity:
+      type: object
+      properties:
+        _id:
+          type: string
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+              quantity:
+                type: integer
+              _id:
+                type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        __v:
+          type: integer
+      example:
+        _id: "66ac469f6d6f773208e85e74"
+        products:
+          - product: "662c37bcb8c5a4462d6c586f"
+            quantity: 1
+            _id: "66ad563c33d594ad4dc6e1ce"
+        createdAt: "2024-08-02T02:38:23.703Z"
+        updatedAt: "2024-08-02T22:16:02.226Z"
+        __v: 0
+
+    UpdateQuantityResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        cart:
+          $ref: "#/components/schemas/CartUpdatedQuantity"
+      example:
+        message: "Quantity of product with id 662c37bcb8c5a4462d6c586f in cart with id 66ac469f6d6f773208e85e74 was updated."
+        cart:
+          _id: "665cc3d4c6d44e8003d48052"
+          products:
+            - product: "662c37bcb8c5a4462d6c586f"
+              quantity: 2
+              _id: "66a5495e2b6d976435d5ab81"
+          createdAt: "2024-08-02T02:38:23.703Z"
+          updatedAt: "2024-08-02T22:16:02.226Z"
+          __v: 0
+
+    CreatePurchaseResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        newTicketId:
+          type: string
+        TicketProducts:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  title:
+                    type: string
+                  price:
+                    type: number
+              quantity:
+                type: integer
+        ProductsNotProcessed:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  title:
+                    type: string
+                  price:
+                    type: number
+              quantity:
+                type: integer
+        showAlert:
+          type: boolean
+        notProcessedProductNames:
+          type: array
+          items:
+            type: string
+      example:
+        message: "Ticket created."
+        newTicketId: "66ad60d892ec8511dc6b26c9"
+        TicketProducts:
+          - product:
+              _id: "662c37bcb8c5a4462d6c586f"
+              title: "karajishi"
+              price: 230
+            quantity: 1
+        ProductsNotProcessed: []
+        showAlert: false
+        notProcessedProductNames: []
