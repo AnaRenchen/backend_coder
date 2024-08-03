@@ -64,20 +64,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const params = new URLSearchParams(window.location.search);
-  const error = params.get('error');
-  
-  if (error) {
-    Swal.fire({
-        imageUrl: "https://i.postimg.cc/g0qCjgXP/icons8-geisha-64-2.png",
-        background: "white",
-        text: error,
-        confirmButtonText: "OK",
-        confirmButtonColor: "black",
-    });
-  }
-});
-</script>
 

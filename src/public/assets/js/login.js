@@ -37,7 +37,12 @@ const login = async (e) => {
   if (response.ok) {
     window.location.href = `/products?message=Welcome, ${data.username}, role: ${data.role}!`;
   } else {
-    window.location.href =
-      "/login?error=Invalid email or password, please try again.";
+    Swal.fire({
+      imageUrl: "https://i.postimg.cc/g0qCjgXP/icons8-geisha-64-2.png",
+      background: "white",
+      text: data.message || "Invalid email or password, please try again.",
+      confirmButtonText: "OK",
+      confirmButtonColor: "black",
+    });
   }
 };
