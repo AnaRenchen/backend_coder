@@ -8,7 +8,7 @@
     "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js --mode dev",
     "prod": "node ./src/app.js --mode prod",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./test/**/*.js"
   },
   "author": "",
   "license": "ISC",
@@ -31,9 +31,16 @@
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-local": "^1.0.0",
+    "session": "^0.1.0",
     "socket.io": "^4.7.5",
+    "supertest-session": "^5.0.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "chai": "^5.1.1",
+    "mocha": "^10.7.0",
+    "supertest": "^7.0.0"
   }
 }

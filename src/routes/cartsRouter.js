@@ -15,9 +15,10 @@ router2.post(
 
 router2.put(
   "/:cid",
-  authUser(["user", "admin", "premium"]),
+
   CartsController.updateCart
 );
+//authUser(["user", "admin", "premium"]),
 
 router2.put(
   "/:cid/products/:pid",
