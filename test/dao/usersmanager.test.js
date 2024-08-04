@@ -42,8 +42,6 @@ describe("Testing Users Dao", function () {
 
     let result = await this.dao.create(mockUser);
 
-    console.log(result);
-
     expect(isValidObjectId(result._id)).to.be.true;
     expect(result).to.have.property("_id");
 
@@ -53,5 +51,20 @@ describe("Testing Users Dao", function () {
 
     expect(result).to.have.property("_id");
     expect(result.email).to.equal(mockUser.email);
+  });
+
+  it("The method getBy finds a user by the chosen filter.", async function () {
+    let filter = { email: "anamagbh@gmail.com" };
+
+    let result = await this.dao.getBy(filter);
+
+    expect(result.email).to.exist.and.to.be.equal("anamagbh@gmail.com");
+
+    result = await mongoose.connection
+      .collection("users")
+      .findOne({ email: result.email });
+
+    expect(result).to.have.property("_id");
+    expect(isValidObjectId(result._id)).to.be.true;
   });
 });
