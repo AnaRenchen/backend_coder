@@ -1,11 +1,11 @@
 import { expect } from "chai";
 import { afterEach, before, describe, it } from "mocha";
-import supertestSession from "supertest-session";
+import supertest from "supertest-session";
 import mongoose from "mongoose";
 import { config } from "../../src/config/config.js";
 import { isValidObjectId } from "mongoose";
 
-const requester = supertestSession("http://localhost:3000");
+const requester = supertest("http://localhost:3000");
 
 const connDB = async () => {
   try {

@@ -1,13 +1,18 @@
 import { expect } from "chai";
 import { afterEach, before, describe, it } from "mocha";
-import supertestSession from "supertest-session";
+import supertest from "supertest-session";
 import mongoose from "mongoose";
 import { config } from "../../src/config/config.js";
 import { isValidObjectId } from "mongoose";
 import { cartsServices } from "../../src/repository/CartsServices.js";
 const { ObjectId } = mongoose.Types;
 
-const requester = supertestSession("http://localhost:3000");
+const requester = supertest("http://localhost:3000");
+let user = {
+  email: "anamagbh@gmail.com",
+  password: "123",
+};
+let newCart;
 
 const connDB = async () => {
   try {
@@ -24,7 +29,13 @@ connDB();
 describe("Testing router Carts", function () {
   this.timeout(10000);
 
-  let newCart;
+  before(async function () {
+    await requester.post("/api/sessions/login").send(user);
+  });
+
+  after(async function () {
+    await requester.get("/api/sessions/logout");
+  });
 
   afterEach(async function () {
     if (newCart) {
@@ -35,11 +46,15 @@ describe("Testing router Carts", function () {
   });
 
   it("The endpoing api/carts/:cid/product/:pid with its method post add a product to a cart.", async () => {
-    let cid = "665cc3d4c6d44e8003d48052";
+    let cid = "66b29e664ae50703118704c6";
     let pid = "662c37bcb8c5a4462d6c586f";
-    let { body } = await requester.post(`/api/carts/${cid}/product/${pid}`);
 
-    //expect(body.cart._id).to.equal(cid);
+    let { body } = await requester.post(`/api/carts/${cid}/product/${pid}`);
+    console.log(body.cart.products);
+
+    expect(body.message).to.equal("Product added.");
+    expect(body.cart._id).to.equal(cid);
+    expect(isValidObjectId(pid)).to.be.true;
   });
 
   it("The endpoing api/carts/:cid with its method get returns the cart which id was passed by params.", async () => {

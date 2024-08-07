@@ -8,7 +8,7 @@
     "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js --mode dev",
     "prod": "node ./src/app.js --mode prod",
-    "test": "mocha ./test/**/*.js"
+    "test": "mocha ./test/**/*.js -- --exit"
   },
   "author": "",
   "license": "ISC",
