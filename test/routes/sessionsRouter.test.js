@@ -48,6 +48,8 @@ describe("Testing router Sessions", function () {
 
     console.log(body);
     expect(body.message).to.exist.and.to.be.equal("Registration sucessful.");
+    expect(body.newUser).to.have.property("_id");
+    expect(isValidObjectId(body.newUser._id)).to.be.true;
 
     body = await mongoose.connection
       .collection("users")
@@ -58,7 +60,8 @@ describe("Testing router Sessions", function () {
     let { body } = await requester.post("/api/sessions/login").send(logUser);
 
     expect(body.payload).to.exist.and.to.be.equal("Login successful!");
-    expect(body.username).to.exist.and.to.be.equal("Tester");
+    expect(body.role).to.exist.and.to.be.equal("user");
+    expect(body).to.have.property("cart_id");
 
     let user = await mongoose.connection
       .collection("users")
@@ -70,8 +73,6 @@ describe("Testing router Sessions", function () {
     await requester.post("/api/sessions/login").send(logUser);
 
     let { body, status } = await requester.get("/api/sessions/current");
-
-    console.log(status, body);
 
     expect(status).to.be.equal(200);
     expect(body.login.firstname).to.equal("Tester");

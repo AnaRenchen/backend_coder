@@ -30,7 +30,9 @@ router4.get("/error", (req, res) => {
 
 router4.post("/register", passportCall("register"), async (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  return res.status(200).json({ message: `Registration sucessful.` });
+  return res
+    .status(200)
+    .json({ message: `Registration sucessful.`, newUser: req.user });
 });
 
 router4.post("/login", passportCall("login"), async (req, res) => {
