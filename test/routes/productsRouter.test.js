@@ -52,53 +52,55 @@ describe("Testing router Products", function () {
       .deleteMany({ title: "testing" });
   });
 
-  it("The endpoing api/products with its method get returns an array of products", async () => {
-    let { body } = await requester.get("/api/products");
+  it("The endpoing api/products with its method get returns an array of products.", async () => {
+    let { body, status } = await requester.get("/api/products");
 
     expect(Array.isArray(body.payload)).to.be.true;
-    expect(body.payload).to.be.an("array");
+    expect(status).to.equal(200);
     expect(body.status).to.exist.and.to.be.equal("success");
     body.payload.forEach((product) => {
       expect(product).to.include.property("description");
     });
   });
 
-  it("The endpoing api/products/:pid with its method get returns the product requested from params", async () => {
+  it("The endpoing api/products/:pid with its method get returns the product requested from params.", async () => {
     let pid = "662c37bcb8c5a4462d6c586f";
     let { body, status } = await requester.get(`/api/products/${pid}`);
-    console.log(body);
 
     expect(status).to.be.equal(200);
     expect(body.product._id).to.equal(pid);
+    expect(isValidObjectId(body.product._id)).to.be.true;
     expect(body.product.title).to.be.equal("karajishi");
   });
 
-  it("The endpoint api/products with its method post creates a new product at Mongo DB", async () => {
+  it("The endpoint api/products with its method post creates a new product at Mongo DB.", async () => {
     let { body, status } = await requester
       .post("/api/products")
       .send(mockProduct);
-
-    console.log(body);
 
     expect(status).to.be.equal(200);
     expect(body.message).to.exist.and.to.be.equal("Product added.");
     expect(body.newProduct).to.exist;
     expect(body.newProduct).to.have.property("_id");
-    expect(isValidObjectId(body.newProduct._id)).to.be.true;
+    expect(body.newProduct.title).to.be.equal(mockProduct.title);
 
     let result = await mongoose.connection
       .collection("products")
       .findOne({ title: "testing" });
+    expect(status).to.be.equal(200);
     expect(result).to.have.property("_id");
     expect(isValidObjectId(result._id)).to.be.true;
   });
 
-  it("The endpoing api/products/:pid with its method delete, delete the product request from params from Mongo DB", async () => {
+  it("The endpoing api/products/:pid with its method delete, deletes the product requested from params.", async () => {
     let createProduct = await requester.post("/api/products").send(mockProduct);
     let pid = createProduct.body.newProduct._id;
     let { body, status } = await requester.delete(`/api/products/${pid}`);
 
     expect(status).to.be.equal(200);
-    expect(body.message).to.exist.and.to.include("was deleted.");
+    expect(isValidObjectId(pid)).to.be.true;
+    expect(body.message).to.exist.and.to.include(
+      `Product with id ${pid} was deleted.`
+    );
   });
 });

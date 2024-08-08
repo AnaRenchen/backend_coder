@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { afterEach, before, describe, it } from "mocha";
+import { afterEach, describe, it } from "mocha";
 import supertest from "supertest-session";
 import mongoose from "mongoose";
 import { config } from "../../src/config/config.js";
@@ -35,18 +35,19 @@ connDB();
 describe("Testing router Sessions", function () {
   this.timeout(10000);
 
-  afterEach(async function () {
+  after(async function () {
     await mongoose.connection
       .collection("users")
       .deleteMany({ email: "testing2@testing.com" });
+    await requester.get("/api/sessions/logout");
   });
 
-  it("The endpoint api/sessions/register with its method post creates a new user at Mongo DB", async () => {
-    let { body } = await requester
+  it("The endpoint api/sessions/register with its method post creates a new user at Mongo DB.", async () => {
+    let { body, status } = await requester
       .post("/api/sessions/register")
       .send(mockUser);
 
-    console.log(body);
+    expect(status).to.equal(200);
     expect(body.message).to.exist.and.to.be.equal("Registration sucessful.");
     expect(body.newUser).to.have.property("_id");
     expect(isValidObjectId(body.newUser._id)).to.be.true;
@@ -54,6 +55,7 @@ describe("Testing router Sessions", function () {
     body = await mongoose.connection
       .collection("users")
       .findOne({ email: mockUser.email });
+    expect(body.email).to.exist.and.to.be.ok;
   });
 
   it("The endpoint api/sessions/login with its method post logs in a user.", async () => {
@@ -69,7 +71,7 @@ describe("Testing router Sessions", function () {
     expect(user.name).to.exist.and.to.be.equal("Tester");
   });
 
-  it("The endpoint api/sessions/current returns the user the is logged in.", async () => {
+  it("The endpoint api/sessions/current returns the user that is logged in.", async () => {
     await requester.post("/api/sessions/login").send(logUser);
 
     let { body, status } = await requester.get("/api/sessions/current");
@@ -77,9 +79,5 @@ describe("Testing router Sessions", function () {
     expect(status).to.be.equal(200);
     expect(body.login.firstname).to.equal("Tester");
     expect(body.login.email).to.equal("testing3@testing.com");
-
-    after(async function () {
-      await requester.get("/api/sessions/logout");
-    });
   });
 });

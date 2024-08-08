@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { afterEach, before, describe, it } from "mocha";
+import { before, describe, it } from "mocha";
 import supertest from "supertest-session";
 import mongoose from "mongoose";
 import { config } from "../../src/config/config.js";
 import { isValidObjectId } from "mongoose";
-import { cartsServices } from "../../src/repository/CartsServices.js";
+import { cartsModel } from "../../src/dao/models/cartsModel.js";
 const { ObjectId } = mongoose.Types;
 
 const requester = supertest("http://localhost:3000");
@@ -12,7 +12,9 @@ let user = {
   email: "anamagbh@gmail.com",
   password: "123",
 };
-let newCart;
+
+let cid = "66b29e664ae50703118704c6";
+let pid = "662c37bcb8c5a4462d6c586f";
 
 const connDB = async () => {
   try {
@@ -37,63 +39,59 @@ describe("Testing router Carts", function () {
     await requester.get("/api/sessions/logout");
   });
 
-  afterEach(async function () {
-    if (newCart) {
-      await mongoose.connection
-        .collection("carts")
-        .deleteOne({ _id: newCart._id });
-    }
-  });
-
-  it("The endpoing api/carts/:cid/product/:pid with its method post add a product to a cart.", async () => {
-    let cid = "66b29e664ae50703118704c6";
-    let pid = "662c37bcb8c5a4462d6c586f";
-
+  it("The endpoing api/carts/:cid/product/:pid with its method post adds a product to the cart.", async () => {
     let { body } = await requester.post(`/api/carts/${cid}/product/${pid}`);
-    console.log(body.cart.products);
 
     expect(body.message).to.equal("Product added.");
     expect(body.cart._id).to.equal(cid);
     expect(isValidObjectId(pid)).to.be.true;
+    expect(isValidObjectId(cid)).to.be.true;
+    await requester.delete(`/api/carts/${cid}/product/${pid}`);
   });
 
-  it("The endpoing api/carts/:cid with its method get returns the cart which id was passed by params.", async () => {
-    let cid = "665cc3d4c6d44e8003d48052";
-
-    let { body } = await requester.get(`/api/carts/${cid}`);
+  it("The endpoing api/carts/:cid with its method get returns the cart requested by params.", async () => {
+    let { body, status } = await requester.get(`/api/carts/${cid}`);
 
     expect(body._id).to.equal(cid);
-
+    expect(status).that.equal(200);
     expect(body).to.have.property("products");
 
-    body = await mongoose.connection
+    let cart = await mongoose.connection
       .collection("carts")
       .findOne({ _id: new ObjectId(cid) });
-    expect(body).to.have.property("_id");
+    expect(cart).to.have.property("_id");
+    expect(isValidObjectId(cid)).to.be.true;
   });
 
   it("The endpoing api/carts/:cid with its method put updates a cart.", async () => {
-    newCart = await cartsServices.createCart();
-    let cid = newCart._id;
-
     let cartContent = {
       products: [
         {
-          product: "662c374cb8c5a4462d6c5863",
+          product: pid,
           quantity: 2,
         },
       ],
     };
 
-    let { body } = await requester.put(`/api/carts/${cid}`).send(cartContent);
+    let { body, status } = await requester
+      .put(`/api/carts/${cid}`)
+      .send(cartContent);
 
+    expect(status).that.equal(200);
     expect(body).to.have.property(
       "message",
       `Cart with id ${cid} was updated.`
     );
-    expect(body.cart.products[0]).to.have.property(
-      "product",
-      "662c374cb8c5a4462d6c5863"
-    );
+    expect(body.cart.products[0]).to.have.property("quantity", 2);
+  });
+
+  it("The endpoing api/carts with its method post creates a new cart at Mongo DB.", async () => {
+    let { body, status } = await requester.post(`/api/carts`);
+
+    expect(status).to.equal(200);
+    expect(body.message).to.include("Cart created.");
+    expect(body.newCart).to.have.property("_id");
+    expect(isValidObjectId(body.newCart._id)).to.be.true;
+    await cartsModel.findByIdAndDelete(body.newCart._id);
   });
 });
