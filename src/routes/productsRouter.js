@@ -8,8 +8,7 @@ router.get("/", ProductsController.getProducts);
 
 router.get("/:pid", ProductsController.getProduct);
 
-router.post("/", ProductsController.addProduct);
-//authUser(["admin", "premium"]),
+router.post("/", authUser(["admin", "premium"]), ProductsController.addProduct);
 
 router.put(
   "/:pid",
