@@ -45,6 +45,7 @@ router4.post("/login", passportCall("login"), async (req, res) => {
     return res.status(200).json({
       payload: "Login successful!",
       username: user.name,
+      user_id: user._id,
       cart_id: user.cart._id,
       role: user.role,
     });
@@ -71,6 +72,12 @@ router4.post("/login", passportCall("login"), async (req, res) => {
 
 router4.get("/logout", async (req, res) => {
   try {
+    if (req.user) {
+      req.user.last_connection = new Date();
+      await usersServices.updateUser(req.user._id, {
+        last_connection: req.user.last_connection,
+      });
+    }
     req.session.destroy((e) => {
       if (e) {
         res.setHeader("Content-Type", "application/json");

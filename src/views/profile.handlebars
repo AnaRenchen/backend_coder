@@ -23,6 +23,28 @@
       <p class="texto_profile">Role: {{user.role}}</p>
     </div>
   </div>
+  <hr>
+
+  <div>
+     <h4 class="info_documents">Dear {{user.name}}, you can use the following form to upload your documents:</h2>
+     <form onsubmit="uploadDoctuments(event)" id="formDocuments" action="/api/users/:uid/documents" method="post">
+
+  <div class="container_form_documents">
+
+    <label for="email"><b>Email</b></label>
+    <input class="form_input" type="email" placeholder="Enter Email" name="email" />
+
+    <label for="password"><b>Password</b></label>
+    <input  class="form_input"  type="password" placeholder="Enter Password" name="password" />
+
+   <div class="button-container">
+  <button class="button_form" type="submit" >Send Docs</button>
+</div>
+  </div>
+</form>
+
+</div>
+
 </main>
 
 <footer></footer>

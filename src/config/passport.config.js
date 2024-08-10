@@ -75,6 +75,11 @@ export const initPassport = () => {
             return done(null, false, { message: "Invalid password" });
           }
 
+          user.last_connection = new Date();
+          await usersServices.updateUser(user._id, {
+            last_connection: user.last_connection,
+          });
+
           return done(null, user);
         } catch (error) {
           return done(error);

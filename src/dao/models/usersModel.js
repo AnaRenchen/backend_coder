@@ -20,6 +20,8 @@ const usersSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "carts",
     },
+    documents: [{ name: String, reference: String }],
+    last_connection: { type: Date },
   },
   {
     timestamps: true,

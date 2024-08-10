@@ -13,8 +13,8 @@ class CartsServices {
     return await this.dao.getCartbyId(id, useLean);
   };
 
-  createCart = async () => {
-    return await this.dao.createCart();
+  createCart = async (product) => {
+    return await this.dao.createCart(product);
   };
 
   addProductCart = async (cid, products) => {

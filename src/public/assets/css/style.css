@@ -548,7 +548,7 @@ footer{
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
-    margin-bottom: 100px;
+    margin-bottom: 30px;
   }
   
   .info_profile {
@@ -937,6 +937,22 @@ li {
   }
 
   .container_form_recover {
+    padding: 16px;
+    margin-bottom: 100px;
+  }
+
+  .info_documents {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.5rem;
+    margin-top: 30px;
+    margin-left: 70px;
+    margin-bottom: 30px;
+    color: #242220;
+    font-weight: lighter;
+    letter-spacing: 0.05em;
+  }
+
+  .container_form_documents {
     padding: 16px;
     margin-bottom: 100px;
   }

@@ -13,7 +13,7 @@ let user = {
   password: "123",
 };
 
-let cid = "66b29e664ae50703118704c6";
+let cid = "66b7aa2b9e660c29f50c8642";
 let pid = "662c37bcb8c5a4462d6c586f";
 
 const connDB = async () => {
@@ -52,9 +52,9 @@ describe("Testing router Carts", function () {
   it("The endpoing api/carts/:cid with its method get returns the cart requested by params.", async () => {
     let { body, status } = await requester.get(`/api/carts/${cid}`);
 
-    expect(body._id).to.equal(cid);
+    expect(body.cart._id).to.equal(cid);
     expect(status).that.equal(200);
-    expect(body).to.have.property("products");
+    expect(body.cart).to.have.property("products");
 
     let cart = await mongoose.connection
       .collection("carts")

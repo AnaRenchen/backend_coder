@@ -35,7 +35,7 @@ export class CartsController {
 
       if (cart) {
         res.setHeader("Content-Type", "application/json");
-        return res.status(200).json(cart);
+        return res.status(200).json({ message: `Cart with id ${id}:`, cart });
       } else {
         throw CustomError.createError(
           "Cart Not Found",
@@ -584,7 +584,7 @@ export class CartsController {
       }
 
       return res.status(200).json({
-        message: "Ticket created.",
+        message: "Ticket created. An email with the ticket was sent to you.",
         newTicketId: newTicket._id,
         "Ticket Products": productsProcessed,
         "Products not processed": productsNotProcessed,

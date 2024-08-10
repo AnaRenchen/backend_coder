@@ -54,4 +54,11 @@ export class UsersController {
       return next(error);
     }
   };
+
+  static postDocuments = async (req, res, next) => {
+    try {
+    } catch (error) {
+      return next(error);
+    }
+  };
 }
