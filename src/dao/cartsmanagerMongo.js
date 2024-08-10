@@ -5,8 +5,8 @@ export class CartsManagerMongo {
     return await cartsModel.find().populate("products.product");
   }
 
-  async createCart(product) {
-    const newCart = await cartsModel.create(product);
+  async createCart() {
+    const newCart = await cartsModel.create({ products: [] });
     return newCart.toJSON();
   }
 

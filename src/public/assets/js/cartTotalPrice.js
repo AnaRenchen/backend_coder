@@ -4,7 +4,7 @@ const getTotalPrice = async () => {
     let cid = cartInput.value;
     let response = await fetch(`/api/carts/${cid}`);
     let data = await response.json();
-    let totalPrice = data.products.reduce((accumulator, product) => {
+    let totalPrice = data.cart.products.reduce((accumulator, product) => {
       let productPrice = Number(product.product.price);
       let productQuantity = Number(product.quantity);
       return accumulator + productPrice * productQuantity;
