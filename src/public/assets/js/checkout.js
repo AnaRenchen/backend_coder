@@ -43,7 +43,7 @@ async function checkout() {
         if (result.showAlert) {
           const productNames = result.notProcessedProductNames.join(", ");
           await Swal.fire({
-            text: `We are sorry to inform the following products could not be processed due to lack of stock: ${productNames}`,
+            text: `We regret to inform you that the following products could not be processed, or were only partially processed, due to a lack of stock: ${productNames}`,
             confirmButtonColor: "black",
             color: "black",
             background: "#87a7ae",

@@ -181,7 +181,7 @@ paths:
                     example: Internal server error.
   /api/carts/{cid}/product/{pid}:
     post:
-      summary: Add a product to the given cart.
+      summary: Adds a product to the given cart.
       security:
         -OAuth2: [user, premium]
       tags:
@@ -253,6 +253,16 @@ paths:
                       error:
                         type: string
                         example: Could not find the selected product in cart.
+        "409":
+          description: Cannot add product because there is no stock.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Cannot add product to cart because there is no stock.
         "500":
           description: Internal server error.
           content:

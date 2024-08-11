@@ -9,7 +9,7 @@ const { ObjectId } = mongoose.Types;
 
 const requester = supertest("http://localhost:3000");
 let user = {
-  email: "anamagbh@gmail.com",
+  email: "testing@gmail.com",
   password: "123",
 };
 
