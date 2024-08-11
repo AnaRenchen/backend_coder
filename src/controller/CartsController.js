@@ -145,6 +145,15 @@ export class CartsController {
         cart.products.push({ product: findProduct._id, quantity: 1 });
       }
 
+      if (findProduct.stock === 0) {
+        throw CustomError.createError(
+          "No stock.",
+          null,
+          `Cannot add product to cart because there is no stock for ${findProduct.title}.`,
+          TYPES_ERROR.CONFLICT
+        );
+      }
+
       await cartsServices.addProductCart(cid, cart.products);
 
       const updatedCart = await cartsServices.getCartbyId(cid, false);
@@ -520,6 +529,26 @@ export class CartsController {
             },
             quantity: item.quantity,
           });
+        } else if (findProduct.stock > 0) {
+          productsProcessed.push({
+            product: {
+              _id: findProduct._id,
+              title: findProduct.title,
+              price: findProduct.price,
+            },
+            quantity: findProduct.stock,
+          });
+
+          productsNotProcessed.push({
+            product: {
+              _id: findProduct._id,
+              title: findProduct.title,
+              price: findProduct.price,
+            },
+            quantity: item.quantity - findProduct.stock,
+          });
+
+          await productsServices.updateProduct(findProduct._id, { stock: 0 });
         } else {
           productsNotProcessed.push({
             product: {

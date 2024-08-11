@@ -60,7 +60,22 @@ const add = async (pid) => {
       let data = await response.json();
       console.log(data);
       await Swal.fire({
-        text: "You cannot add this product to cart, because you are its owner.",
+        text: "You cannot add this product to cart because you are its owner.",
+        background: "#87a7ae",
+        icon: "error",
+        color: "black",
+        showConfirmButton: true,
+        confirmButtonText: "OK",
+        confirmButtonColor: "black",
+        toast: true,
+      });
+    }
+
+    if (response.status === 409) {
+      let data = await response.json();
+      console.log(data);
+      await Swal.fire({
+        text: "You cannot add this product to cart because there is no stock.",
         background: "#87a7ae",
         icon: "error",
         color: "black",

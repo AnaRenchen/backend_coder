@@ -10,11 +10,9 @@ export const errorHandler = (error, req, res, next) => {
 
     case TYPES_ERROR.AUTHORIZATION:
       res.setHeader("Content-Type", "application/json");
-      return res
-        .status(403)
-        .json({
-          error: "Unauthorised.Insufficient privileges to perform this action.",
-        });
+      return res.status(403).json({
+        error: "Unauthorised.Insufficient privileges to perform this action.",
+      });
 
     case TYPES_ERROR.DATA_TYPE:
       res.setHeader("Content-Type", "application/json");
@@ -27,6 +25,10 @@ export const errorHandler = (error, req, res, next) => {
     case TYPES_ERROR.NOT_FOUND:
       res.setHeader("Content-Type", "application/json");
       return res.status(404).json({ error: `${error.message}` });
+
+    case TYPES_ERROR.CONFLICT:
+      res.setHeader("Content-Type", "application/json");
+      return res.status(409).json({ error: `${error.message}` });
 
     case TYPES_ERROR.INTERNAL_SERVER_ERROR:
       res.setHeader("Content-Type", "application/json");
