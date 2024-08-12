@@ -27,7 +27,7 @@ export class UsersController {
         );
       }
 
-      if (user.role === "user") {
+      if (user.role === "user" && user.documents.length === 3) {
         user.role = "premium";
       } else if (user.role === "premium") {
         user.role = "user";
@@ -35,7 +35,7 @@ export class UsersController {
         throw CustomError.createError(
           "Role changing not valid.",
           null,
-          "User role can only be changed between 'user' and 'premium",
+          "User role can only be changed between 'user' and 'premium' or you must upload your ID, Proof of address and Acount statement to become a 'premium' user.",
           TYPES_ERROR.AUTHORIZATION
         );
       }
@@ -56,7 +56,56 @@ export class UsersController {
   };
 
   static postDocuments = async (req, res, next) => {
+    const { uid } = req.params;
+
     try {
+      if (!isValidObjectId(uid)) {
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.INVALID_ARGUMENTS
+        );
+      }
+
+      let user = await usersServices.getBy({ _id: uid });
+      if (!user) {
+        throw CustomError.createError(
+          "User not found.",
+          null,
+          "Could not find the selected user.",
+          TYPES_ERROR.NOT_FOUND
+        );
+      }
+
+      const files = req.files;
+      const newDocuments = Object.keys(files).map((key) => ({
+        name: key,
+        reference: files[key][0].path,
+      }));
+
+      const documentsMap = new Map();
+
+      user.documents.forEach((doc) => {
+        documentsMap.set(doc.name, doc.reference);
+      });
+
+      newDocuments.forEach((doc) => {
+        documentsMap.set(doc.name, doc.reference);
+      });
+
+      const updatedDocuments = Array.from(
+        documentsMap,
+        ([name, reference]) => ({ name, reference })
+      );
+      await usersServices.updateUser(uid, {
+        documents: updatedDocuments,
+      });
+
+      res.status(200).json({
+        message: "Documents uploaded successfully.",
+        documents: req.files,
+      });
     } catch (error) {
       return next(error);
     }

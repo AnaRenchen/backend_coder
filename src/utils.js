@@ -2,6 +2,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bcrypt from "bcrypt";
 import { faker } from "@faker-js/faker";
+import multer from "multer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,3 +27,22 @@ export const generateMockingProducts = () => {
     category: faker.commerce.department(),
   };
 };
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./src/uploads/documents");
+  },
+  filename: function (req, file, cb) {
+    if (file.mimetype !== "application/pdf") {
+      return cb(new Error("You can only upload PDF files."));
+    }
+
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+export const upload = multer({ storage: storage }).fields([
+  { name: "ID", maxCount: 1 },
+  { name: "Proof of address", maxCount: 1 },
+  { name: "Account statement", maxCount: 1 },
+]);
