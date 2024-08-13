@@ -4,10 +4,11 @@ const uploadDocuments = async (e) => {
 
   let formData = new FormData(document.getElementById("formDocuments"));
 
-  if (![...formData.values()].some((file) => file.name)) {
+  if (![...formData.entries()].some(([, file]) => file.size > 0)) {
     Swal.fire({
       icon: "error",
-      background: "white",
+      background: "#87a7ae",
+      color: "black",
       text: "Please upload at least 1 document.",
       confirmButtonText: "OK",
       confirmButtonColor: "black",
@@ -25,7 +26,8 @@ const uploadDocuments = async (e) => {
   if (response.ok) {
     Swal.fire({
       imageUrl: "https://i.postimg.cc/g0qCjgXP/icons8-geisha-64-2.png",
-      background: "white",
+      background: "#87a7ae",
+      color: "black",
       text: data.message || "Documents uploaded successfully.",
       confirmButtonText: "OK",
       confirmButtonColor: "black",
@@ -35,10 +37,14 @@ const uploadDocuments = async (e) => {
   } else {
     Swal.fire({
       icon: "error",
-      background: "white",
-      text: data.message || "An error occurred during upload.",
+      background: "#87a7ae",
+      color: "black",
+      text:
+        data.message ||
+        "An error occurred during the upload. Make sure your file has a PDF extension.",
       confirmButtonText: "OK",
       confirmButtonColor: "black",
+      toast: true,
     });
   }
 };
