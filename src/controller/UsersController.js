@@ -27,7 +27,13 @@ export class UsersController {
         );
       }
 
-      if (user.role === "user" && user.documents.length === 3) {
+      const requiredDocuments = ["ID", "Proof of address", "Account statement"];
+      const userDocuments = user.documents.map((doc) => doc.name);
+      const hasAllDocuments = requiredDocuments.every((docName) =>
+        userDocuments.includes(docName)
+      );
+
+      if (user.role === "user" && hasAllDocuments) {
         user.role = "premium";
       } else if (user.role === "premium") {
         user.role = "user";
@@ -78,26 +84,20 @@ export class UsersController {
         );
       }
 
-      const files = req.files;
+      const files = req.files || {};
       const newDocuments = Object.keys(files).map((key) => ({
         name: key,
         reference: files[key][0].path,
       }));
 
-      const documentsMap = new Map();
+      const existingDocuments = user.documents || [];
 
-      user.documents.forEach((doc) => {
-        documentsMap.set(doc.name, doc.reference);
-      });
+      const updatedDocuments = existingDocuments
+        .filter(
+          (doc) => !newDocuments.some((newDoc) => newDoc.name === doc.name)
+        )
+        .concat(newDocuments);
 
-      newDocuments.forEach((doc) => {
-        documentsMap.set(doc.name, doc.reference);
-      });
-
-      const updatedDocuments = Array.from(
-        documentsMap,
-        ([name, reference]) => ({ name, reference })
-      );
       await usersServices.updateUser(uid, {
         documents: updatedDocuments,
       });

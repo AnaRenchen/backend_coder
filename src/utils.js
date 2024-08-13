@@ -41,8 +41,37 @@ const storage = multer.diskStorage({
   },
 });
 
+const profilesStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./src/uploads/profiles");
+  },
+  filename: function (req, file, cb) {
+    let type = file.mimetype.split("/")[0];
+    if (type == "image") {
+      return cb(new Error("You can only upload images."));
+    }
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const productsStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./src/uploads/products");
+  },
+  filename: function (req, file, cb) {
+    let type = file.mimetype.split("/")[0];
+    if (type !== "image") {
+      return cb(new Error("You can only upload images."));
+    }
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
 export const upload = multer({ storage: storage }).fields([
   { name: "ID", maxCount: 1 },
   { name: "Proof of address", maxCount: 1 },
   { name: "Account statement", maxCount: 1 },
 ]);
+
+export const uploadProfiles = multer({ storage: profilesStorage });
+export const uploadProducts = multer({ storage: productsStorage });
