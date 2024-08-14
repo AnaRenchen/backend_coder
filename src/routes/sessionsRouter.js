@@ -45,8 +45,10 @@ router4.post("/login", passportCall("login"), async (req, res) => {
     return res.status(200).json({
       payload: "Login successful!",
       username: user.name,
+      role: user.role,
       user_id: user._id,
       cart_id: user.cart._id,
+      email: user.email,
       role: user.role,
     });
   } catch (error) {

@@ -27,31 +27,29 @@
 
   <div>
     <input type="text" value="{{user._id}}" hidden id="userId" />
-     <h4 class="info_documents">Dear {{user.name}}, you can use the following form to upload your documents:</h2>
+    <h4 class="title_documents"> Not a premium user yet ?</h4>
+     <p class="info_documents">Dear {{user.name}}, if you wish to upgrade your role to premium you can use the form below to upload the 3 documents. If you already have a premium role and need to replace any document, you can use the same form. Please notice they must have a PDF extension.</p>
      <form onsubmit="uploadDocuments(event)" id="formDocuments" action="/api/users/{{user._id}}/documents" method="post" enctype="multipart/form-data">
-
   <div class="container_form_documents">
+    <label for="ID">ID:</label>
+    <input type="file" id="ID" name="ID" style="display: none;" />
+    <button type="button" class="custom-file-upload" onclick="document.getElementById('ID').click();">Choose File</button>
 
-   
-  <label for="ID">Upload your ID:</label>
-  <input type="file" id="ID" name="ID" />
-  
-  <label for="proof-of-address">Upload your Proof of address:</label>
-  <input type="file" id="proof-of-address" name="Proof of address" />
-  
-  <label for="account-statement">Upload your account statement:</label>
-  <input type="file" id="account-statement" name="Account statement" />
+    <label for="proof-of-address">Proof of address:</label>
+    <input type="file" id="proof-of-address" name="Proof of address" style="display: none;" />
+    <button type="button" class="custom-file-upload" onclick="document.getElementById('proof-of-address').click();">Choose File</button>
 
-   <div class="button-container">
-  <button class="button_form" type="submit" value="upload" >Send Docs</button>
-</div>
+    <label for="account-statement">Account statement:</label>
+    <input type="file" id="account-statement" name="Account statement" style="display: none;" />
+    <button type="button" class="custom-file-upload" onclick="document.getElementById('account-statement').click();">Choose File</button>
+
+    <div class="button-container">
+      <button class="button_form" type="submit">Send Docs</button>
+    </div>
   </div>
 </form>
-
 </div>
-
 </main>
-
 <footer></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

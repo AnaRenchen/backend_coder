@@ -1,3 +1,18 @@
+document.querySelectorAll(".custom-file-upload").forEach((button) => {
+  button.addEventListener("click", function () {
+    const inputId = this.getAttribute("for");
+    const fileInput = document.getElementById(inputId);
+
+    fileInput.click();
+
+    fileInput.addEventListener("change", function () {
+      if (fileInput.files.length > 0) {
+        button.textContent = fileInput.files[0].name;
+      }
+    });
+  });
+});
+
 const uploadDocuments = async (e) => {
   e.preventDefault();
   let uid = document.getElementById("userId").value;

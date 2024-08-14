@@ -943,16 +943,52 @@ li {
 
   .info_documents {
     font-family: 'Times New Roman', Times, serif;
-    font-size: 1.5rem;
+    text-align: left;
+    font-size: 1.2rem;
     margin-top: 30px;
-    margin-left: 70px;
+    margin-left: 30px;
+    margin-right: 30px;
     margin-bottom: 30px;
     color: #242220;
     font-weight: lighter;
     letter-spacing: 0.05em;
   }
 
+  .title_documents{
+    font-family: 'Times New Roman', Times, serif;
+    text-align:center;
+    font-size: 1.5rem;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    color: #242220;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+
+  }
+
   .container_form_documents {
     padding: 16px;
     margin-bottom: 100px;
   }
+
+  .container_form_documents{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .custom-file-upload {
+    border: 2px solid black;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    color: #333;
+    border-radius: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .custom-file-upload:hover {
+    background-color: #454344;
+    color: white;
+  }
+  

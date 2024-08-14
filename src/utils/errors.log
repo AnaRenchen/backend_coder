@@ -582,3 +582,4 @@
 {"level":"error","message":"\"Invalid password for anamagbh@gmail.com\""}
 {"level":"error","message":"Request PUT from unauthenticated user anamagbh@gmail.com to the route: /api/users/premium/66b75d92f98d3fdc90966955"}
 {"level":"error","message":"Request PUT from unauthenticated user to the route: /api/users/premium/66b7a6a5f2a3c0f093555524"}
+{"level":"error","message":"\"Invalid password for anamagbh@gmail.com\""}
