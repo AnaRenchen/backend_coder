@@ -968,27 +968,50 @@ li {
 
   .container_form_documents {
     padding: 16px;
-    margin-bottom: 100px;
   }
 
   .container_form_documents{
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1rem;
   }
 
   .custom-file-upload {
-    border: 2px solid black;
+    border: 2px dashed black;
     display: inline-block;
     padding: 6px 12px;
+    letter-spacing: 0.5;
+    width: 500px;
     cursor: pointer;
     background-color: #f0f0f0;
     color: #333;
     border-radius: 5px;
     margin-bottom: 15px;
+    font-family: cursive;
+
   }
   
   .custom-file-upload:hover {
     background-color: #454344;
     color: white;
+  }
+
+  .button_upload_form {
+    background-color:#87a7ae;
+    color:#242220;
+    padding: 14px 20px;
+    margin: 8px auto; 
+    border: none;
+    cursor: pointer;
+    width: 30%;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    font-weight:bolder;
+    margin-bottom: 80px;
   }
   

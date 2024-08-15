@@ -1,15 +1,19 @@
 document.querySelectorAll(".custom-file-upload").forEach((button) => {
   button.addEventListener("click", function () {
-    const inputId = this.getAttribute("for");
+    const inputId = this.getAttribute("data-input-id");
     const fileInput = document.getElementById(inputId);
 
-    fileInput.click();
+    if (fileInput) {
+      fileInput.click();
 
-    fileInput.addEventListener("change", function () {
-      if (fileInput.files.length > 0) {
-        button.textContent = fileInput.files[0].name;
-      }
-    });
+      fileInput.addEventListener("change", function updateButtonLabel() {
+        if (fileInput.files.length > 0) {
+          button.textContent = fileInput.files[0].name;
+        }
+
+        fileInput.removeEventListener("change", updateButtonLabel);
+      });
+    }
   });
 });
 
