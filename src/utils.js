@@ -74,4 +74,6 @@ export const upload = multer({ storage: storage }).fields([
 ]);
 
 export const uploadProfiles = multer({ storage: profilesStorage });
-export const uploadProducts = multer({ storage: productsStorage });
+export const uploadProducts = multer({ storage: productsStorage }).single(
+  "thumbnail"
+);

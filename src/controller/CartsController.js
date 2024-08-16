@@ -595,19 +595,13 @@ export class CartsController {
 
       if (productsProcessed.length === 0) {
         if (productsNotProcessed.length > 0) {
-          return res.status(200).json({
-            redirect: true,
-            url: "/products",
-            message:
-              "The selected products are out of stock. Please choose other products.",
-            imageUrl: "https://i.postimg.cc/rwx3gPhz/icons8-sad-cat-100.png",
+          return res.status(409).json({
+            message: "The selected products are out of stock.",
+            productsNotProcessed,
           });
         } else {
           return res.status(400).json({
-            redirect: true,
-            url: "/products",
             message: "You must select products in order to check out.",
-            imageUrl: "https://i.postimg.cc/TYY2zvYm/icons8-geisha-80.png",
           });
         }
       }
@@ -616,11 +610,8 @@ export class CartsController {
         message: "Ticket created. An email with the ticket was sent to you.",
         newTicketId: newTicket._id,
         "Ticket Products": productsProcessed,
+        productsNotProcessed,
         "Products not processed": productsNotProcessed,
-        showAlert: productsNotProcessed.length > 0,
-        notProcessedProductNames: productsNotProcessed.map(
-          (item) => item.product.title
-        ),
       });
     } catch (error) {
       req.logger.error(

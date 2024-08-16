@@ -143,11 +143,15 @@ export class ProductsController {
         description,
         category,
         price,
-        status,
         thumbnail,
+        status,
         code,
         stock,
       } = req.body;
+
+      if (req.file) {
+        thumbnail = req.file.path;
+      }
 
       let exists;
       let owner = req.session.user;
@@ -172,9 +176,9 @@ export class ProductsController {
         !category ||
         !price ||
         !status ||
-        !thumbnail ||
         !code ||
-        !stock
+        !stock ||
+        !thumbnail
       ) {
         throw CustomError.createError(
           "Invalid or missing properties.",

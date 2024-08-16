@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authUser } from "../middleware/authUser.js";
 import { ProductsController } from "../controller/ProductsController.js";
+import { uploadProducts } from "../utils.js";
 
 export const router = Router();
 
@@ -8,7 +9,12 @@ router.get("/", ProductsController.getProducts);
 
 router.get("/:pid", ProductsController.getProduct);
 
-router.post("/", authUser(["admin", "premium"]), ProductsController.addProduct);
+router.post(
+  "/",
+  authUser(["admin", "premium"]),
+  uploadProducts,
+  ProductsController.addProduct
+);
 
 router.put(
   "/:pid",
