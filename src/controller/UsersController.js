@@ -50,8 +50,6 @@ export class UsersController {
         role: user.role,
       });
 
-      req.logger.info(updatedUser);
-
       return res.status(200).json({
         message: "User role updated successfully.",
         user: updatedUser,

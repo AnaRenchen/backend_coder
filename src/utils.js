@@ -33,11 +33,12 @@ const storage = multer.diskStorage({
     cb(null, "./src/uploads/documents");
   },
   filename: function (req, file, cb) {
+    let userName = req.session.user.name;
     if (file.mimetype !== "application/pdf") {
       return cb(new Error("You can only upload PDF files."));
     }
 
-    cb(null, Date.now() + "-" + file.originalname);
+    cb(null, Date.now() + "-" + userName + "-" + file.originalname);
   },
 });
 
@@ -46,11 +47,12 @@ const profilesStorage = multer.diskStorage({
     cb(null, "./src/uploads/profiles");
   },
   filename: function (req, file, cb) {
+    let userName = req.session.user.name;
     let type = file.mimetype.split("/")[0];
     if (type == "image") {
       return cb(new Error("You can only upload images."));
     }
-    cb(null, Date.now() + "-" + file.originalname);
+    cb(null, Date.now() + "-" + userName + "-" + file.originalname);
   },
 });
 
@@ -73,7 +75,9 @@ export const upload = multer({ storage: storage }).fields([
   { name: "Account statement", maxCount: 1 },
 ]);
 
-export const uploadProfiles = multer({ storage: profilesStorage });
+export const uploadProfiles = multer({ storage: profilesStorage }).single(
+  "profilePic"
+);
 export const uploadProducts = multer({ storage: productsStorage }).single(
   "thumbnail"
 );
