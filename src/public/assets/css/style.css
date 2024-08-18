@@ -1052,7 +1052,7 @@ li {
   .button_upload_form_photo {
     background-color:#87a7ae;
     color:#242220;
-    padding: 14px 20px;
+    padding: 12px 40px;
     margin: 8px auto; 
     border: none;
     cursor: pointer;
@@ -1068,9 +1068,9 @@ li {
     display: flex;
     justify-content: center;
     font-family: 'Times New Roman', Times, serif;
-    font-style: oblique;
+    font-style: normal;
     text-align:center;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     margin-top: 30px;
     margin-bottom: 30px;
     color: #242220;
