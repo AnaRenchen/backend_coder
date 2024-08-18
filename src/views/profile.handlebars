@@ -23,6 +23,19 @@
       <p class="texto_profile">Role: {{user.role}}</p>
     </div>
   </div>
+
+   <p class="title_photo">Please use the form below to upload a profile photo:</p>
+<form onsubmit="uploadPhoto(event)" id="formPhoto" action="/api/users/{{user._id}}/profilePic" method="post" enctype="multipart/form-data">
+  <div class="container_form_photo">
+    <label for="profilePic">Profile Photo:</label>
+    <input type="file" id="profilePic" name="profilePic" style="display: none;" />
+    <button type="button" class="custom-file-photo" data-input-id="profilePic">Choose File</button>
+    <div class="button-container">
+      <button class="button_upload_form_photo" type="submit">Send Docs</button>
+    </div>
+  </div>
+</form>
+
   <hr>
 
   <div>
@@ -45,10 +58,11 @@
     <button type="button" class="custom-file-upload" data-input-id="account-statement">Choose File</button>
 </div>
     
-  </div>
+ 
   <div class="button-container">
       <button class="button_upload_form" type="submit">Send Docs</button>
     </div>
+     </div>
 </form>
 </div>
 </main>
@@ -57,3 +71,4 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/assets/js/logout.js"></script>
 <script src="/assets/js/documents.js"></script>
+<script src="/assets/js/photo.js"></script>

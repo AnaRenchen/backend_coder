@@ -28,7 +28,7 @@ const uploadDocuments = async (e) => {
       icon: "error",
       background: "#87a7ae",
       color: "black",
-      text: "Please upload at least 1 document.",
+      text: "Please choose at least 1 document.",
       confirmButtonText: "OK",
       confirmButtonColor: "black",
       toast: true,

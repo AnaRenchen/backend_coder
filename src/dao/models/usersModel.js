@@ -21,6 +21,7 @@ const usersSchema = new mongoose.Schema(
       ref: "carts",
     },
     documents: [{ name: String, reference: String }],
+    profilePic: String,
     last_connection: { type: Date },
   },
   {

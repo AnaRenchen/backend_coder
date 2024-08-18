@@ -108,4 +108,45 @@ export class UsersController {
       return next(error);
     }
   };
+
+  static postProfilePic = async (req, res, next) => {
+    try {
+      const { uid } = req.params;
+
+      if (!isValidObjectId(uid)) {
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          errorMongoId(),
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.INVALID_ARGUMENTS
+        );
+      }
+
+      let user = await usersServices.getBy({ _id: uid });
+      if (!user) {
+        throw CustomError.createError(
+          "User not found.",
+          null,
+          "Could not find the selected user.",
+          TYPES_ERROR.NOT_FOUND
+        );
+      }
+
+      let profilePic;
+      if (req.file) {
+        profilePic = req.file.path;
+      }
+
+      await usersServices.updateUser(uid, {
+        profilePic: profilePic,
+      });
+
+      res.status(200).json({
+        message: "Profile Photo uploaded successfully.",
+        profilePic: req.file,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  };
 }

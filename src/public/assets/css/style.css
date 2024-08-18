@@ -1014,4 +1014,69 @@ li {
     font-weight:bolder;
     margin-bottom: 80px;
   }
+
+  .container_form_photo {
+    padding: 16px;
+  }
+
+  .container_form_photo{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1rem;
+  }
+
+  .custom-file-photo{
+    border: 2px dashed black;
+    display: inline-block;
+    padding: 6px 12px;
+    letter-spacing: 0.5;
+    width: 300px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    color: #333;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-family: cursive;
+
+  }
+  
+  .custom-file-photo:hover {
+    background-color: #454344;
+    color: white;
+  }
+
+  .button_upload_form_photo {
+    background-color:#87a7ae;
+    color:#242220;
+    padding: 14px 20px;
+    margin: 8px auto; 
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    font-weight:bolder;
+    margin-bottom: 20px;
+  }
+
+  .title_photo{
+    display: flex;
+    justify-content: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: oblique;
+    text-align:center;
+    font-size: 1.2rem;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    color: #242220;
+    font-weight: normal;
+    letter-spacing: 0.05em;
+
+  }
+  
   

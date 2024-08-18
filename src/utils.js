@@ -49,9 +49,10 @@ const profilesStorage = multer.diskStorage({
   filename: function (req, file, cb) {
     let userName = req.session.user.name;
     let type = file.mimetype.split("/")[0];
-    if (type == "image") {
+    if (type !== "image") {
       return cb(new Error("You can only upload images."));
     }
+
     cb(null, Date.now() + "-" + userName + "-" + file.originalname);
   },
 });
