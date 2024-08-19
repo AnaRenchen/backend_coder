@@ -611,7 +611,6 @@ export class CartsController {
         newTicketId: newTicket._id,
         "Ticket Products": productsProcessed,
         productsNotProcessed,
-        "Products not processed": productsNotProcessed,
       });
     } catch (error) {
       req.logger.error(

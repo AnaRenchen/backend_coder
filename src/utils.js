@@ -30,11 +30,27 @@ export const generateMockingProducts = () => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./src/uploads/documents");
+    let folder = "";
+
+    if (file.fieldname === "profilePic") {
+      folder = "./src/uploads/profiles";
+    } else if (file.fieldname === "thumbnail") {
+      folder = "./src/uploads/products";
+    } else {
+      folder = "./src/uploads/documents";
+    }
+
+    cb(null, folder);
   },
   filename: function (req, file, cb) {
     let userName = req.session.user.name;
-    if (file.mimetype !== "application/pdf") {
+    let type = file.mimetype.split("/")[0];
+
+    if (file.fieldname === "profilePic" || file.fieldname === "thumbnail") {
+      if (type !== "image") {
+        return cb(new Error("You can only upload images."));
+      }
+    } else if (file.mimetype !== "application/pdf") {
       return cb(new Error("You can only upload PDF files."));
     }
 
@@ -42,43 +58,11 @@ const storage = multer.diskStorage({
   },
 });
 
-const profilesStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./src/uploads/profiles");
-  },
-  filename: function (req, file, cb) {
-    let userName = req.session.user.name;
-    let type = file.mimetype.split("/")[0];
-    if (type !== "image") {
-      return cb(new Error("You can only upload images."));
-    }
-
-    cb(null, Date.now() + "-" + userName + "-" + file.originalname);
-  },
-});
-
-const productsStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./src/uploads/products");
-  },
-  filename: function (req, file, cb) {
-    let type = file.mimetype.split("/")[0];
-    if (type !== "image") {
-      return cb(new Error("You can only upload images."));
-    }
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-export const upload = multer({ storage: storage }).fields([
+export const upload = multer({ storage }).fields([
   { name: "ID", maxCount: 1 },
   { name: "Proof of address", maxCount: 1 },
   { name: "Account statement", maxCount: 1 },
 ]);
 
-export const uploadProfiles = multer({ storage: profilesStorage }).single(
-  "profilePic"
-);
-export const uploadProducts = multer({ storage: productsStorage }).single(
-  "thumbnail"
-);
+export const uploadProfiles = multer({ storage }).single("profilePic");
+export const uploadProducts = multer({ storage }).single("thumbnail");

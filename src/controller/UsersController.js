@@ -142,7 +142,7 @@ export class UsersController {
       });
 
       res.status(200).json({
-        message: "Profile Photo uploaded successfully.",
+        message: "Profile photo uploaded successfully.",
         profilePic: req.file,
       });
     } catch (error) {

@@ -610,3 +610,4 @@
 {"level":"error","message":"Request POST from unauthenticated user to the route: /api/carts/66b7a6a5f2a3c0f093555522/purchase"}
 {"level":"error","message":"Request POST from unauthenticated user to the route: /api/carts/66b7a6a5f2a3c0f093555522/purchase"}
 {"level":"error","message":"Request POST from unauthenticated user to the route: /api/carts/66b7a6a5f2a3c0f093555522/purchase"}
+{"level":"error","message":"Request POST from unauthenticated user adminCoder@coder.com to the route: /api/carts/66b7a6a5f2a3c0f093555522/product/66c3c88f12f42ad85fb639df"}
