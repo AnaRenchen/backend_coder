@@ -3,6 +3,10 @@ import { isValidObjectId } from "mongoose";
 import { TYPES_ERROR } from "../utils/EErrors.js";
 import CustomError from "../utils/CustomError.js";
 import { errorMongoId } from "../utils/errorsProducts.js";
+import { UsersDTO } from "../dto/UsersDTO.js";
+import moment from "moment";
+import { usersModel } from "../dao/models/usersModel.js";
+import { sendDeletedUsersEmail } from "../config/mailing.config.js";
 
 export class UsersController {
   static getPremium = async (req, res, next) => {
@@ -144,6 +148,87 @@ export class UsersController {
       res.status(200).json({
         message: "Profile photo uploaded successfully.",
         profilePic: req.file,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  static getUsers = async (req, res, next) => {
+    try {
+      let users = await usersServices.getUsers();
+      let usersDTO = users.map((user) => new UsersDTO(user));
+
+      res.status(200).json({
+        message: "These are all the registered users.",
+        users: usersDTO,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  static getInactiveUsers = async (req, res, next) => {
+    try {
+      const maxTimeConnection = moment().subtract(2, "days").toDate();
+
+      const filter = {
+        last_connection: { $lt: maxTimeConnection },
+      };
+
+      let inactiveUsers = await usersServices.getByMany(filter);
+
+      if (inactiveUsers.length === 0) {
+        throw CustomError.createError(
+          "No inactive user.",
+          null,
+          "Could not find any inactive user.",
+          TYPES_ERROR.NOT_FOUND
+        );
+      }
+
+      res.status(200).json({
+        message: "These are the inactive users:",
+        payload: inactiveUsers,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  static deleteUsers = async (req, res, next) => {
+    try {
+      const maxTimeConnection = moment().subtract(2, "days").toDate();
+
+      const filter = {
+        last_connection: { $lt: maxTimeConnection },
+      };
+
+      let inactiveUsers = await usersServices.getByMany(filter);
+
+      if (inactiveUsers.length === 0) {
+        throw CustomError.createError(
+          "No inactive user.",
+          null,
+          "Could not find any inactive user.",
+          TYPES_ERROR.NOT_FOUND
+        );
+      }
+
+      const deletedEmails = Array.isArray(inactiveUsers)
+        ? inactiveUsers.map((user) => user.email)
+        : [inactiveUsers.email];
+
+      if (inactiveUsers) {
+        await sendDeletedUsersEmail(deletedEmails);
+      }
+
+      let result = await usersServices.deleteUsers(filter);
+
+      req.logger.info(result);
+
+      res.status(200).json({
+        message: `${result.deletedCount} user(s) deleted due to inactivity.`,
       });
     } catch (error) {
       return next(error);

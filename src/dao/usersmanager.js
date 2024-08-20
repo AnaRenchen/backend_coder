@@ -10,6 +10,10 @@ export class usersManagerMongo {
     return await usersModel.findOne(filter).lean();
   }
 
+  async getByMany(filter = {}) {
+    return await usersModel.find(filter).lean();
+  }
+
   async getByPopulate(filter = {}) {
     return await usersModel.findOne(filter).populate("cart").lean();
   }
@@ -21,5 +25,14 @@ export class usersManagerMongo {
       { new: true, runValidators: true }
     );
     return updatedUser;
+  }
+
+  async getUsers() {
+    let users = usersModel.find();
+    return users;
+  }
+
+  async deleteUsers(filter = {}) {
+    return await usersModel.deleteMany(filter);
   }
 }

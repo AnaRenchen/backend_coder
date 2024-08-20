@@ -14,3 +14,13 @@ router7.post(
   uploadProfiles,
   UsersController.postProfilePic
 );
+
+router7.get("/", UsersController.getUsers);
+
+router7.get(
+  "/inactiveUsers",
+  authUser(["admin"]),
+  UsersController.getInactiveUsers
+);
+
+router7.delete("/", authUser(["admin"]), UsersController.deleteUsers);
