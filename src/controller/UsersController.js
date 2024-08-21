@@ -5,7 +5,6 @@ import CustomError from "../utils/CustomError.js";
 import { errorMongoId } from "../utils/errorsProducts.js";
 import { UsersDTO } from "../dto/UsersDTO.js";
 import moment from "moment";
-import { usersModel } from "../dao/models/usersModel.js";
 import { sendDeletedUsersEmail } from "../config/mailing.config.js";
 
 export class UsersController {
@@ -104,7 +103,7 @@ export class UsersController {
         documents: updatedDocuments,
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Documents uploaded successfully.",
         documents: req.files,
       });
@@ -145,7 +144,7 @@ export class UsersController {
         profilePic: profilePic,
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Profile photo uploaded successfully.",
         profilePic: req.file,
       });
@@ -157,9 +156,18 @@ export class UsersController {
   static getUsers = async (req, res, next) => {
     try {
       let users = await usersServices.getUsers();
+
+      if (!users || users.length === 0) {
+        throw CustomError.createError(
+          "No users found.",
+          null,
+          "Could not find users.",
+          TYPES_ERROR.NOT_FOUND
+        );
+      }
       let usersDTO = users.map((user) => new UsersDTO(user));
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "These are all the registered users.",
         users: usersDTO,
       });
@@ -179,15 +187,12 @@ export class UsersController {
       let inactiveUsers = await usersServices.getByMany(filter);
 
       if (inactiveUsers.length === 0) {
-        throw CustomError.createError(
-          "No inactive user.",
-          null,
-          "Could not find any inactive user.",
-          TYPES_ERROR.NOT_FOUND
-        );
+        return res.status(200).json({
+          message: "There are no inactive users.",
+        });
       }
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "These are the inactive users:",
         payload: inactiveUsers,
       });
@@ -207,27 +212,19 @@ export class UsersController {
       let inactiveUsers = await usersServices.getByMany(filter);
 
       if (inactiveUsers.length === 0) {
-        throw CustomError.createError(
-          "No inactive user.",
-          null,
-          "Could not find any inactive user.",
-          TYPES_ERROR.NOT_FOUND
-        );
+        return res.status(200).json({
+          message: "There are no inactive users.",
+        });
       }
+      const deletedEmails = inactiveUsers.map((user) => user.email);
 
-      const deletedEmails = Array.isArray(inactiveUsers)
-        ? inactiveUsers.map((user) => user.email)
-        : [inactiveUsers.email];
-
-      if (inactiveUsers) {
-        await sendDeletedUsersEmail(deletedEmails);
-      }
+      await sendDeletedUsersEmail(deletedEmails);
 
       let result = await usersServices.deleteUsers(filter);
 
       req.logger.info(result);
 
-      res.status(200).json({
+      return res.status(200).json({
         message: `${result.deletedCount} user(s) deleted due to inactivity.`,
       });
     } catch (error) {
