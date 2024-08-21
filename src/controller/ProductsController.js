@@ -1,7 +1,7 @@
 import { productsServices } from "../repository/ProductsServices.js";
 import { isValidObjectId } from "mongoose";
 import { io } from "../app.js";
-
+import { sendDeletedProductEmail } from "../config/mailing.config.js";
 import CustomError from "../utils/CustomError.js";
 import { TYPES_ERROR } from "../utils/EErrors.js";
 import {
@@ -363,11 +363,17 @@ export class ProductsController {
         );
       }
 
+      let owner = product.owner;
+      let productName = product.title;
+
       let result = await productsServices.deleteProduct(id);
       if (result.deletedCount > 0) {
         let { docs: products } = await productsServices.getProductsPaginate();
         io.emit("deletedproduct", products);
         req.logger.info("Product deleted");
+        if (owner !== "adminCoder@coder.com") {
+          await sendDeletedProductEmail(owner, productName);
+        }
         return res
           .status(200)
           .json({ message: `Product with id ${id} was deleted.` });
