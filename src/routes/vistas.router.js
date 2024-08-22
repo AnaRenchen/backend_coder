@@ -45,3 +45,9 @@ router3.get("/checkout/:tid", VistasController.getcheckout);
 router3.get("/recoverPassword", VistasController.getRecoverPassword);
 
 router3.get("/reset-password", VistasController.getResetPassword);
+
+router3.get(
+  "/manageusers",
+  authUserVistas(["admin"]),
+  VistasController.getUsers
+);

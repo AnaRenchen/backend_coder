@@ -32,6 +32,10 @@ class UsersServices {
   deleteUsers = async (filter) => {
     return await this.dao.deleteUsers(filter);
   };
+
+  deleteUser = async (filter) => {
+    return await this.dao.deleteUser(filter);
+  };
 }
 
 export const usersServices = new UsersServices(new UsersDao());

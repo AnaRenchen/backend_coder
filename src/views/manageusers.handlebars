@@ -1,0 +1,51 @@
+<header>
+  <div class="up_page">
+    {{>header}}
+    </div>
+  </div>
+  {{>menu}}
+ <h1 class="titulo"> Horisada's Paintings </h1>
+  <hr />
+  <hr />
+</header>
+
+<main >
+
+
+  <h2 class="subtitulo"> Manage Users </h2>
+
+  <div class="table_container">
+    <table class="manage_users_table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Documents</th>
+          <th>Last Connection</th>
+          <th>Change Role</th>
+        </tr>
+      </thead>
+      <tbody id="users">
+        {{#each users}}
+          <tr>
+            <td class="row_realtime_table">{{name}}</td>
+            <td class="row_realtime_table">{{email}}</td>
+            <td class="row_realtime_table">{{role}}</td>
+            <td class="row_realtime_table">{{status}}</td>
+            <td class="row_realtime_table">{{last_connection}}</td>
+            <td class="row_realtime_table"> <button>Change Role</button></td>  
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="registration_login">
+    <p class="register_msg"> Would you like to remove inactive users?</p>
+    <a href="/register"><button class="register_login_button">Delete</button></a>
+</div>
+
+
+</main>
+<footer></footer>

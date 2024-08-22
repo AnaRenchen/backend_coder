@@ -616,3 +616,6 @@
 {"level":"error","message":"Request GET from unauthenticated user to the route: /api/users/inactiveUsers"}
 {"level":"error","message":"Request DELETE from unauthenticated user to the route: /api/users/"}
 {"level":"error","message":"users validation failed: age: Cast to Number failed for value \"e\" (type string) at path \"age\""}
+{"level":"error","message":"\"Invalid password for adminCoder@coder.com\""}
+{"level":"error","message":"\"Invalid password for adminCoder@coder.com\""}
+{"level":"error","message":"Request GET from unauthenticated user to the route: /api/users/inactiveUsers"}

@@ -4,6 +4,7 @@ import { ticketsServices } from "../repository/TicketsServices.js";
 import { isValidObjectId } from "mongoose";
 import CustomError from "../utils/CustomError.js";
 import { TYPES_ERROR } from "../utils/EErrors.js";
+import { usersServices } from "../repository/UsersServices.js";
 
 export class VistasController {
   static getHome = async (req, res, next) => {
@@ -371,6 +372,47 @@ export class VistasController {
       }
 
       res.render("resetPassword", { token, login: req.session.user });
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  static getUsers = async (req, res, next) => {
+    try {
+      let cart = null;
+      if (req.session.user) {
+        cart = {
+          _id: req.session.user.cart._id,
+        };
+      }
+
+      let users = await usersServices.getUsers();
+
+      users = users.map((user) => {
+        let status =
+          user.documents && user.documents.length === 3 ? "yes" : "no";
+
+        let lastConnectionFormatted = "";
+        if (user.last_connection) {
+          const date = new Date(user.last_connection);
+          lastConnectionFormatted = `${date.getDate()}-${
+            date.getMonth() + 1
+          }-${date.getFullYear()}`;
+        }
+
+        return {
+          ...user,
+          status,
+          last_connection: lastConnectionFormatted,
+        };
+      });
+
+      res.setHeader("Content-Type", "text/html");
+      res.status(200).render("manageusers", {
+        cart,
+        login: req.session.user,
+        users,
+      });
     } catch (error) {
       return next(error);
     }

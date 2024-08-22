@@ -28,11 +28,15 @@ export class usersManagerMongo {
   }
 
   async getUsers() {
-    let users = usersModel.find();
+    let users = usersModel.find().lean();
     return users;
   }
 
   async deleteUsers(filter = {}) {
     return await usersModel.deleteMany(filter);
+  }
+
+  async deleteUser(filter = {}) {
+    return await usersModel.deleteOne(filter);
   }
 }
