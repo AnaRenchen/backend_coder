@@ -7,7 +7,7 @@ import moment from "moment";
 import { sendDeletedUsersEmail } from "../config/mailing.config.js";
 
 export class UsersController {
-  static getPremium = async (req, res, next) => {
+  static changeRole = async (req, res, next) => {
     const { uid } = req.params;
     try {
       if (!isValidObjectId(uid)) {
@@ -273,6 +273,7 @@ export class UsersController {
       if (inactiveUsers.length === 0) {
         return res.status(200).json({
           message: "There are no inactive users.",
+          inactiveUsers,
         });
       }
       const deletedEmails = inactiveUsers.map((user) => user.email);
@@ -285,6 +286,7 @@ export class UsersController {
 
       return res.status(200).json({
         message: `${result.deletedCount} user(s) deleted due to inactivity.`,
+        inactiveUsers,
       });
     } catch (error) {
       req.logger.error(

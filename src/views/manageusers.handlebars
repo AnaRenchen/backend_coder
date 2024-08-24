@@ -1,9 +1,5 @@
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-  integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMU87IpT4vG2Q0Dzt4JXLwP7dBOkce5Bvb+Rs1"
-  crossorigin="anonymous"
-/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-5e2ESR8Ycmos6g3gAKr1Jvwye8sW4U1u/cAKulfVJnkakCcMqhOudbtPnvJ+nbv7" crossorigin="anonymous">
+
 
 
 <header>
@@ -43,8 +39,8 @@
             <td class="row_realtime_table">{{role}}</td>
             <td class="row_realtime_table">{{status}}</td>
             <td class="row_realtime_table">{{last_connection}}</td>
-            <td class="row_realtime_table"> <button class="users_button"><i class="fas fa-exchange-alt"></button></td> 
-            <td class="row_realtime_table"> <button class="users_button"><i class="fas fa-trash-alt"></i></button></td>
+            <td class="row_realtime_table"> <button class="users_button"  onclick="changeRole('{{_id}}')"><i class="fas fa-exchange-alt"></button></td> 
+            <td class="row_realtime_table"> <button class="users_button"  onclick="deleteUser('{{_id}}')"><i class="fas fa-trash-alt"></i></button></td>
           </tr>
         {{/each}}
       </tbody>
@@ -53,9 +49,14 @@
 
   <div class="delete_users_container">
     <p class="delete_users_msg"> Would you like to remove all inactive users?</p>
-    <a href="/register"><button class="delete_users_button">Delete</button></a>
+   <button class="delete_users_button"  onclick="deleteInactiveUsers()">Delete</button>
 </div>
 
+ 
 
 </main>
 <footer></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/js/logout.js"></script>
+<script src="/assets/js/manageUsers.js"></script>

@@ -1113,6 +1113,7 @@ li {
 
 .delete_users_button{
   font-family: 'Times New Roman', Times, serif;
+  align-self: center;
   font-size: 0.9rem;
   letter-spacing: 0.5;
   width: 100px;
@@ -1143,6 +1144,7 @@ li {
 .users_button:hover {
   background-color:#c8b8ac
 }
+
 
 
 
