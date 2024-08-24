@@ -39,11 +39,18 @@ export class UsersController {
         user.role = "premium";
       } else if (user.role === "premium") {
         user.role = "user";
+      } else if (user.role === "admin") {
+        throw CustomError.createError(
+          "Role changing not valid.",
+          null,
+          "User role can only be changed between 'user' and 'premium'. Your role is 'admin'.",
+          TYPES_ERROR.AUTHORIZATION
+        );
       } else {
         throw CustomError.createError(
           "Role changing not valid.",
           null,
-          "User role can only be changed between 'user' and 'premium' or you must upload your ID, Proof of address and Acount statement to become a 'premium' user.",
+          "User must upload ID, Proof of address and Acount statement to become a 'premium' user.",
           TYPES_ERROR.AUTHORIZATION
         );
       }

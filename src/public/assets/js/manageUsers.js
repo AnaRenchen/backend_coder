@@ -108,13 +108,13 @@ const changeRole = async (uid) => {
 
     if (response.ok) {
       await Swal.fire({
-        text: "Role changed successfully.",
+        text: "Role changed successfully!",
         icon: "success",
         color: "black",
         background: "#87a7ae",
-        showConfirmButton: true,
-        confirmButtonColor: "black",
+        showConfirmButton: false,
         toast: true,
+        timer: 3500,
       });
       location.reload();
     } else {
