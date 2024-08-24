@@ -1085,7 +1085,65 @@ li {
     font-family: 'Times New Roman', Times, serif;
     color: #242220;
     letter-spacing: 0.07em;
-    margin-bottom: 50px;
 }
-  
+
+.manage_users_table th,
+.manage_users_table td {
+  padding: 10px;
+  text-align: center; 
+}
+
+.delete_users_container{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-content: center;
+  margin: 50px 100px 100px;
+}
+
+.delete_users_msg{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.5;
+  margin-right: 20px;
+  padding: 8px;
+}
+
+.delete_users_button{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.5;
+  width: 100px;
+  border: none;
+  background-color:#87a7ae;
+  font-weight:700;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.delete_users_button:hover{
+  background-color: #b4b3ad;
+}
+
+.users_button {
+  display: inline-block;
+  margin: 0 auto;
+  padding: 5px 10px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  font-weight:500;
+}
+
+.users_button:hover {
+  background-color:#c8b8ac
+}
+
+
+
   

@@ -2,7 +2,6 @@ import { usersServices } from "../repository/UsersServices.js";
 import { isValidObjectId } from "mongoose";
 import { TYPES_ERROR } from "../utils/EErrors.js";
 import CustomError from "../utils/CustomError.js";
-import { errorMongoId } from "../utils/errorsProducts.js";
 import { UsersDTO } from "../dto/UsersDTO.js";
 import moment from "moment";
 import { sendDeletedUsersEmail } from "../config/mailing.config.js";
@@ -14,7 +13,7 @@ export class UsersController {
       if (!isValidObjectId(uid)) {
         throw CustomError.createError(
           "Invalid Mongo Id.",
-          errorMongoId(),
+          null,
           "Please choose a valid Mongo Id.",
           TYPES_ERROR.INVALID_ARGUMENTS
         );
@@ -58,6 +57,18 @@ export class UsersController {
         user: updatedUser,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -69,7 +80,7 @@ export class UsersController {
       if (!isValidObjectId(uid)) {
         throw CustomError.createError(
           "Invalid Mongo Id.",
-          errorMongoId(),
+          null,
           "Please choose a valid Mongo Id.",
           TYPES_ERROR.INVALID_ARGUMENTS
         );
@@ -108,6 +119,18 @@ export class UsersController {
         documents: req.files,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -119,7 +142,7 @@ export class UsersController {
       if (!isValidObjectId(uid)) {
         throw CustomError.createError(
           "Invalid Mongo Id.",
-          errorMongoId(),
+          null,
           "Please choose a valid Mongo Id.",
           TYPES_ERROR.INVALID_ARGUMENTS
         );
@@ -149,6 +172,18 @@ export class UsersController {
         profilePic: req.file,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -172,6 +207,18 @@ export class UsersController {
         users: usersDTO,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -197,6 +244,18 @@ export class UsersController {
         payload: inactiveUsers,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -228,6 +287,63 @@ export class UsersController {
         message: `${result.deletedCount} user(s) deleted due to inactivity.`,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
+      return next(error);
+    }
+  };
+
+  static deleteOneUser = async (req, res, next) => {
+    try {
+      const { uid } = req.params;
+
+      if (!isValidObjectId(uid)) {
+        throw CustomError.createError(
+          "Invalid Mongo Id.",
+          null,
+          "Please choose a valid Mongo Id.",
+          TYPES_ERROR.INVALID_ARGUMENTS
+        );
+      }
+
+      let user = await usersServices.getBy({ _id: uid });
+      if (!user) {
+        throw CustomError.createError(
+          "User not found.",
+          null,
+          "Could not find the selected user.",
+          TYPES_ERROR.NOT_FOUND
+        );
+      }
+
+      await usersServices.deleteUser({ _id: uid });
+
+      return res.status(200).json({
+        message: `User with id ${uid} was deleted `,
+      });
+    } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };

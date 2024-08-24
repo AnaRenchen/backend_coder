@@ -24,3 +24,5 @@ router7.get(
 );
 
 router7.delete("/", authUser(["admin"]), UsersController.deleteUsers);
+
+router7.delete("/:uid", authUser(["admin"]), UsersController.deleteOneUser);
