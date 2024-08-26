@@ -58,11 +58,4 @@ const storage = multer.diskStorage({
   },
 });
 
-export const upload = multer({ storage }).fields([
-  { name: "ID", maxCount: 1 },
-  { name: "Proof of address", maxCount: 1 },
-  { name: "Account statement", maxCount: 1 },
-]);
-
-export const uploadProfiles = multer({ storage }).single("profilePic");
-export const uploadProducts = multer({ storage }).single("thumbnail");
+export const upload = multer({ storage });

@@ -2,16 +2,23 @@ import { Router } from "express";
 import { UsersController } from "../controller/UsersController.js";
 import { authUser } from "../middleware/authUser.js";
 import { upload } from "../utils.js";
-import { uploadProfiles } from "../utils.js";
 
 export const router7 = Router();
 
 router7.put("/premium/:uid", authUser(["admin"]), UsersController.changeRole);
 
-router7.post("/:uid/documents", upload, UsersController.postDocuments);
+router7.post(
+  "/:uid/documents",
+  upload.fields([
+    { name: "ID", maxCount: 1 },
+    { name: "Proof of address", maxCount: 1 },
+    { name: "Account statement", maxCount: 1 },
+  ]),
+  UsersController.postDocuments
+);
 router7.post(
   "/:uid/profilePic",
-  uploadProfiles,
+  upload.single("profilePic"),
   UsersController.postProfilePic
 );
 
