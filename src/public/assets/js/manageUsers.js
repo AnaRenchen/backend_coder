@@ -1,49 +1,64 @@
 const deleteInactiveUsers = async () => {
   try {
-    Swal.fire({
-      text: "Processing your request...",
-      icon: "info",
+    const result = await Swal.fire({
+      text: "Are you sure you want to remove all inactive users?",
+
+      imageUrl: "https://i.postimg.cc/wBnvrtc8/icons8-cat-eyes-100.png",
       background: "#87a7ae",
       color: "black",
-      showConfirmButton: false,
-      allowEscapeKey: false,
-      toast: true,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
-    let response = await fetch(`/api/users/`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      showCancelButton: true,
+      confirmButtonColor: "black",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, remove them!",
+      cancelButtonText: "No, cancel!",
     });
 
-    let data = await response.json();
-    console.log(data);
-    Swal.close();
+    if (result.isConfirmed) {
+      Swal.fire({
+        text: "Processing your request...",
+        icon: "info",
+        background: "#87a7ae",
+        color: "black",
+        showConfirmButton: false,
+        allowEscapeKey: false,
+        toast: true,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      let response = await fetch(`/api/users/`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    if (response.status === 200 && data.inactiveUsers.length === 0) {
-      await Swal.fire({
-        text: "There are no inactive users.",
-        icon: "error",
-        color: "black",
-        background: "#87a7ae",
-        showConfirmButton: true,
-        confirmButtonColor: "black",
-        toast: true,
-      });
-    } else if (response.status === 200 && data.inactiveUsers.length > 0) {
-      await Swal.fire({
-        text: "Inactive users removed.",
-        icon: "success",
-        color: "black",
-        background: "#87a7ae",
-        showConfirmButton: true,
-        confirmButtonColor: "black",
-        toast: true,
-      });
-      location.reload();
+      let data = await response.json();
+      console.log(data);
+      Swal.close();
+
+      if (response.status === 200 && data.inactiveUsers.length === 0) {
+        await Swal.fire({
+          text: "There are no inactive users.",
+          icon: "error",
+          color: "black",
+          background: "#87a7ae",
+          showConfirmButton: true,
+          confirmButtonColor: "black",
+          toast: true,
+        });
+      } else if (response.status === 200 && data.inactiveUsers.length > 0) {
+        await Swal.fire({
+          text: "Inactive users removed.",
+          icon: "success",
+          color: "black",
+          background: "#87a7ae",
+          showConfirmButton: true,
+          confirmButtonColor: "black",
+          toast: true,
+        });
+        location.reload();
+      }
     }
   } catch (error) {
     console.error("Error removing inactive users:", error);
@@ -114,7 +129,7 @@ const changeRole = async (uid) => {
         background: "#87a7ae",
         showConfirmButton: false,
         toast: true,
-        timer: 3500,
+        timer: 2500,
       });
       location.reload();
     } else {

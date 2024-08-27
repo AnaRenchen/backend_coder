@@ -53,6 +53,7 @@ export class VistasController {
         "stock",
         "status",
         "category",
+        "owner",
       ];
 
       for (const key in req.query) {
@@ -140,6 +141,7 @@ export class VistasController {
         "stock",
         "status",
         "category",
+        "owner",
       ];
 
       for (const key in req.query) {

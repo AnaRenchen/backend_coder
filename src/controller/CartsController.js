@@ -119,7 +119,7 @@ export class CartsController {
         throw CustomError.createError(
           "Cart not find product.",
           cartProductNotFound(pid),
-          "Could not find the selected product in cart.",
+          "Could not find the selected product.",
           TYPES_ERROR.NOT_FOUND
         );
       }

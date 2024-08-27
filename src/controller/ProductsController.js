@@ -32,6 +32,7 @@ export class ProductsController {
         "stock",
         "status",
         "category",
+        "owner",
       ];
 
       for (const key in req.query) {
