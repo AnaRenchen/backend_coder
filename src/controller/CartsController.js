@@ -73,7 +73,7 @@ export class CartsController {
         );
       }
       res.setHeader("Content-Type", "application/json");
-      return res.status(200).json({ message: "Cart created.", newCart });
+      return res.status(201).json({ message: "Cart created.", newCart });
     } catch (error) {
       req.logger.error(
         JSON.stringify(
@@ -117,7 +117,7 @@ export class CartsController {
       const findProduct = await productsServices.getProductbyId(pid);
       if (!findProduct) {
         throw CustomError.createError(
-          "Cart not find product.",
+          "Could not find product.",
           cartProductNotFound(pid),
           "Could not find the selected product.",
           TYPES_ERROR.NOT_FOUND

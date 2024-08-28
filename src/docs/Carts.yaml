@@ -521,7 +521,7 @@ paths:
         - Carts
       description: Create a cart at Mongo DB.Only users with "user" and "premium" roles can create a cart. Must login first.
       responses:
-        "200":
+        "201":
           description: A JSON object of the created cart.
           content:
             application/json:

@@ -3,7 +3,11 @@ import { authUser } from "../middleware/authUser.js";
 import { CartsController } from "../controller/CartsController.js";
 export const router2 = Router();
 
-router2.post("/", authUser(["admin"]), CartsController.createCart);
+router2.post(
+  "/",
+  authUser(["admin", "user", "premium"]),
+  CartsController.createCart
+);
 
 router2.get("/:cid", CartsController.getCarts);
 

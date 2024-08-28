@@ -48,7 +48,7 @@ export class UsersController {
         );
       } else {
         throw CustomError.createError(
-          "Role changing not valid.",
+          "Cannot change role.",
           null,
           "User must upload ID, Proof of address and Acount statement to become a 'premium' user.",
           TYPES_ERROR.AUTHORIZATION
@@ -210,7 +210,7 @@ export class UsersController {
       let usersDTO = users.map((user) => new UsersDTO(user));
 
       return res.status(200).json({
-        message: "These are all the registered users.",
+        message: "These are all the registered users:",
         users: usersDTO,
       });
     } catch (error) {

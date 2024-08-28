@@ -26,6 +26,18 @@ export class VistasController {
         cart,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -114,6 +126,18 @@ export class VistasController {
         login: req.session.user,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -202,6 +226,18 @@ export class VistasController {
         login: req.session.user,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -218,6 +254,18 @@ export class VistasController {
       res.setHeader("Content-Type", "text/html");
       res.status(200).render("chat", { cart, login: req.session.user });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -232,14 +280,30 @@ export class VistasController {
       }
 
       if (!cart) {
-        res.status(404).send("Cart not found");
-        return;
+        throw CustomError.createError(
+          "Cart not found.",
+          null,
+          "Could not find the selected cart.",
+          TYPES_ERROR.NOT_FOUND
+        );
       }
       res.status(200).render("carts", {
         cart,
         login: req.session.user,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -249,6 +313,18 @@ export class VistasController {
       let { error } = req.query;
       res.status(200).render("register", { error, login: req.session.user });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -259,6 +335,18 @@ export class VistasController {
 
       res.status(200).render("login", { error, login: req.session.user });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -278,6 +366,18 @@ export class VistasController {
         cart,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -303,6 +403,18 @@ export class VistasController {
         errorMessage,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -356,6 +468,18 @@ export class VistasController {
         .status(200)
         .render("recoverPassword", { error, login: req.session.user });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -375,6 +499,18 @@ export class VistasController {
 
       res.render("resetPassword", { token, login: req.session.user });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };
@@ -416,6 +552,18 @@ export class VistasController {
         users,
       });
     } catch (error) {
+      req.logger.error(
+        JSON.stringify(
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+          null,
+          5
+        )
+      );
       return next(error);
     }
   };

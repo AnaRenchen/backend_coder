@@ -88,7 +88,7 @@ describe("Testing router Carts", function () {
   it("The endpoing api/carts with its method post creates a new cart at Mongo DB.", async () => {
     let { body, status } = await requester.post(`/api/carts`);
 
-    expect(status).to.equal(200);
+    expect(status).to.equal(201);
     expect(body.message).to.include("Cart created.");
     expect(body.newCart).to.have.property("_id");
     expect(isValidObjectId(body.newCart._id)).to.be.true;

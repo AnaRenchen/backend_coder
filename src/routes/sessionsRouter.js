@@ -8,6 +8,7 @@ import { config } from "../config/config.js";
 import jwt from "jsonwebtoken";
 import { emailRecoverPassword } from "../config/mailing.config.js";
 import { generateHash, validatePassword } from "../utils.js";
+const PORT = config.PORT;
 
 export const router4 = Router();
 
@@ -149,7 +150,7 @@ router4.post("/requestPassword", async (req, res) => {
 
     req.logger.info(token);
 
-    const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
+    const resetUrl = `http://localhost:${PORT}/reset-password?token=${token}`;
 
     await emailRecoverPassword(user.email, resetUrl, userName);
     return res.status(200).json({

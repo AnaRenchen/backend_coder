@@ -14,6 +14,7 @@ import {
   addProductError,
   updateProductError,
 } from "../utils/errorsProducts.js";
+import { config } from "../config/config.js";
 
 export class ProductsController {
   static getProducts = async (req, res, next) => {
@@ -21,6 +22,8 @@ export class ProductsController {
       let limit = req.query.limit || 10;
       let page = req.query.page || 1;
       let sort = req.query.sort;
+
+      const PORT = config.PORT;
 
       const filter = {};
       const validCategories = [
@@ -59,10 +62,10 @@ export class ProductsController {
       const hasPrevPage = result.prevPage !== null;
 
       const prevLink = hasPrevPage
-        ? `http://localhost:3000/products?page=${result.prevPage}&limit=${limit}`
+        ? `http://localhost:${PORT}/products?page=${result.prevPage}&limit=${limit}`
         : null;
       const nextLink = hasNextPage
-        ? `http://localhost:3000/products?page=${result.nextPage}&limit=${limit}`
+        ? `http://localhost:${PORT}/products?page=${result.nextPage}&limit=${limit}`
         : null;
 
       res.setHeader("Content-Type", "application/json");
@@ -248,7 +251,7 @@ export class ProductsController {
       const findProduct = await productsServices.getProductbyId(id);
       if (!findProduct) {
         throw CustomError.createError(
-          "Cart not find product.",
+          "Could not find product.",
           productNotFound(id),
           "Could not find the selected product in cart.",
           TYPES_ERROR.NOT_FOUND
