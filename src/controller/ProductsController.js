@@ -15,6 +15,7 @@ import {
   updateProductError,
 } from "../utils/errorsProducts.js";
 import { config } from "../config/config.js";
+import fs from "fs";
 
 export class ProductsController {
   static getProducts = async (req, res, next) => {
@@ -166,6 +167,9 @@ export class ProductsController {
       exists = await productsServices.getProductBy({ code });
 
       if (exists) {
+        if (req.file) {
+          fs.unlinkSync(thumbnail);
+        }
         throw CustomError.createError(
           "Code already exists.",
           productCodeError(code),
@@ -184,6 +188,9 @@ export class ProductsController {
         !stock ||
         !thumbnail
       ) {
+        if (req.file) {
+          fs.unlinkSync(thumbnail);
+        }
         throw CustomError.createError(
           "Invalid or missing properties.",
           addProductArgumentsError(),

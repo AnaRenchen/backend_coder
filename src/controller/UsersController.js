@@ -5,6 +5,7 @@ import CustomError from "../utils/CustomError.js";
 import { UsersDTO } from "../dto/UsersDTO.js";
 import moment from "moment";
 import { sendDeletedUsersEmail } from "../config/mailing.config.js";
+import fs from "fs";
 
 export class UsersController {
   static changeRole = async (req, res, next) => {
@@ -110,6 +111,19 @@ export class UsersController {
       }));
 
       const existingDocuments = user.documents || [];
+
+      existingDocuments.forEach((doc) => {
+        const newDoc = newDocuments.find((newDoc) => newDoc.name === doc.name);
+        if (newDoc) {
+          if (fs.existsSync(doc.reference)) {
+            try {
+              fs.unlinkSync(doc.reference);
+            } catch (error) {
+              console.error(`Error deleting file: ${doc.reference}`, error);
+            }
+          }
+        }
+      });
 
       const updatedDocuments = existingDocuments
         .filter(
