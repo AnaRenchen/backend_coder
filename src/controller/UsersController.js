@@ -179,18 +179,23 @@ export class UsersController {
         );
       }
 
-      let profilePic;
+      let previousPic = user.profilePic;
+
+      let newProfilePic;
       if (req.file) {
-        profilePic = req.file.path;
+        newProfilePic = req.file.path;
+        if (previousPic) {
+          fs.unlinkSync(previousPic);
+        }
       }
 
       await usersServices.updateUser(uid, {
-        profilePic: profilePic,
+        profilePic: newProfilePic,
       });
 
       return res.status(200).json({
         message: "Profile photo uploaded successfully.",
-        profilePic: req.file,
+        newProfilePic: req.file,
       });
     } catch (error) {
       req.logger.error(
