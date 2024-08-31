@@ -60,7 +60,7 @@ const uploadPhoto = async (e) => {
       color: "black",
       text:
         data.message ||
-        "An error occurred during the upload. Make sure your file has a PDF extension.",
+        "An error occurred during the upload. Make sure your file is an image.",
       confirmButtonText: "OK",
       confirmButtonColor: "black",
       toast: true,

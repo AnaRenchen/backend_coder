@@ -792,3 +792,4 @@
 {"level":"error","message":"\"Invalid password for pinky@gmail.com\""}
 {"level":"error","message":"\"Invalid password for anamagbh@gmail.com\""}
 {"level":"error","message":"Request POST from unauthenticated user adminCoder@coder.com to the route: /api/carts/66b7a6a5f2a3c0f093555522/product/669286dfe10844ba0c7c8fa2"}
+{"level":"error","message":"\"Invalid password for anamagbh@gmail.com\""}
