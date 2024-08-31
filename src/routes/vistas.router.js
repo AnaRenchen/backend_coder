@@ -6,7 +6,7 @@ import { auth } from "../middleware/auth.js";
 
 export const router3 = Router();
 
-router3.get("/home", VistasController.getHome);
+router3.get("/", VistasController.getHome);
 
 router3.get(
   "/realtimeproducts",
