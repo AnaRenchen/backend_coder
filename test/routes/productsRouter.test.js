@@ -19,8 +19,8 @@ let mockProduct = {
 };
 
 let user = {
-  email: "adminCoder@coder.com",
-  password: "adminCod3r123",
+  email: config.ADMIN_NAME,
+  password: config.ADMIN_PASSWORD,
 };
 
 const connDB = async () => {
