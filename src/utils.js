@@ -33,15 +33,15 @@ const storage = multer.diskStorage({
     let folder = "";
 
     if (file.fieldname === "profilePic") {
-      folder = "./src/uploads/profiles";
+      folder = "./src/public/assets/uploads/profiles";
     } else if (file.fieldname === "thumbnail") {
-      folder = "./src/uploads/products";
+      folder = "./src/public/assets/uploads/products";
     } else if (
       file.fieldname === "ID" ||
       file.fieldname === "Proof of address" ||
       file.fieldname === "Account statement"
     ) {
-      folder = "./src/uploads/documents";
+      folder = "./src/public/assets/uploads/documents";
     }
 
     cb(null, folder);
